@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+
+    "outDir": "./dist",
+    "skipLibCheck": true,
+    "useDefineForClassFields": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "@escenas/*": ["src/escenas/*"],
+      "@entidades/*": ["src/entidades/*"],
+      "@sistemas/*": ["src/sistemas/*"],
+      "@niveles/*": ["src/niveles/*"],
+      "@ui/*": ["src/ui/*"],
+      "@animaciones/*": ["src/animaciones/*"],
+      "@constantes/*": ["src/constantes/*"],
+      "@tipos/*": ["src/tipos/*"],
+      "@utilidades/*": ["src/utilidades/*"],
+      "@assets/*": ["assets/*"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "android", "ios"]
+}

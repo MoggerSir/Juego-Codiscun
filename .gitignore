@@ -1,0 +1,31 @@
+# Dependencias
+node_modules/
+
+# Build
+dist/
+dist-ssr/
+
+# Entorno
+.env
+.env.local
+.env.*.local
+
+# Capacitor — plataformas generadas (se agregan en Fase 5)
+android/
+ios/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# VS Code (excepto settings y extensions compartidos)
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# TypeScript
+*.tsbuildinfo
