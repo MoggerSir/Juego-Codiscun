@@ -121,4 +121,12 @@ export abstract class EnemigoBase extends Phaser.Physics.Arcade.Sprite {
       this.destroy();
     }
   }
+
+  /**
+   * Define si el enemigo puede ser golpeado lateralmente sin dañar al jugador.
+   * Por defecto retorna false (daño normal).
+   */
+  public recibirGolpeLateral(_jugador: any): boolean {
+    return false;
+  }
 }

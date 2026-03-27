@@ -39,7 +39,12 @@ export class SistemaDano {
     if (esPisado) {
       this.procesarPisado(jugador, enemigo);
     } else {
-      this.procesarDanoJugador(jugador);
+      // Nuevo: Intentar golpe lateral (pateo) antes que el daño
+      const golpeGestionado = enemigo.recibirGolpeLateral(jugador);
+      
+      if (!golpeGestionado) {
+        this.procesarDanoJugador(jugador);
+      }
     }
   }
 

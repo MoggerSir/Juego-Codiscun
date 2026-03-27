@@ -83,4 +83,17 @@ export class Koopa extends EnemigoBase {
   public obtenerEstado(): EstadoKoopa {
     return this.estadoKoopa;
   }
+
+  /**
+   * Sobrescribe el golpe lateral para permitir patear la concha.
+   */
+  public override recibirGolpeLateral(jugador: Phaser.GameObjects.Components.Transform): boolean {
+    if (this.estadoKoopa === "concha") {
+      // Determinar dirección del pateo según posición relativa
+      const direccion = jugador.x < this.x ? 1 : -1;
+      this.patearConcha(direccion);
+      return true; // Éxito: no hay daño para el jugador
+    }
+    return false; // Daño normal si está caminando o en movimiento
+  }
 }
