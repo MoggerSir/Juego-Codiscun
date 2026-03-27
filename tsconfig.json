@@ -31,6 +31,7 @@
       "@constantes/*": ["src/constantes/*"],
       "@tipos/*": ["src/tipos/*"],
       "@utilidades/*": ["src/utilidades/*"],
+      "@componentes/*": ["src/componentes/*"],
       "@assets/*": ["assets/*"]
     }
   },

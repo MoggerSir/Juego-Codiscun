@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { ESCENAS } from "@constantes/constantes-escenas";
-import { UI_Vidas } from "@entidades/jugador/VidasJugador";
+import { UI_Vidas } from "@ui/UI_Vidas";
 
 export class EscenaUI extends Phaser.Scene {
   private uiVidas!: UI_Vidas;
@@ -10,12 +10,12 @@ export class EscenaUI extends Phaser.Scene {
   }
 
   create() {
-    // Instancia la UI con un valor inicial de 3 vidas
-    this.uiVidas = new UI_Vidas(this, 3);
+    // Instancia la UI de vidas en la esquina superior izquierda
+    this.uiVidas = new UI_Vidas(this, 20, 20, 3);
 
-    // MEJORA: Escuchar un evento global para actualizar las vidas visualmente
-    this.registry.events.on('actualizar-vidas', (vidas: number) => {
-      this.uiVidas.actualizar(vidas);
+    // Escuchar el evento global emitido por el ComponenteSalud
+    this.game.events.on('salud:cambio', (data: { vidas: number }) => {
+      this.uiVidas.actualizar(data.vidas);
     });
   }
 }

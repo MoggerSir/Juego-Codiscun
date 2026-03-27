@@ -88,6 +88,24 @@
             ]
         },
         {
+            "name": "enemigos",
+            "type": "objectgroup",
+            "x": 0,
+            "y": 0,
+            "objects": [
+                {
+                    "id": 2,
+                    "name": "goomba-1",
+                    "type": "goomba",
+                    "x": 950,
+                    "y": 400,
+                    "width": 32,
+                    "height": 32,
+                    "visible": true
+                }
+            ]
+        },
+        {
             "name": "zona-meta",
             "type": "objectgroup",
             "x": 0,

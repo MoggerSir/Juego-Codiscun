@@ -4,7 +4,9 @@ export type EstadoJugador =
   | 'saltando'
   | 'cayendo'
   | 'muerto'
-  | 'invencible';
+  | 'invencible'
+  | 'normal'
+  | 'grande';
 
 export interface InputJugador {
   izquierda: boolean;
