@@ -1,9 +1,9 @@
-# 👾 FASE 2 — Enemigos, Objetos e Interacciones
+# FASE 2 — Enemigos, Objetos e Interacciones
 ### Dirigido al equipo de desarrollo
 
 ---
 
-> **Antes de empezar esta fase:** La Fase 1 debe estar 100% completa y el checklist de su sección 17 debe pasar entero. El salto debe sentirse bien. Si hay dudas sobre algún punto de la Fase 1, resolverlas antes de tocar esta fase.
+> **Antes de empezar esta fase:** La Fase 1 debe estar 100% completa y el checklist de su sección 17 debe pasar entero. El salto debe sentirse bien. Si hay dudas sobre algún punto de la Fase 1, resolverlas antes de tocar esta fase. (ya deberia estar al 100% segun yop)
 
 ---
 

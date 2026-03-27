@@ -1,7 +1,7 @@
-# 📋 CONTEXTO DEL PROYECTO — Juego tipo Mario Bros
+# CONTEXTO DEL PROYECTO — Juego tipo Mario Bros
 ### Documento para agente de IA — Referencia completa del proyecto
 
-> Este documento contiene todo el contexto necesario para que un agente de IA entienda el proyecto, su arquitectura, decisiones técnicas, convenciones y estado actual. Leer completo antes de generar cualquier código.
+> Este documento contiene todo el contexto necesario para que se entienda el proyecto, su arquitectura, decisiones técnicas, convenciones y estado actual. Leer completo antes de generar cualquier código.
 
 ---
 
@@ -26,15 +26,21 @@ Un juego de plataformas estilo Mario Bros desarrollado para uso empresarial. El 
 
 ## 2. Stack tecnológico
 
-| Capa | Tecnología | Versión | Por qué |
-|---|---|---|---|
-| Motor de juego | **Phaser 3** | ^3.x | Framework 2D más popular para web, soporte nativo TS |
-| Lenguaje | **TypeScript** | ^5.x | Tipado estático, el equipo ya lo conoce |
-| Bundler | **Vite** | ^5.x | Build rápido, manejo de assets, genera dist/ para Capacitor |
-| Móvil | **Capacitor** | ^6.x | Convierte web app a APK/IPA sin reescribir código |
-| Diseño de niveles | **Tiled Map Editor** | Desktop | Crea tilemaps .json compatibles con Phaser |
-| Control de versiones | **GitHub** | — | Repositorio privado |
-| Cliente Git | **GitHub Desktop + VS Code** | — | Sin comandos de terminal |
+| Capa                 | Tecnología                   | Versión | Por qué |
+
+| Motor de juego       | **Phaser 3**                 | ^3.x    | Framework 2D más popular para web, soporte nativo TS |
+
+| Lenguaje             | **TypeScript**               | ^5.x    | Tipado estático, el equipo ya lo conoce |
+
+| Bundler              | **Vite**                     | ^5.x    | Build rápido, manejo de assets, genera dist/ para Capacitor |
+
+| Móvil                | **Capacitor**                | ^6.x    | Convierte web app a APK/IPA sin reescribir código |
+
+| Diseño de niveles    | **Tiled Map Editor**         | Desktop | Crea tilemaps .json compatibles con Phaser |
+
+| Control de versiones | **GitHub**                   |   —     | Repositorio privado |
+
+| Cliente Git          | **GitHub Desktop + VS Code** |   —     | Sin comandos de terminal |
 
 ### Comandos del proyecto
 

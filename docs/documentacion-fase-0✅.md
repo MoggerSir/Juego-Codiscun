@@ -106,4 +106,4 @@ Al finalizar la fase, se realizaron las siguientes pruebas:
 
 ---
 
-**Estado:** ✅ FASE 0 COMPLETADA
+**Estado:** FASE 0 COMPLETADA! xd

@@ -78,4 +78,4 @@ Para permitir el desarrollo sin arte final, se implementó generación procedime
 
 ---
 
-**Estado:** ✅ FASE 1 COMPLETADA
+**Estado:** FASE 1 COMPLETADA
