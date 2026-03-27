@@ -26,21 +26,21 @@ Poblamos el mundo con cosas con las que el jugador puede interactuar. Al termina
 
 ## Índice de tareas
 
-1.  [Sistema de vidas y daño              ](#1-sistema-de-vidas-y-daño)
-2.  [EnemigoBase                          ](#2-enemigobase)
-3.  [Goomba                               ](#3-goomba)
-4.  [Koopa                                ](#4-koopa)
-5.  [Moneda                               ](#5-moneda)
+1.  [Sistema de vidas y daño ](#1-sistema-de-vidas-y-daño)
+2.  [EnemigoBase ](#2-enemigobase)
+3.  [Goomba ](#3-goomba)
+4.  [Koopa ](#4-koopa)
+5.  [Moneda ](#5-moneda)
 6.  [BloqueLadrillo y BloqueInterrogacion ](#6-bloqueladrillo-y-bloqueinterrogacion)
-7.  [PowerUp y Hongo                      ](#7-powerup-y-hongo)
-8.  [SistemaPuntuacion                    ](#8-sistemapuntuacion)
-9.  [SistemaColisiones — actualización    ](#9-sistemacolisiones--actualización)
-10. [EscenaGameOver                       ](#10-escenagameover)
-11. [Actualizar EscenaJuego               ](#11-actualizar-escenajuego)
-12. [Actualizar el tilemap en Tiled       ](#12-actualizar-el-tilemap-en-tiled)
-13. [Tipos nuevos                         ](#13-tipos-nuevos)
-14. [Constantes nuevas                    ](#14-constantes-nuevas)
-15. [Checklist de verificación            ](#15-checklist-de-verificación)
+7.  [PowerUp y Hongo ](#7-powerup-y-hongo)
+8.  [SistemaPuntuacion ](#8-sistemapuntuacion)
+9.  [SistemaColisiones — actualización ](#9-sistemacolisiones--actualización)
+10. [EscenaGameOver ](#10-escenagameover)
+11. [Actualizar EscenaJuego ](#11-actualizar-escenajuego)
+12. [Actualizar el tilemap en Tiled ](#12-actualizar-el-tilemap-en-tiled)
+13. [Tipos nuevos ](#13-tipos-nuevos)
+14. [Constantes nuevas ](#14-constantes-nuevas)
+15. [Checklist de verificación ](#15-checklist-de-verificación)
 
 ---
 
@@ -119,7 +119,7 @@ private respawnear(): void {
 
 ## 2. EnemigoBase
 
-**Archivo:** `src/entidades/enemigos/EnemigoBase.ts` — clase nueva  
+**Archivo:** `src/entidades/enemigos/EnemigoBase.ts` — clase nueva
 
 ### Qué es
 
@@ -785,22 +785,22 @@ export const FISICA = {
 
 ### Jugador y daño
 
-- [ ] El jugador pierde vida al tocar un enemigo de lado
-- [ ] El jugador NO pierde vida mientras está en estado invencible
-- [ ] El jugador parpadea durante la invencibilidad
-- [ ] Al llegar a 0 vidas aparece la pantalla de Game Over
-- [ ] Desde Game Over se puede volver a intentar
+- [x] El jugador pierde vida al tocar un enemigo de lado
+- [x] El jugador NO pierde vida mientras está en estado invencible
+- [x] El jugador parpadea durante la invencibilidad
+- [x] Al llegar a 0 vidas aparece la pantalla de Game Over
+- [x] Desde Game Over se puede volver a intentar
 
 ### Enemigos
 
-- [ ] El Goomba camina solo en línea recta
-- [ ] El Goomba gira al llegar al borde de una plataforma
-- [ ] El Goomba gira al chocar con una pared
-- [ ] El Goomba muere al ser pisado
-- [ ] El Koopa se mete en su concha al ser pisado
-- [ ] La concha del Koopa puede ser pateada
-- [ ] La concha en movimiento mata otros enemigos
-- [ ] Los enemigos colisionan con el mapa y no caen al vacío
+- [x] El Goomba camina solo en línea recta
+- [x] El Goomba gira al llegar al borde de una plataforma
+- [x] El Goomba gira al chocar con una pared
+- [x] El Goomba muere al ser pisado
+- [x] El Koopa se mete en su concha al ser pisado
+- [x] La concha del Koopa puede ser pateada
+- [x] La concha en movimiento mata otros enemigos
+- [x] Los enemigos colisionan con el mapa y no caen al vacío
 
 ### Objetos
 
