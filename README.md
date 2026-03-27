@@ -2,18 +2,22 @@
 
 Este es un videojuego de plataformas 2D inspirado en Mario Bros, desarrollado con fines educativos y de sensibilización sobre la prevención de **ITS/VIH**.
 
-## 🎯 Objetivo
+## Objetivo
+
 El proyecto busca ofrecer una herramienta interactiva y lúdica para informar y educar sobre la salud sexual, integrando mecánicas de juego clásicas (saltar, recolectar, evitar obstáculos) con un trasfondo educativo orientado al impacto social.
 
-## 🚀 Tecnologías
+## Tecnologías
+
 El proyecto está construido sobre un stack web moderno y escalable:
+
 - **Motor**: [Phaser 3](https://phaser.io/) (Framework de juegos 2D profesional)
 - **Lenguaje**: [TypeScript](https://www.typescriptlang.org/) (Tipado estático para robustez)
 - **Bundler**: [Vite](https://vitejs.dev/) (Entorno de desarrollo rápido)
 - **Móvil**: [Capacitor](https://capacitorjs.com/) (Para exportar nativamente a Android e iOS)
 - **Niveles**: [Tiled](https://www.mapeditor.org/) (Editor de mapas basado en tiles)
 
-## 🛠️ Cómo correr el proyecto
+## Cómo correr el proyecto
+
 Asegúrate de tener [Node.js](https://nodejs.org/) instalado.
 
 1. **Instalar dependencias**:
@@ -21,9 +25,11 @@ Asegúrate de tener [Node.js](https://nodejs.org/) instalado.
    npm install
    ```
 2. **Ejecutar en desarrollo**:
+
    ```bash
    npm run dev
    ```
+
    Accede a `http://localhost:5173` (o el puerto que indique la terminal).
 
 3. **Generar versión de producción**:
@@ -31,7 +37,8 @@ Asegúrate de tener [Node.js](https://nodejs.org/) instalado.
    npm run build
    ```
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
+
 - `src/`: Contiene todo el código fuente.
   - `entidades/`: Jugador, enemigos y objetos interactivos.
   - `escenas/`: Diferentes pantallas (Menú, Juego, UI, Game Over).
@@ -44,4 +51,3 @@ Asegúrate de tener [Node.js](https://nodejs.org/) instalado.
   - `FASE-2-ENEMIGOS.md`: Guía de implementación de combate y patrullaje.
 
 ---
-*Desarrollado con ❤️ para un impacto social positivo.*
