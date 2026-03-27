@@ -1,4 +1,5 @@
 # FASE 2 — Enemigos, Objetos e Interacciones
+
 ### Dirigido al equipo de desarrollo
 
 ---
@@ -12,6 +13,7 @@
 Poblamos el mundo con cosas con las que el jugador puede interactuar. Al terminar esta fase el juego debe sentirse como un juego real: hay enemigos que matan, monedas que recoger, bloques que golpear y power-ups que cambian al personaje.
 
 **Al terminar esta fase debe ser posible:**
+
 - Morir al tocar un enemigo de lado
 - Matar un enemigo saltando encima
 - Recoger monedas
@@ -44,8 +46,7 @@ Poblamos el mundo con cosas con las que el jugador puede interactuar. Al termina
 
 ## 1. Sistema de vidas y daño
 
-**Archivo:** `src/entidades/jugador/Jugador.ts` — ampliar la clase existente  
-**Responsable sugerido:** Dev encargado del jugador (mismo que Fase 1)
+**Archivo:** `src/entidades/jugador/Jugador.ts` — ampliar la clase existente
 
 ### Qué implementar
 
@@ -206,13 +207,13 @@ Al tocar jugador de lado → jugador.recibirDano()
 
 ```typescript
 export class Goomba extends EnemigoBase {
-  protected velocidad = FISICA.VELOCIDAD_ENEMIGO
-  protected claveAnimacion = 'goomba'
+  protected velocidad = FISICA.VELOCIDAD_ENEMIGO;
+  protected claveAnimacion = "goomba";
 
   public alSerPisado(): void {
     // Sumar puntos
-    this.scene.events.emit('puntuacion:sumar', { puntos: JUEGO.PUNTOS_GOOMBA })
-    this.morir()
+    this.scene.events.emit("puntuacion:sumar", { puntos: JUEGO.PUNTOS_GOOMBA });
+    this.morir();
   }
 }
 ```
@@ -245,7 +246,7 @@ Estado "concha":
 ### Máquina de estados del Koopa
 
 ```typescript
-type EstadoKoopa = 'caminando' | 'concha' | 'concha-movimiento'
+type EstadoKoopa = "caminando" | "concha" | "concha-movimiento";
 ```
 
 > ⚠️ **Importante:** La concha en movimiento debe registrarse como una colisión separada en `SistemaColisiones`. No es lo mismo que el Koopa caminando.
@@ -271,21 +272,21 @@ Jugador hace overlap con moneda
 ```typescript
 export class Moneda extends Phaser.Physics.Arcade.Sprite {
   constructor(escena: Phaser.Scene, x: number, y: number) {
-    super(escena, x, y, ASSETS.MONEDA_SPRITE)
-    escena.add.existing(this)
-    escena.physics.add.existing(this, true) // true = cuerpo estático
+    super(escena, x, y, ASSETS.MONEDA_SPRITE);
+    escena.add.existing(this);
+    escena.physics.add.existing(this, true); // true = cuerpo estático
   }
 
   public recolectar(): void {
-    this.scene.events.emit('puntuacion:moneda')
+    this.scene.events.emit("puntuacion:moneda");
     // Animación de recolección antes de destruir
     this.scene.tweens.add({
       targets: this,
       y: this.y - 30,
       alpha: 0,
       duration: 300,
-      onComplete: () => this.destroy()
-    })
+      onComplete: () => this.destroy(),
+    });
   }
 }
 ```
@@ -296,10 +297,10 @@ Las monedas no se hardcodean en el código. Se colocan en una capa de objetos en
 
 ```typescript
 // En EscenaJuego.ts
-const objetosMonedas = mapa.getObjectLayer('monedas')?.objects ?? []
-objetosMonedas.forEach(obj => {
-  this.grupoMonedas.add(new Moneda(this, obj.x!, obj.y!))
-})
+const objetosMonedas = mapa.getObjectLayer("monedas")?.objects ?? [];
+objetosMonedas.forEach((obj) => {
+  this.grupoMonedas.add(new Moneda(this, obj.x!, obj.y!));
+});
 ```
 
 ---
@@ -307,6 +308,7 @@ objetosMonedas.forEach(obj => {
 ## 6. BloqueLadrillo y BloqueInterrogacion
 
 **Archivos:**
+
 - `src/entidades/objetos/BloqueLadrillo.ts`
 - `src/entidades/objetos/BloqueInterrogacion.ts`
 
@@ -365,6 +367,7 @@ public registrarJugadorConBloques(
 ## 7. PowerUp y Hongo
 
 **Archivos:**
+
 - `src/entidades/objetos/PowerUp.ts`
 - `src/entidades/objetos/Hongo.ts`
 
@@ -374,11 +377,11 @@ public registrarJugadorConBloques(
 
 ```typescript
 export abstract class PowerUp extends Phaser.Physics.Arcade.Sprite {
-  public abstract alSerRecogido(jugador: Jugador): void
+  public abstract alSerRecogido(jugador: Jugador): void;
 
   // Movimiento estándar de power-ups: aparecen y se mueven solos
   protected iniciarMovimiento(): void {
-    this.setVelocityX(FISICA.VELOCIDAD_POWERUP)
+    this.setVelocityX(FISICA.VELOCIDAD_POWERUP);
   }
 }
 ```
@@ -400,9 +403,9 @@ Hongo aparece sobre el bloque
 ```typescript
 export class Hongo extends PowerUp {
   public alSerRecogido(jugador: Jugador): void {
-    jugador.crecer()
-    this.scene.events.emit('puntuacion:sumar', { puntos: JUEGO.PUNTOS_HONGO })
-    this.destroy()
+    jugador.crecer();
+    this.scene.events.emit("puntuacion:sumar", { puntos: JUEGO.PUNTOS_HONGO });
+    this.destroy();
   }
 }
 ```
@@ -457,31 +460,35 @@ Escucha eventos del bus de eventos y acumula puntos, monedas y vidas. En esta fa
 
 ```typescript
 export class SistemaPuntuacion {
-  private puntos:  number = 0
-  private monedas: number = 0
+  private puntos: number = 0;
+  private monedas: number = 0;
 
   constructor(escena: Phaser.Scene) {
     // Escuchar eventos del juego
-    escena.events.on('puntuacion:sumar',  this.sumarPuntos, this)
-    escena.events.on('puntuacion:moneda', this.sumarMoneda, this)
+    escena.events.on("puntuacion:sumar", this.sumarPuntos, this);
+    escena.events.on("puntuacion:moneda", this.sumarMoneda, this);
   }
 
   private sumarPuntos(datos: { puntos: number }): void {
-    this.puntos += datos.puntos
+    this.puntos += datos.puntos;
     // Emitir para que la UI lo muestre (se implementa en Fase 4)
   }
 
   private sumarMoneda(): void {
-    this.monedas += 1
-    this.puntos += JUEGO.PUNTOS_MONEDA
+    this.monedas += 1;
+    this.puntos += JUEGO.PUNTOS_MONEDA;
     // Cada 100 monedas = 1 vida extra
     if (this.monedas % 100 === 0) {
       // emitir evento de vida extra
     }
   }
 
-  public obtenerPuntos():  number { return this.puntos }
-  public obtenerMonedas(): number { return this.monedas }
+  public obtenerPuntos(): number {
+    return this.puntos;
+  }
+  public obtenerMonedas(): number {
+    return this.monedas;
+  }
 }
 ```
 
@@ -536,10 +543,10 @@ public registrarConchaConEnemigos(
 
 ```typescript
 // collider → ambos objetos rebotan físicamente entre sí
-this.physics.add.collider(jugador, enemigo, callback)
+this.physics.add.collider(jugador, enemigo, callback);
 
 // overlap → se detecta la intersección pero no hay rebote físico
-this.physics.add.overlap(jugador, moneda, callback)
+this.physics.add.overlap(jugador, moneda, callback);
 
 // Regla general:
 // collider → enemigos, paredes, suelo
@@ -560,31 +567,35 @@ Por ahora una pantalla simple: texto "GAME OVER", puntuación final y un botón 
 ```typescript
 export class EscenaGameOver extends Phaser.Scene {
   constructor() {
-    super({ key: ESCENAS.GAME_OVER })
+    super({ key: ESCENAS.GAME_OVER });
   }
 
   // Recibe la puntuación como data al iniciarse
   init(data: { puntos: number }): void {
-    this.puntosFinal = data.puntos
+    this.puntosFinal = data.puntos;
   }
 
   create(): void {
-    const { width, height } = this.scale
+    const { width, height } = this.scale;
 
-    this.add.text(width / 2, height / 3, 'GAME OVER', {
-      fontSize: '48px',
-      color: '#ff4444',
-    }).setOrigin(0.5)
+    this.add
+      .text(width / 2, height / 3, "GAME OVER", {
+        fontSize: "48px",
+        color: "#ff4444",
+      })
+      .setOrigin(0.5);
 
-    this.add.text(width / 2, height / 2, `Puntos: ${this.puntosFinal}`, {
-      fontSize: '24px',
-      color: '#ffffff',
-    }).setOrigin(0.5)
+    this.add
+      .text(width / 2, height / 2, `Puntos: ${this.puntosFinal}`, {
+        fontSize: "24px",
+        color: "#ffffff",
+      })
+      .setOrigin(0.5);
 
     // Reintentar al presionar cualquier tecla
-    this.input.keyboard?.once('keydown', () => {
-      this.scene.start(ESCENAS.JUEGO)
-    })
+    this.input.keyboard?.once("keydown", () => {
+      this.scene.start(ESCENAS.JUEGO);
+    });
   }
 }
 ```
@@ -595,11 +606,11 @@ Desde `EscenaJuego`, escuchar el evento de sin vidas:
 
 ```typescript
 // En EscenaJuego.ts — dentro de create()
-this.events.on('jugador:sinVidas', () => {
+this.events.on("jugador:sinVidas", () => {
   this.scene.start(ESCENAS.GAME_OVER, {
-    puntos: this.sistemaPuntuacion.obtenerPuntos()
-  })
-})
+    puntos: this.sistemaPuntuacion.obtenerPuntos(),
+  });
+});
 ```
 
 ---
@@ -677,11 +688,11 @@ private spawnearEntidadesDesdeMapaTiled(): void {
 
 El dev encargado de niveles debe agregar estas capas de objetos al `nivel-01.json`:
 
-| Capa | Tipo | Contenido |
-|---|---|---|
-| `enemigos` | Object Layer | Objetos con `type: goomba` o `type: koopa` |
-| `monedas` | Object Layer | Puntos de spawn de monedas |
-| `bloques` | Object Layer | Objetos con `type: ladrillo` o `type: interrogacion` |
+| Capa       | Tipo         | Contenido                                            |
+| ---------- | ------------ | ---------------------------------------------------- |
+| `enemigos` | Object Layer | Objetos con `type: goomba` o `type: koopa`           |
+| `monedas`  | Object Layer | Puntos de spawn de monedas                           |
+| `bloques`  | Object Layer | Objetos con `type: ladrillo` o `type: interrogacion` |
 
 ### Distribución recomendada para el nivel 1
 
@@ -699,31 +710,26 @@ El dev encargado de niveles debe agregar estas capas de objetos al `nivel-01.jso
 
 ```typescript
 export type EstadoJugador =
-  | 'idle'
-  | 'corriendo'
-  | 'saltando'
-  | 'cayendo'
-  | 'muerto'
-  | 'invencible'
-  | 'normal'      // tamaño normal
-  | 'grande'      // con hongo
+  | "idle"
+  | "corriendo"
+  | "saltando"
+  | "cayendo"
+  | "muerto"
+  | "invencible"
+  | "normal" // tamaño normal
+  | "grande"; // con hongo
 ```
 
 ### Crear `src/tipos/tipos-enemigo.ts`
 
 ```typescript
-export type EstadoEnemigo =
-  | 'caminando'
-  | 'muerto'
+export type EstadoEnemigo = "caminando" | "muerto";
 
-export type EstadoKoopa =
-  | 'caminando'
-  | 'concha'
-  | 'concha-movimiento'
+export type EstadoKoopa = "caminando" | "concha" | "concha-movimiento";
 
 export interface DatosEnemigo {
-  velocidad: number
-  puntos:    number
+  velocidad: number;
+  puntos: number;
 }
 ```
 
@@ -735,14 +741,14 @@ export interface DatosEnemigo {
 
 ```typescript
 export const JUEGO = {
-  VIDAS_INICIALES:    3,
-  PUNTOS_GOOMBA:      100,
-  PUNTOS_KOOPA:       200,
-  PUNTOS_MONEDA:      50,
-  PUNTOS_HONGO:       100,
+  VIDAS_INICIALES: 3,
+  PUNTOS_GOOMBA: 100,
+  PUNTOS_KOOPA: 200,
+  PUNTOS_MONEDA: 50,
+  PUNTOS_HONGO: 100,
   MONEDAS_VIDA_EXTRA: 100,
-  DURACION_INVENCIBLE: 2000,  // ms
-} as const
+  DURACION_INVENCIBLE: 2000, // ms
+} as const;
 ```
 
 ### Actualizar `src/constantes/constantes-assets.ts`
@@ -752,16 +758,16 @@ export const ASSETS = {
   // ... existentes de Fase 1 ...
 
   // Enemigos
-  GOOMBA_SPRITE:    'goomba-sprite',
-  KOOPA_SPRITE:     'koopa-sprite',
+  GOOMBA_SPRITE: "goomba-sprite",
+  KOOPA_SPRITE: "koopa-sprite",
 
   // Objetos
-  MONEDA_SPRITE:    'moneda-sprite',
-  BLOQUE_LADRILLO:  'bloque-ladrillo',
-  BLOQUE_PREGUNTA:  'bloque-pregunta',
-  BLOQUE_VACIO:     'bloque-vacio',
-  HONGO_SPRITE:     'hongo-sprite',
-} as const
+  MONEDA_SPRITE: "moneda-sprite",
+  BLOQUE_LADRILLO: "bloque-ladrillo",
+  BLOQUE_PREGUNTA: "bloque-pregunta",
+  BLOQUE_VACIO: "bloque-vacio",
+  HONGO_SPRITE: "hongo-sprite",
+} as const;
 ```
 
 ### Actualizar `src/constantes/constantes-fisica.ts`
@@ -770,8 +776,8 @@ export const ASSETS = {
 export const FISICA = {
   // ... existentes de Fase 1 ...
   VELOCIDAD_POWERUP: 80,
-  VELOCIDAD_CONCHA:  350,
-} as const
+  VELOCIDAD_CONCHA: 350,
+} as const;
 ```
 
 ---
@@ -779,6 +785,7 @@ export const FISICA = {
 ## 15. Checklist de verificación
 
 ### Jugador y daño
+
 - [ ] El jugador pierde vida al tocar un enemigo de lado
 - [ ] El jugador NO pierde vida mientras está en estado invencible
 - [ ] El jugador parpadea durante la invencibilidad
@@ -786,6 +793,7 @@ export const FISICA = {
 - [ ] Desde Game Over se puede volver a intentar
 
 ### Enemigos
+
 - [ ] El Goomba camina solo en línea recta
 - [ ] El Goomba gira al llegar al borde de una plataforma
 - [ ] El Goomba gira al chocar con una pared
@@ -796,6 +804,7 @@ export const FISICA = {
 - [ ] Los enemigos colisionan con el mapa y no caen al vacío
 
 ### Objetos
+
 - [ ] Las monedas desaparecen al ser tocadas
 - [ ] El contador de monedas sube correctamente
 - [ ] El bloque ladrillo tiembla si el jugador es pequeño
@@ -808,6 +817,7 @@ export const FISICA = {
 - [ ] El jugador pequeño sí pierde vida al recibir daño
 
 ### Puntuación
+
 - [ ] Los puntos suben al matar enemigos
 - [ ] Los puntos suben al recoger monedas
 
