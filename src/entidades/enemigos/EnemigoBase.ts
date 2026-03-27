@@ -61,17 +61,24 @@ export abstract class EnemigoBase extends Phaser.Physics.Arcade.Sprite {
 
   /**
    * Revisa si el enemigo ha chocado con una pared o ha llegado al borde de una plataforma.
+   * Enfoque proactivo: Detecta obstáculos ANTES de la colisión física.
    */
   protected revisarObstaculos(): void {
-    const body = this.body as Phaser.Physics.Arcade.Body;
-
-    // Si choca con una pared lateralmente (Phaser lo detecta en blocked o touching)
-    if (body.blocked.left || body.blocked.right) {
-      this.cambiarDireccion();
-    } else if (this.detectarBorde()) {
-      // Si detecta un precipicio al frente
+    if (this.detectarPared() || this.detectarBorde()) {
       this.cambiarDireccion();
     }
+  }
+
+  /**
+   * Detecta si hay una pared sólida justo enfrente.
+   */
+  protected detectarPared(): boolean {
+    const margin = 2;
+    const xRevision = this.x + this.direccion * (this.width / 2 + margin);
+    const yRevision = this.y; // Centro vertical
+
+    const tileAlFrente = this.capaPlataformas.getTileAtWorldXY(xRevision, yRevision);
+    return tileAlFrente !== null && tileAlFrente.properties.colision === true;
   }
 
   /**
@@ -79,22 +86,20 @@ export abstract class EnemigoBase extends Phaser.Physics.Arcade.Sprite {
    */
   protected cambiarDireccion(): void {
     this.direccion = (this.direccion === -1 ? 1 : -1) as 1 | -1;
+    
+    // Pequeño desplazamiento para salir del umbral de detección y evitar bucles
+    this.x += this.direccion * 2;
   }
 
   /**
    * Detecta si no hay un tile de suelo al frente en la dirección de movimiento.
-   * Utiliza las coordenadas del mundo y la capa de plataformas.
    */
   protected detectarBorde(): boolean {
-    // Calcular el punto que está al frente y un poco hacia abajo
-    const xRevision = this.x + this.direccion * (this.width / 2 + 4);
-    const yRevision = this.y + this.height / 2 + 1;
+    const xRevision = this.x + this.direccion * (this.width / 2);
+    const yRevision = this.y + this.height / 2 + 5; // Un poco por debajo del pie
 
-    // Buscar si hay un tile en esa posición exacta
     const tileAlFrente = this.capaPlataformas.getTileAtWorldXY(xRevision, yRevision);
-    
-    // Si no hay tile, hay un borde/hueco
-    return tileAlFrente === null;
+    return tileAlFrente === null || tileAlFrente.properties.colision !== true;
   }
 
   /**

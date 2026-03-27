@@ -2,21 +2,21 @@
 
 Esta fase ha transformado el prototipo jugable en un sistema de juego extensible, introduciendo enemigos interactivos y una arquitectura de combate desacoplada.
 
-## 📁 Nueva Estructura de Archivos
+## Nueva Estructura de Archivos
 
-| Módulo | Ruta | Propósito |
-| :--- | :--- | :--- |
-| **Enemigos** | `src/entidades/enemigos/EnemigoBase.ts` | Clase abstracta con lógica de patrullaje y bordes. |
-| | `src/entidades/enemigos/Goomba.ts` | Enemigo básico (muere al ser pisado). |
-| | `src/entidades/enemigos/Koopa.ts` | Enemigo complejo (lógica de concha/proyectil). |
-| **Componentes** | `src/componentes/ComponenteSalud.ts` | Gestión aislada de vidas y estado de muerte. |
-| | `src/entidades/jugador/ManejadorInvencibilidad.ts` | Control visual (Tween) y temporal de invencibilidad. |
-| **Sistemas** | `src/sistemas/SistemaDano.ts` | Orquestador global de reglas de combate. |
-| **UI** | `src/ui/UI_Vidas.ts` | Representación visual reactiva del HUD. |
+| Módulo        | Ruta                                    | Propósito                                                       |
+| :---          | :---                                    | :---                                                            |
+| **Enemigos**  | src/entidades/enemigos/EnemigoBase.ts`  | Clase abstracta con lógica de patrullaje y bordes.               |
+|               | `src/entidades/enemigos/Goomba.ts`      | Enemigo básico (muere al ser pisado).                           |
+|               | `src/entidades/enemigos/Koopa.ts`       | Enemigo complejo (lógica de concha/proyectil).                  |
+|**Componentes**| `src/componentes/ComponenteSalud.ts`    | Gestión aislada de vidas y estado de muerte.                    |
+|               | `src/entidades/jugador/ManejadorInvencibilidad.ts` | Control visual (Tween) y temporal de invencibilidad. |
+| **Sistemas**  | `src/sistemas/SistemaDano.ts`           | Orquestador global de reglas de combate.                        |
+| **UI**        | `src/ui/UI_Vidas.ts`                    | Representación visual reactiva del HUD.                         |
 
 ---
 
-## 🏗️ Arquitectura y Decisiones de Diseño
+## Arquitectura y Decisiones de Diseño
 
 ### 1. Desacoplamiento de Combate (SistemaDano)
 **¿Por qué?:** En la Fase 1, las colisiones ejecutaban lógica directamente. En la Fase 2, hemos separado la **Detección** de la **Decisión**.
@@ -34,7 +34,7 @@ Esta fase ha transformado el prototipo jugable en un sistema de juego extensible
 
 ---
 
-## 🛠️ Integración con Tiled (Spawn de Enemigos)
+## Integración con Tiled (Spawn de Enemigos)
 
 Ya no usamos IDs estáticos en el mapa para los enemigos. Ahora utilizamos una **Object Layer** llamada `enemigos`.
 - **Funcionamiento**: El código en `EscenaJuego.crearEnemigos()` itera sobre los objetos de esta capa.
@@ -42,7 +42,7 @@ Ya no usamos IDs estáticos en el mapa para los enemigos. Ahora utilizamos una *
 
 ---
 
-## 🚀 Cómo usar este sistema para la Fase 3
+## Cómo usar este sistema para la Fase 3
 
 ### Para crear un nuevo enemigo:
 1. Crea una clase que extienda de `EnemigoBase`.

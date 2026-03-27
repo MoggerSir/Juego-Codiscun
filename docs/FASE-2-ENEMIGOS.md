@@ -120,7 +120,6 @@ private respawnear(): void {
 ## 2. EnemigoBase
 
 **Archivo:** `src/entidades/enemigos/EnemigoBase.ts` — clase nueva  
-**Responsable sugerido:** Dev 2
 
 ### Qué es
 
