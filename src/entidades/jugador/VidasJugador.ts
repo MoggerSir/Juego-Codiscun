@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 
+
 export class Vidas {
   private vidas: number;
 
@@ -26,7 +27,8 @@ export class UI_Vidas {
 
   constructor(scene: Phaser.Scene, vidas: number) {
     this.texto = scene.add.text(10, 10, `Vidas: ${vidas}`, {
-      fontSize: "24px",
+      fontSize: "15px", 
+      fontFamily: '"Press Start 2P"',
       color: "#fff",
     });
   }

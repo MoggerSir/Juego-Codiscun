@@ -25,4 +25,9 @@ export const configuracionJuego: Phaser.Types.Core.GameConfig = {
     EscenaUI
   ],
   parent: "game-container",
+  render: {
+    pixelArt: true,
+    antialias: false,
+    roundPixels: true,
+  },
 };
