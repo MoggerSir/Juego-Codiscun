@@ -1,13 +1,13 @@
-import Phaser from 'phaser';
-import { ASSETS } from '@constantes/constantes-assets';
-import { ControlJugador } from './ControlJugador';
-import { EstadosJugador } from './EstadosJugador';
-import type { EstadoJugador } from '@tipos/tipos-jugador';
+import Phaser from "phaser";
+import { ASSETS } from "@constantes/constantes-assets";
+import { ControlJugador } from "./ControlJugador";
+import { EstadosJugador } from "./EstadosJugador";
+import type { EstadoJugador } from "@tipos/tipos-jugador";
 
 export class Jugador extends Phaser.Physics.Arcade.Sprite {
   private control: ControlJugador;
   private estados: EstadosJugador;
-  public estado: EstadoJugador = 'idle';
+  public estado: EstadoJugador = "idle";
 
   constructor(escena: Phaser.Scene, x: number, y: number) {
     super(escena, x, y, ASSETS.JUGADOR_SPRITE);
@@ -25,7 +25,7 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
     const body = this.body as Phaser.Physics.Arcade.Body;
     body.setSize(24, 40);
     body.setOffset(4, 8);
-    body.setMaxVelocityX(300);
+    body.setMaxVelocityX(150);
     body.setGravityY(0);
   }
 
@@ -36,11 +36,11 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
   public estaEnSuelo(): boolean {
     return (this.body as Phaser.Physics.Arcade.Body).blocked.down;
   }
-  
+
   public consumirSalto(): void {
     this.control.consumirSalto();
   }
-  
+
   public soltoSalto(): boolean {
     return this.control.soltoSalto();
   }

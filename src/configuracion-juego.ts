@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { EscenaCarga } from "@escenas/EscenaCarga";
 import { EscenaJuego } from "@escenas/EscenaJuego";
+import { EscenaUI } from "@escenas/EscenaUI";
 
 export const configuracionJuego: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO, 
@@ -20,7 +21,8 @@ export const configuracionJuego: Phaser.Types.Core.GameConfig = {
   },
   scene: [
     EscenaCarga, 
-    EscenaJuego
+    EscenaJuego,
+    EscenaUI
   ],
   parent: "game-container",
 };

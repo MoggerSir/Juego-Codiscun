@@ -23,6 +23,7 @@ export class EscenaJuego extends Phaser.Scene {
     this.configurarFisica(mapa);
     this.configurarColisiones();
     this.configurarCamara(mapa);
+    this.scene.launch(ESCENAS.UI); 
   }
 
   private crearMapa(): Phaser.Tilemaps.Tilemap {
@@ -67,5 +68,7 @@ export class EscenaJuego extends Phaser.Scene {
 
   update(): void {
     this.jugador.update();
+    
   }
+  
 }

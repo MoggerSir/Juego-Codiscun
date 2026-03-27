@@ -26,21 +26,21 @@ Poblamos el mundo con cosas con las que el jugador puede interactuar. Al termina
 
 ## Índice de tareas
 
-1. [Sistema de vidas y daño](#1-sistema-de-vidas-y-daño)
-2. [EnemigoBase](#2-enemigobase)
-3. [Goomba](#3-goomba)
-4. [Koopa](#4-koopa)
-5. [Moneda](#5-moneda)
-6. [BloqueLadrillo y BloqueInterrogacion](#6-bloqueladrillo-y-bloqueinterrogacion)
-7. [PowerUp y Hongo](#7-powerup-y-hongo)
-8. [SistemaPuntuacion](#8-sistemapuntuacion)
-9. [SistemaColisiones — actualización](#9-sistemacolisiones--actualización)
-10. [EscenaGameOver](#10-escenagameover)
-11. [Actualizar EscenaJuego](#11-actualizar-escenajuego)
-12. [Actualizar el tilemap en Tiled](#12-actualizar-el-tilemap-en-tiled)
-13. [Tipos nuevos](#13-tipos-nuevos)
-14. [Constantes nuevas](#14-constantes-nuevas)
-15. [Checklist de verificación](#15-checklist-de-verificación)
+1.  [Sistema de vidas y daño              ](#1-sistema-de-vidas-y-daño)
+2.  [EnemigoBase                          ](#2-enemigobase)
+3.  [Goomba                               ](#3-goomba)
+4.  [Koopa                                ](#4-koopa)
+5.  [Moneda                               ](#5-moneda)
+6.  [BloqueLadrillo y BloqueInterrogacion ](#6-bloqueladrillo-y-bloqueinterrogacion)
+7.  [PowerUp y Hongo                      ](#7-powerup-y-hongo)
+8.  [SistemaPuntuacion                    ](#8-sistemapuntuacion)
+9.  [SistemaColisiones — actualización    ](#9-sistemacolisiones--actualización)
+10. [EscenaGameOver                       ](#10-escenagameover)
+11. [Actualizar EscenaJuego               ](#11-actualizar-escenajuego)
+12. [Actualizar el tilemap en Tiled       ](#12-actualizar-el-tilemap-en-tiled)
+13. [Tipos nuevos                         ](#13-tipos-nuevos)
+14. [Constantes nuevas                    ](#14-constantes-nuevas)
+15. [Checklist de verificación            ](#15-checklist-de-verificación)
 
 ---
 
