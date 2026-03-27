@@ -13,7 +13,7 @@ El proyecto está construido sobre un stack web moderno y escalable:
 - **Motor**: [Phaser 3](https://phaser.io/) (Framework de juegos 2D profesional)
 - **Lenguaje**: [TypeScript](https://www.typescriptlang.org/) (Tipado estático para robustez)
 - **Bundler**: [Vite](https://vitejs.dev/) (Entorno de desarrollo rápido)
-- **Móvil**: [Capacitor](https://capacitorjs.com/) (Para exportar nativamente a Android e iOS)
+- **Móvil**: [Capacitor](https://capacitorjs.com/) (Para exportar nativamente a Android)
 - **Niveles**: [Tiled](https://www.mapeditor.org/) (Editor de mapas basado en tiles)
 
 ## Cómo correr el proyecto
