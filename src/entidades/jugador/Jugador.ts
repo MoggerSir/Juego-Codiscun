@@ -14,7 +14,7 @@ export enum EstadoLogicoJugador {
   NORMAL,
   DANIADO,
   INVENCIBLE,
-  MUERTO
+  MUERTO,
 }
 
 export class Jugador extends Phaser.Physics.Arcade.Sprite {
@@ -22,8 +22,7 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
   private estados: EstadosJugador;
   private salud: ComponenteSalud;
   private invencibilidad: ComponenteInvencibilidad;
-  private visualInvencibilidad: VisualInvencibilidad;
-  
+
   public estadoLogico: EstadoLogicoJugador = EstadoLogicoJugador.NORMAL;
   public estado: EstadoJugador = "idle";
 
@@ -35,11 +34,15 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
 
     this.control = new ControlJugador(escena);
     this.estados = new EstadosJugador(this);
-    
+
     // Inicialización de nuevos componentes modulares de nivel Senior
     this.salud = new ComponenteSalud(escena, 3);
-    this.invencibilidad = new ComponenteInvencibilidad(escena, 1200, 'jugador:invencibilidad-cambio');
-    this.visualInvencibilidad = new VisualInvencibilidad(this.scene, this, 'jugador:invencibilidad-cambio');
+    this.invencibilidad = new ComponenteInvencibilidad(
+      escena,
+      1200,
+      "jugador:invencibilidad-cambio",
+    );
+    new VisualInvencibilidad(this.scene, this, "jugador:invencibilidad-cambio");
 
     this.configurarCuerpo();
     this.registrarEscuchas();
@@ -47,9 +50,11 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
 
   private registrarEscuchas(): void {
     // Escuchar el cambio de estado de invencibilidad para actualizar el estado lógico
-    this.scene.events.on('jugador:invencibilidad-cambio', (activa: boolean) => {
+    this.scene.events.on("jugador:invencibilidad-cambio", (activa: boolean) => {
       if (this.estadoLogico === EstadoLogicoJugador.MUERTO) return;
-      this.estadoLogico = activa ? EstadoLogicoJugador.INVENCIBLE : EstadoLogicoJugador.NORMAL;
+      this.estadoLogico = activa
+        ? EstadoLogicoJugador.INVENCIBLE
+        : EstadoLogicoJugador.NORMAL;
     });
   }
 
@@ -58,7 +63,10 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
    * Orquestador senior con guard clauses explícitas.
    */
   public recibirDano(): void {
-    if (this.invencibilidad.estaActiva() || this.estadoLogico === EstadoLogicoJugador.MUERTO) {
+    if (
+      this.invencibilidad.estaActiva() ||
+      this.estadoLogico === EstadoLogicoJugador.MUERTO
+    ) {
       return;
     }
 
@@ -75,7 +83,7 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
   private entrarEnEstadoDaniado(): void {
     this.estadoLogico = EstadoLogicoJugador.DANIADO;
     this.invencibilidad.activar();
-    
+
     // Feedback físico (retroceso / knockback inicial)
     // Nota: El SistemaDano aplicará un retroceso más preciso, pero aquí damos un salto
     this.setVelocityY(-250);
@@ -86,11 +94,11 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
     this.estado = "muerto";
     this.setTint(0xff0000);
     this.scene.game.events.emit(EVENTOS.JUGADOR_MUERTO);
-    
+
     // Deshabilitar físicas
     const body = this.body as Phaser.Physics.Arcade.Body;
     body.enable = false;
-    
+
     this.setVelocity(0, -450); // Salto de muerte dramático
   }
 
