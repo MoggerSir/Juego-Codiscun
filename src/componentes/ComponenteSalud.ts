@@ -40,11 +40,21 @@ export class ComponenteSalud {
   }
 
   /**
-   * Incrementa la salud en 1 sin superar el máximo.
+   * Incrementa la salud en 1 sin superar el máximo actual.
    */
   public curar(): void {
     if (this.muerto) return;
     this.vidas = Math.min(this.vidas + 1, this.maxVidas);
+    this.notificarCambio();
+  }
+
+  /**
+   * Otorga una vida extra, incrementando también el máximo permitido.
+   */
+  public agregarVidaExtra(): void {
+    if (this.muerto) return;
+    this.maxVidas++;
+    this.vidas++;
     this.notificarCambio();
   }
 

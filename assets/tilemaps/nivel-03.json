@@ -107,6 +107,30 @@
           "visible": true,
           "opacity": 1,
           "rotation": 0
+        },
+        {
+          "id": 101,
+          "name": "koopa-01",
+          "type": "koopa",
+          "x": 600,
+          "y": 400,
+          "width": 32,
+          "height": 32,
+          "visible": true,
+          "opacity": 1,
+          "rotation": 0
+        },
+        {
+          "id": 102,
+          "name": "goomba-01",
+          "type": "goomba",
+          "x": 800,
+          "y": 400,
+          "width": 32,
+          "height": 32,
+          "visible": true,
+          "opacity": 1,
+          "rotation": 0
         }
       ],
       "opacity": 1,
@@ -126,6 +150,32 @@
           "type": "bloque-interrogacion",
           "gid": 1,
           "x": 300,
+          "y": 350,
+          "width": 32,
+          "height": 32,
+          "visible": true,
+          "opacity": 1,
+          "rotation": 0
+        },
+        {
+          "id": 201,
+          "name": "",
+          "type": "bloque-ladrillo",
+          "gid": 1,
+          "x": 350,
+          "y": 350,
+          "width": 32,
+          "height": 32,
+          "visible": true,
+          "opacity": 1,
+          "rotation": 0
+        },
+        {
+          "id": 202,
+          "name": "",
+          "type": "bloque-monedas",
+          "gid": 1,
+          "x": 400,
           "y": 350,
           "width": 32,
           "height": 32,

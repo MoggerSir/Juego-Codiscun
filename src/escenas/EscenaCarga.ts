@@ -29,8 +29,23 @@ export class EscenaCarga extends Phaser.Scene {
     }
     gJugador.generateTexture('temp_jugador', 32 * 5, 48);
     gJugador.destroy();
+    
+    // Generar placeholder Moneda
+    const gMoneda = this.make.graphics({ x: 0, y: 0 });
+    for (let f = 0; f < 4; f++) {
+      gMoneda.fillStyle(0xFFD700); // Dorado
+      gMoneda.fillCircle(16 + (f * 32), 16, 12);
+      gMoneda.lineStyle(2, 0xFFAA00);
+      gMoneda.strokeCircle(16 + (f * 32), 16, 12);
+    }
+    gMoneda.generateTexture('temp_moneda', 32 * 4, 32);
+    gMoneda.destroy();
 
     this.load.tilemapTiledJSON(ASSETS.MAPA_NIVEL_01, 'assets/tilemaps/nivel-01.json');
+    
+    // Intentar cargar la imagen real. Si no existe, el juego mostrará un cuadrado verde por defecto
+    // Pero para evitar el error de consola, podemos registrarla.
+    this.load.image(ASSETS.TILESET_TERRENOS, 'assets/sprites/objetos/terrenos.png');
   }
 
   create(): void {
@@ -40,6 +55,21 @@ export class EscenaCarga extends Phaser.Scene {
       // @ts-ignore - Using undocumented feature of addSpriteSheet on canvases
       this.textures.addSpriteSheet(ASSETS.JUGADOR_SPRITE, img, { frameWidth: 32, frameHeight: 48 });
     }
+    
+    const texMoneda = this.sys.textures.get('temp_moneda');
+    if (texMoneda) {
+      const img = texMoneda.getSourceImage();
+      // @ts-ignore
+      this.textures.addSpriteSheet(ASSETS.MONEDA_SPRITE, img, { frameWidth: 32, frameHeight: 32 });
+    }
+    
+    // Crear sprite anim de moneda (placeholder)
+    this.anims.create({
+      key: `${ASSETS.MONEDA_SPRITE}-anim`,
+      frames: this.anims.generateFrameNumbers(ASSETS.MONEDA_SPRITE, { start: 0, end: 3 }),
+      frameRate: 8,
+      repeat: -1
+    });
 
     this.scene.start(ESCENAS.JUEGO);
   }

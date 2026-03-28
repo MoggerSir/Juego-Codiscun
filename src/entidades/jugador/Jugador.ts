@@ -4,7 +4,7 @@ import { EstadosJugador } from "./EstadosJugador";
 import { ComponenteSalud } from "@componentes/ComponenteSalud";
 import { ComponenteInvencibilidad } from "@componentes/ComponenteInvencibilidad";
 import { VisualInvencibilidad } from "@componentes/VisualInvencibilidad";
-import { EVENTOS } from "@utilidades/EventBus";
+import { EVENTOS, SistemaEventos } from "@sistemas/SistemaEventos";
 import type { EstadoJugador } from "@tipos/tipos-jugador";
 
 /**
@@ -25,6 +25,7 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
 
   public estadoLogico: EstadoLogicoJugador = EstadoLogicoJugador.NORMAL;
   public estado: EstadoJugador = "idle";
+  public esGrande: boolean = false;
 
   constructor(escena: Phaser.Scene, x: number, y: number) {
     super(escena, x, y, ASSETS.JUGADOR_SPRITE);
@@ -63,14 +64,22 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
    * Orquestador senior con guard clauses explícitas.
    */
   public recibirDano(): void {
-    if (
-      this.invencibilidad.estaActiva() ||
-      this.estadoLogico === EstadoLogicoJugador.MUERTO
-    ) {
+    if (this.invencibilidad.estaActiva() || this.estadoLogico === EstadoLogicoJugador.MUERTO) {
       return;
     }
 
     this.scene.game.events.emit(EVENTOS.JUGADOR_HERIDO);
+
+    // NUEVO: Si es grande, pierde la vida extra que ganó con el hongo,
+    // encoge a su tamaño normal, e inicia la secuencia de daño (salto hacia atrás e invencibilidad).
+    if (this.esGrande) {
+      this.salud.reducir();
+      this.encoger();
+      this.entrarEnEstadoDaniado();
+      return;
+    }
+
+    // Si es pequeño, el daño le reduce otra vida y si llega a cero, muere
     const haMuerto = this.salud.reducir();
 
     if (haMuerto) {
@@ -80,9 +89,34 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
+  public crecer(): void {
+    if (this.esGrande || this.estadoLogico === EstadoLogicoJugador.MUERTO) return;
+    this.esGrande = true;
+    
+    // El Origen por defecto es (0.5, 0.5). Al crecer Y escala * 1.5, la mitad inferior 
+    // se empuja hacia abajo. Movemos `y` exactamente esa cantidad hacia arriba para que
+    // los pies queden en su posición original y no traspasen el suelo.
+    this.y -= 10; 
+    
+    // Escalar sprite (Phaser auto-ajusta el tamaño del Arcade Body proporcionalmente)
+    this.setScale(1, 1.5);
+  }
+
+  public encoger(): void {
+    if (!this.esGrande) return;
+    this.esGrande = false;
+    
+    this.setScale(1, 1);
+  }
+
+  public ganarVidaExtra(): void {
+    this.salud.agregarVidaExtra();
+  }
+
   private entrarEnEstadoDaniado(): void {
     this.estadoLogico = EstadoLogicoJugador.DANIADO;
     this.invencibilidad.activar();
+
 
     // Feedback físico (retroceso / knockback inicial)
     // Nota: El SistemaDano aplicará un retroceso más preciso, pero aquí damos un salto
@@ -100,6 +134,15 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
     body.enable = false;
 
     this.setVelocity(0, -450); // Salto de muerte dramático
+    
+    // Reproducir animación (si existe) y asegurar la transición con un timer
+    if (this.anims.exists('jugador-muerte')) {
+      this.anims.play('jugador-muerte');
+    }
+    
+    this.scene.time.delayedCall(1500, () => {
+      SistemaEventos.obtener().emit(EVENTOS.JUGADOR_SIN_VIDAS);
+    });
   }
 
   private configurarCuerpo(): void {

@@ -78,7 +78,7 @@ export abstract class EnemigoBase extends Phaser.Physics.Arcade.Sprite {
     const yRevision = this.y; // Centro vertical
 
     const tileAlFrente = this.capaPlataformas.getTileAtWorldXY(xRevision, yRevision);
-    return tileAlFrente !== null && tileAlFrente.properties.colision === true;
+    return tileAlFrente !== null && tileAlFrente.collides;
   }
 
   /**
@@ -99,7 +99,7 @@ export abstract class EnemigoBase extends Phaser.Physics.Arcade.Sprite {
     const yRevision = this.y + this.height / 2 + 5; // Un poco por debajo del pie
 
     const tileAlFrente = this.capaPlataformas.getTileAtWorldXY(xRevision, yRevision);
-    return tileAlFrente === null || tileAlFrente.properties.colision !== true;
+    return tileAlFrente === null || !tileAlFrente.collides;
   }
 
   /**

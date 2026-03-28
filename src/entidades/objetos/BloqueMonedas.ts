@@ -1,0 +1,59 @@
+import Phaser from "phaser";
+import { ASSETS } from "@constantes/constantes-assets";
+import { EVENTOS, SistemaEventos } from "@sistemas/SistemaEventos";
+import { JUEGO } from "@constantes/constantes-juego";
+import type { Jugador } from "@entidades/jugador/Jugador";
+
+export class BloqueMonedas extends Phaser.Physics.Arcade.Image {
+  private activo: boolean = true;
+
+  constructor(escena: Phaser.Scene, x: number, y: number) {
+    // Para que parezca un ladrillo normal
+    super(escena, x, y, ASSETS.BLOQUE_LADRILLO);
+    
+    escena.add.existing(this);
+    escena.physics.add.existing(this, true);
+  }
+
+  public alSerGolpeado(_jugador: Jugador): void {
+    if (!this.activo) return;
+    this.activo = false;
+
+    // Spawneamos visualmente las monedas
+    this.soltarMonedasVisuales();
+
+    // Puntos por romper el bloque
+    SistemaEventos.obtener().emit(EVENTOS.PUNTUACION_SUMAR, { puntos: JUEGO.PUNTOS_BLOQUE });
+    
+    // El bloque se rompe inmediatamente y desaparece
+    this.destroy();
+  }
+
+  private soltarMonedasVisuales(): void {
+    // Se generan 3 monedas en forma de fuente/abanico
+    const numMonedas = 3;
+    const escena = this.scene;
+    
+    for (let i = 0; i < numMonedas; i++) {
+      const offsetX = (i - 1) * 15; // -15, 0, 15
+      
+      // Creamos un sprite puramente visual (sin interacción con el jugador)
+      const monedaVisual = escena.physics.add.sprite(this.x, this.y - 16, ASSETS.MONEDA_SPRITE);
+      monedaVisual.setGravityY(700);
+      monedaVisual.setVelocity(offsetX * 5, -350 - Math.random() * 50);
+      
+      // Las destruimos al caer
+      escena.time.delayedCall(450, () => {
+        escena.tweens.add({
+          targets: monedaVisual,
+          alpha: 0,
+          duration: 150,
+          onComplete: () => monedaVisual.destroy()
+        });
+      });
+
+      // Efectuamos lógicamente la recolección
+      SistemaEventos.obtener().emit(EVENTOS.MONEDA_RECOGIDA);
+    }
+  }
+}

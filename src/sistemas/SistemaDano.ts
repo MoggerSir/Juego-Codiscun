@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { EVENTOS, EventBus } from '@utilidades/EventBus';
+import { EVENTOS, SistemaEventos } from '@sistemas/SistemaEventos';
 import type { Jugador } from '@entidades/jugador/Jugador';
 import type { EnemigoBase } from '@entidades/enemigos/EnemigoBase';
 
@@ -16,7 +16,7 @@ export class SistemaDano {
   }
 
   private registrarEventos(): void {
-    const bus = EventBus.obtener(this.escena);
+    const bus = SistemaEventos.obtener(this.escena);
     
     // Escuchar colisiones entre jugador y enemigo
     bus.on(EVENTOS.COLISION_JUGADOR_ENEMIGO, this.manejarColision, this);
@@ -74,7 +74,7 @@ export class SistemaDano {
     // 2. Regla de Interacción Especial (Pateo, etc.)
     const golpeGestionado = enemigo.recibirGolpeLateral(jugador);
     if (golpeGestionado) {
-      EventBus.obtener().emit(EVENTOS.ENEMIGO_PATEADO, { enemigo });
+      SistemaEventos.obtener().emit(EVENTOS.ENEMIGO_PATEADO, { enemigo });
       return;
     }
 
@@ -85,7 +85,7 @@ export class SistemaDano {
   private procesarPisado(jugador: Jugador, enemigo: EnemigoBase): void {
     enemigo.alSerPisado();
     jugador.setVelocityY(-350);
-    EventBus.obtener().emit(EVENTOS.ENEMIGO_PISADO, { enemigo });
+    SistemaEventos.obtener().emit(EVENTOS.ENEMIGO_PISADO, { enemigo });
   }
 
   private procesarDanoJugador(jugador: Jugador, enemigo: EnemigoBase): void {

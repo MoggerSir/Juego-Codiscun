@@ -11,4 +11,5 @@ export const ASSETS = {
   BLOQUE_PREGUNTA: 'bloque-pregunta',
   BLOQUE_VACIO: 'bloque-vacio',
   HONGO_SPRITE: 'hongo-sprite',
+  TILESET_TERRENOS: 'terrenos',
 } as const;
