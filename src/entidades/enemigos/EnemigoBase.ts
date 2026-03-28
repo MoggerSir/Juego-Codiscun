@@ -84,7 +84,7 @@ export abstract class EnemigoBase extends Phaser.Physics.Arcade.Sprite {
   /**
    * Cambia la dirección de patrullaje.
    */
-  protected cambiarDireccion(): void {
+  public cambiarDireccion(): void {
     this.direccion = (this.direccion === -1 ? 1 : -1) as 1 | -1;
     
     // Pequeño desplazamiento para salir del umbral de detección y evitar bucles

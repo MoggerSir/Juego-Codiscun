@@ -51,8 +51,10 @@ export class SistemaDano {
       return;
     }
 
-    // Si ninguno es peligroso (ej: dos Goombas chocando), simplemente rebotan por la física
-    // Aunque en Mario original los Goombas se atraviesan, aquí la física los hará chocar.
+    // Si ninguno es peligroso (ej: Goomba vs Tanque), rebotan mutuamente al chocar.
+    // Esto previene que se queden trabados empujándose en un bucle infinito.
+    enemigo1.cambiarDireccion();
+    enemigo2.cambiarDireccion();
   }
 
   /**

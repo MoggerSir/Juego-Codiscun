@@ -29,6 +29,21 @@ export class EnemigoVolador extends EnemigoBase {
   }
 
   /**
+   * Sobrescribimos el ciclo de vida para garantizar que la gravedad se mantenga
+   * en 0, ya que al añadir la entidad a un 'Physics Group' genérico en EscenaJuego,
+   * Phaser puede sobrescribir este valor y reactivarlo por defecto.
+   */
+  public override update(): void {
+    super.update();
+    const body = this.body as Phaser.Physics.Arcade.Body;
+    if (body && body.allowGravity) {
+      body.setAllowGravity(false);
+      // Neutralizar cualquier velocidad Y acumulada por el error de grupo
+      this.setVelocityY(0);
+    }
+  }
+
+  /**
    * Sobrescribimos la detección de bordes para que NUNCA cambie de dirección
    * por un precipicio (ya que vuela), limitándose a rebotar en paredes.
    */
