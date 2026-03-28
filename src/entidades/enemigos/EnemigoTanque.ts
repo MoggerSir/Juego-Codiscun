@@ -1,0 +1,70 @@
+import { EnemigoBase } from "./EnemigoBase";
+import { FISICA } from "@constantes/constantes-fisica";
+import { ASSETS } from "@constantes/constantes-assets";
+
+/**
+ * Enemigo acorazado que requiere ser pisado dos veces para morir.
+ */
+export class EnemigoTanque extends EnemigoBase {
+  protected velocidad = FISICA.VELOCIDAD_ENEMIGO * 0.8; // Más lento
+  protected claveAnimacion = "goomba"; // Placeholder
+  private vidasRestantes = 2; // Soporta 2 golpes
+
+  constructor(
+    escena: Phaser.Scene,
+    x: number,
+    y: number,
+    capaPlataformas: Phaser.Tilemaps.TilemapLayer,
+  ) {
+    super(escena, x, y, ASSETS.GOOMBA_SPRITE, capaPlataformas);
+
+    const body = this.body as Phaser.Physics.Arcade.Body;
+    body.setSize(24, 24);
+    body.setOffset(4, 8);
+
+    // Tinte gris/oscuro para dar impresión de armadura
+    this.setTint(0x666666);
+  }
+
+  public alSerPisado(): void {
+    if (this.getData("muerto")) return;
+
+    this.vidasRestantes--;
+
+    if (this.vidasRestantes > 0) {
+      // Perdió su armadura pero sigue vivo.
+      // Le quitamos el tinte oscuro y parpadea en rojo
+      this.clearTint();
+      this.setTintFill(0xff0000);
+
+      this.scene.time.delayedCall(150, () => {
+        if (!this.getData("muerto")) {
+          this.clearTint();
+        }
+      });
+      // Acelera por estar enfadado
+      this.velocidad = FISICA.VELOCIDAD_ENEMIGO * 1.8;
+      this.setVelocityX(this.velocidad * this.direccion);
+
+      // Sumamos unos pocos puntos por el primer golpe
+      import("@sistemas/SistemaEventos").then((mod) => {
+        mod.SistemaEventos.obtener().emit(mod.EVENTOS.PUNTUACION_SUMAR, {
+          puntos: 50,
+        });
+      });
+    } else {
+      // Golpe fatal
+      this.setData("muerto", true);
+      this.setVelocity(0, 0);
+
+      // Recompensa final (400 puntos totales por matar al tanque)
+      import("@sistemas/SistemaEventos").then((mod) => {
+        mod.SistemaEventos.obtener().emit(mod.EVENTOS.PUNTUACION_SUMAR, {
+          puntos: 300,
+        });
+      });
+
+      this.morir();
+    }
+  }
+}
