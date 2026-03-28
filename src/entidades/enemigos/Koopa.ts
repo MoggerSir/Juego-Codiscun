@@ -96,4 +96,11 @@ export class Koopa extends EnemigoBase {
     }
     return false; // Daño normal si está caminando o en movimiento
   }
+
+  /**
+   * Indica que el Koopa solo daña a otros enemigos si está en modo concha disparada.
+   */
+  public override esDaninoParaEnemigos(): boolean {
+    return this.estadoKoopa === "concha-movimiento";
+  }
 }

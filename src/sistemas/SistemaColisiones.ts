@@ -34,6 +34,15 @@ export class SistemaColisiones {
     grupoEnemigos: Phaser.Physics.Arcade.Group,
     capaPlataformas: Phaser.Tilemaps.TilemapLayer
   ): void {
+    // Colisión con el mapa
     this.escena.physics.add.collider(grupoEnemigos, capaPlataformas);
+
+    // NUEVO: Colisión entre enemigos
+    this.escena.physics.add.collider(grupoEnemigos, grupoEnemigos, (e1, e2) => {
+      EventBus.obtener().emit(EVENTOS.COLISION_ENEMIGO_ENEMIGO, {
+        enemigo1: e1 as EnemigoBase,
+        enemigo2: e2 as EnemigoBase
+      });
+    });
   }
 }

@@ -12,6 +12,7 @@ export const EVENTOS = {
   
   // Combate
   COLISION_JUGADOR_ENEMIGO: 'colision:jugador-enemigo',
+  COLISION_ENEMIGO_ENEMIGO: 'colision:enemigo-enemigo',
   ENEMIGO_PISADO: 'enemigo:pisado',
   ENEMIGO_PATEADO: 'enemigo:pateado',
   

@@ -21,9 +21,38 @@ export class SistemaDano {
     // Escuchar colisiones entre jugador y enemigo
     bus.on(EVENTOS.COLISION_JUGADOR_ENEMIGO, this.manejarColision, this);
     
+    // NUEVO: Escuchar colisiones entre enemigos (para conchas asesinas)
+    bus.on(EVENTOS.COLISION_ENEMIGO_ENEMIGO, this.manejarColisionEntreEnemigos, this);
+    
     this.escena.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       bus.off(EVENTOS.COLISION_JUGADOR_ENEMIGO, this.manejarColision, this);
+      bus.off(EVENTOS.COLISION_ENEMIGO_ENEMIGO, this.manejarColisionEntreEnemigos, this);
     });
+  }
+
+  /**
+   * Resuelve colisiones entre enemigos. 
+   * Si uno es un proyectil dañino (concha en movimiento), mata al otro.
+   */
+  private manejarColisionEntreEnemigos(data: { enemigo1: EnemigoBase, enemigo2: EnemigoBase }): void {
+    const { enemigo1, enemigo2 } = data;
+
+    if (!enemigo1.active || !enemigo2.active) return;
+
+    // Caso A: Enemigo 1 es peligroso para el 2
+    if (enemigo1.esDaninoParaEnemigos()) {
+      enemigo2.morir();
+      return;
+    }
+
+    // Caso B: Enemigo 2 es peligroso para el 1
+    if (enemigo2.esDaninoParaEnemigos()) {
+      enemigo1.morir();
+      return;
+    }
+
+    // Si ninguno es peligroso (ej: dos Goombas chocando), simplemente rebotan por la física
+    // Aunque en Mario original los Goombas se atraviesan, aquí la física los hará chocar.
   }
 
   /**

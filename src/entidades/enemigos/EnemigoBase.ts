@@ -134,4 +134,12 @@ export abstract class EnemigoBase extends Phaser.Physics.Arcade.Sprite {
   public recibirGolpeLateral(_jugador: any): boolean {
     return false;
   }
+
+  /**
+   * Define si este enemigo, en su estado actual, puede dañar a otros enemigos
+   * (ej: una concha de Koopa en movimiento).
+   */
+  public esDaninoParaEnemigos(): boolean {
+    return false;
+  }
 }
