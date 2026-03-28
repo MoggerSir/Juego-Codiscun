@@ -47,7 +47,9 @@ export class Koopa extends EnemigoBase {
       this.detenerConcha();
     }
 
-    this.scene.events.emit("puntuacion:sumar", { puntos: JUEGO.PUNTOS_KOOPA });
+    import("@sistemas/SistemaEventos").then(mod => {
+      mod.SistemaEventos.obtener().emit(mod.EVENTOS.PUNTUACION_SUMAR, { puntos: JUEGO.PUNTOS_KOOPA });
+    });
   }
 
   private entrarEnConcha(): void {

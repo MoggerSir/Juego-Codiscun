@@ -2,8 +2,7 @@ import Phaser from 'phaser';
 import { ESCENAS } from '@constantes/constantes-escenas';
 import { ASSETS } from '@constantes/constantes-assets';
 import { Jugador } from '@entidades/jugador/Jugador';
-import { Goomba } from '@entidades/enemigos/Goomba';
-import { Koopa } from '@entidades/enemigos/Koopa';
+import { FabricaEnemigos } from '@entidades/enemigos/FabricaEnemigos';
 import { SistemaFisicas } from '@sistemas/SistemaFisicas';
 import { SistemaColisiones } from '@sistemas/SistemaColisiones';
 import { SistemaDano } from '@sistemas/SistemaDano';
@@ -62,13 +61,12 @@ export class EscenaJuego extends Phaser.Scene {
       const x = obj.x! + (obj.width ? obj.width / 2 : 0);
       const y = obj.y! + (obj.height ? -obj.height / 2 : 0);
 
-      // Usamos el campo 'type' de Tiled para saber qué clase instanciar
-      if (obj.type === 'goomba') {
-        const goomba = new Goomba(this, x, y, this.capaPlataformas);
-        this.grupoEnemigos.add(goomba);
-      } else if (obj.type === 'koopa') {
-        const koopa = new Koopa(this, x, y, this.capaPlataformas);
-        this.grupoEnemigos.add(koopa);
+      // Delegamos la creación al Patrón Factory usando la propiedad 'type' del JSON
+      if (obj.type) {
+        const enemigo = FabricaEnemigos.crear(obj.type, this, x, y, this.capaPlataformas);
+        if (enemigo) {
+          this.grupoEnemigos.add(enemigo);
+        }
       }
     });
   }

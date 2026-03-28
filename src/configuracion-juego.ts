@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { EscenaCarga } from "@escenas/EscenaCarga";
 import { EscenaJuego } from "@escenas/EscenaJuego";
 import { EscenaUI } from "@escenas/EscenaUI";
+import { EscenaGameOver } from "@escenas/EscenaGameOver";
 
 export const configuracionJuego: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO, 
@@ -22,7 +23,8 @@ export const configuracionJuego: Phaser.Types.Core.GameConfig = {
   scene: [
     EscenaCarga, 
     EscenaJuego,
-    EscenaUI
+    EscenaUI,
+    EscenaGameOver
   ],
   parent: "game-container",
   render: {
