@@ -14,7 +14,7 @@ export default defineConfig({
       "@tipos": resolve(__dirname, "src/tipos"),
       "@utilidades": resolve(__dirname, "src/utilidades"),
       "@componentes": resolve(__dirname, "src/componentes"),
-      "@assets": resolve(__dirname, "assets"),
+      "@assets": resolve(__dirname, "public/assets"),
     },
   },
 
