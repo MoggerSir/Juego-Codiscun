@@ -33,7 +33,11 @@ export const EVENTOS = {
   
   // Temporizador
   TIEMPO_CAMBIO: 'tiempo:cambio',
-  TIEMPO_AGOTADO: 'tiempo:agotado'
+  TIEMPO_AGOTADO: 'tiempo:agotado',
+
+  // Input
+  INPUT_MODO_CAMBIO: 'input:modo-cambio',
+  INPUT_FLASH_ZONA: 'input:flash-zona'
 };
 
 /**

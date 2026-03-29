@@ -16,7 +16,7 @@ const MANIFEST_NIVELES: ConfigNivel[] = [
     nombreTileset: ASSETS.TILESET_PRINCIPAL,
     rutaTileset: "assets/tilesets/tileset-principal.png",
     nombreMusica: ASSETS.MUSICA_NIVEL_01,
-    tiempoLimite: 10,
+    tiempoLimite: 50,
     nombreDisplay: "NIVEL 1 - MUNDO VERDE",
   },
   {
