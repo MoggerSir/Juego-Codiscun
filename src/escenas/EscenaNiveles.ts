@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { ESCENAS } from "@constantes/constantes-escenas";
 import { GestorNiveles } from "@niveles/GestorNiveles";
+import { SistemaGuardado } from "@sistemas/SistemaGuardado";
 import "../ui/game-ui.css";
 import "../ui/selector-niveles.css";
 
@@ -15,6 +16,21 @@ export class EscenaNiveles extends Phaser.Scene {
   private isDown: boolean = false;
   private startX: number = 0;
   private scrollLeft: number = 0;
+
+  // --- Miembros Senior: Ajustes y Memoria ---
+  private estadoMenu:
+    | "CERRADO"
+    | "ABRIENDO"
+    | "ABIERTO"
+    | "CERRANDO"
+    | "CONFIRMANDO" = "CERRADO";
+  private listeners: {
+    [key: string]: {
+      el: HTMLElement | Window | Document;
+      type: string;
+      cb: any;
+    };
+  } = {};
 
   constructor() {
     super({ key: ESCENAS.NIVELES });
@@ -33,6 +49,29 @@ export class EscenaNiveles extends Phaser.Scene {
     const htmlContent = `
       <div class="selector-container" id="selector-niveles">
         <h1 class="selector-titulo">Mundos de Aventura</h1>
+
+        <!-- HUD DE AJUSTES SENIOR -->
+        <div class="settings-hud">
+          <div class="settings-btn" id="gear-btn">
+            <img src="assets/ui/gear.png" alt="settings">
+          </div>
+
+          <div class="settings-panel" id="settings-panel">
+            <h2 class="settings-titulo">Ajustes</h2>
+            <button class="reset-btn" id="reset-btn">REINICIAR PROGRESO</button>
+            
+            <div class="confirm-module" id="confirm-module">
+              <p class="confirm-txt">¿BORRAR TODO EL PROGRESO?</p>
+              <div class="confirm-botones">
+                <button class="btn-confirm" id="btn-confirm">SÍ, BORRAR</button>
+                <button class="btn-cancel" id="btn-cancel">NO</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- OVERLAY DE CIERRE -->
+        <div class="settings-overlay" id="settings-overlay"></div>
         
         <div class="niveles-wrapper">
           ${niveles
@@ -61,23 +100,26 @@ export class EscenaNiveles extends Phaser.Scene {
     `;
 
     // 4. Inyectar en el Engine de Phaser (DOMElement)
-    // Posicionamos en 0,0 con origen 0,0 para que el CSS controle el layout total
     this.uiElement = this.add
       .dom(0, 0)
       .setOrigin(0, 0)
       .createFromHTML(htmlContent);
 
-    // 5. Gestión de Eventos Delegados (Click en Tarjetas)
     const container = this.uiElement.getChildByID(
       "selector-niveles",
     ) as HTMLElement;
+
+    // 5. Inyección de Lógica Senior (Settings)
+    this.setupSettingsHUD(container);
+
+    // 6. Gestión de Eventos Delegados (Click en Tarjetas)
     const wrapper = container.querySelector(".niveles-wrapper") as HTMLElement;
 
     // --- Lógica de Scroll (Nativa + Ayuda Visual) ---
     this.movido = false;
     let clickX = 0;
 
-    wrapper.addEventListener("mousedown", (e) => {
+    this.registrarListener(wrapper, "mousedown", (e: MouseEvent) => {
       this.isDown = true;
       this.movido = false;
       clickX = e.clientX;
@@ -86,23 +128,23 @@ export class EscenaNiveles extends Phaser.Scene {
       this.scrollLeft = wrapper.scrollLeft;
     });
 
-    wrapper.addEventListener("mouseleave", () => {
+    this.registrarListener(wrapper, "mouseleave", () => {
       this.isDown = false;
       wrapper.style.cursor = "grab";
     });
 
-    wrapper.addEventListener("mouseup", () => {
+    this.registrarListener(wrapper, "mouseup", () => {
       this.isDown = false;
       wrapper.style.cursor = "grab";
     });
 
-    wrapper.addEventListener("mousemove", (e) => {
+    this.registrarListener(wrapper, "mousemove", (e: MouseEvent) => {
       if (!this.isDown) return;
       e.preventDefault();
       const x = e.clientX - wrapper.offsetLeft;
       const walk = (x - this.startX) * 1.5;
       wrapper.scrollLeft = this.scrollLeft - walk;
-      
+
       if (Math.abs(e.clientX - clickX) > 10) {
         this.movido = true;
       }
@@ -110,30 +152,155 @@ export class EscenaNiveles extends Phaser.Scene {
 
     // --- Selección de Nivel ---
     const cards = container.querySelectorAll(".nivel-card");
-    cards.forEach((card) => {
-      card.addEventListener("pointerup", (e) => {
-        // Importante: No dejar que el evento se escape
+    cards.forEach((cardNode: Element) => {
+      const card = cardNode as HTMLElement;
+      this.registrarListener(card, "pointerup", (e: PointerEvent) => {
         e.stopPropagation();
-
         if (this.movido) {
           this.movido = false;
           return;
         }
-
-        const cardEl = card as HTMLElement;
-        if (cardEl.classList.contains("bloqueado")) return;
-
-        const id = cardEl.getAttribute("data-id");
+        if (card.classList.contains("bloqueado")) return;
+        const id = card.getAttribute("data-id");
         if (id) {
           this.seleccionarNivel(id, container);
         }
       });
     });
 
-    // 6. Ciclo de Vida: Registro de Limpieza (Security Shield)
+    // 7. Ciclo de Vida: Registro de Limpieza (Security Shield)
     this.events.once("shutdown", () => {
       this.limpiarUI();
     });
+  }
+
+  /**
+   * Configura el HUD de Ajustes con lógica Senior de estados y limpieza.
+   */
+  private setupSettingsHUD(container: HTMLElement): void {
+    const gearBtn = container.querySelector("#gear-btn") as HTMLElement;
+    const panel = container.querySelector("#settings-panel") as HTMLElement;
+    const overlay = container.querySelector("#settings-overlay") as HTMLElement;
+    const resetBtn = container.querySelector("#reset-btn") as HTMLElement;
+    const confirmModule = container.querySelector(
+      "#confirm-module",
+    ) as HTMLElement;
+    const btnConfirm = container.querySelector("#btn-confirm") as HTMLElement;
+    const btnCancel = container.querySelector("#btn-cancel") as HTMLElement;
+
+    // Abrir/Cerrar Menú
+    const toggleMenu = (e?: Event) => {
+      if (e) e.stopPropagation();
+      if (this.estadoMenu === "ABRIENDO" || this.estadoMenu === "CERRANDO")
+        return;
+
+      if (this.estadoMenu === "CERRADO") {
+        this.estadoMenu = "ABRIENDO";
+        this.input.enabled = false; // Bloquear Phaser
+        document.body.classList.add("no-scroll");
+        panel.classList.add("active");
+        overlay.classList.add("active");
+        this.estadoMenu = "ABIERTO";
+      } else {
+        this.cerrarMenu(panel, overlay, confirmModule);
+      }
+    };
+
+    this.registrarListener(gearBtn, "click", toggleMenu);
+    this.registrarListener(overlay, "click", toggleMenu);
+
+    // Lógica de Reset
+    this.registrarListener(resetBtn, "click", (e: Event) => {
+      e.stopPropagation();
+      confirmModule.classList.add("active");
+      this.estadoMenu = "CONFIRMANDO";
+    });
+
+    this.registrarListener(btnCancel, "click", (e: Event) => {
+      e.stopPropagation();
+      confirmModule.classList.remove("active");
+      this.estadoMenu = "ABIERTO";
+    });
+
+    this.registrarListener(btnConfirm, "click", async (e: Event) => {
+      e.stopPropagation();
+      this.ejecutarReinicio(panel, overlay, confirmModule);
+    });
+
+    // Teclado Senior
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.key === "Escape" &&
+        (this.estadoMenu === "ABIERTO" || this.estadoMenu === "CONFIRMANDO")
+      ) {
+        toggleMenu();
+      } else if (e.key === "Enter" && this.estadoMenu === "CONFIRMANDO") {
+        this.ejecutarReinicio(panel, overlay, confirmModule);
+      }
+    };
+    this.registrarListener(window as any, "keydown", onKeyDown);
+  }
+
+  private async ejecutarReinicio(
+    panel: HTMLElement,
+    overlay: HTMLElement,
+    confirm: HTMLElement,
+  ): Promise<void> {
+    try {
+      console.log("[Ajustes] Iniciando formateo de datos...");
+
+      // 1. Efecto Visual de Cierre
+      confirm.classList.remove("active");
+      await this.cerrarMenu(panel, overlay, confirm);
+
+      // 2. Operación Atómica
+      SistemaGuardado.borrar();
+      console.log("[Ajustes] Datos borrados exitosamente.");
+
+      // 3. Reinicio Limpio por Escena
+      this.scene.start(ESCENAS.NIVELES);
+    } catch (err) {
+      console.error("[Ajustes] Fallo crítico en el reseteo:", err);
+      alert("Error al formatear datos: " + err);
+      this.estadoMenu = "ABIERTO";
+    }
+  }
+
+  private async cerrarMenu(
+    panel: HTMLElement,
+    overlay: HTMLElement,
+    confirm: HTMLElement,
+  ): Promise<void> {
+    this.estadoMenu = "CERRANDO";
+    panel.classList.remove("active");
+    overlay.classList.remove("active");
+    confirm.classList.remove("active");
+    document.body.classList.remove("no-scroll");
+
+    return new Promise((resolve) => {
+      const onEnd = () => {
+        panel.removeEventListener("transitionend", onEnd);
+        this.estadoMenu = "CERRADO";
+        this.input.enabled = true; // Liberar Phaser
+        resolve();
+      };
+      panel.addEventListener("transitionend", onEnd);
+      // Fallback por si la animación no dispara
+      setTimeout(onEnd, 400);
+    });
+  }
+
+  /**
+   * Registrador Manual de Listeners (Senior Memory Pattern)
+   */
+  private registrarListener(
+    el: HTMLElement | Window | Document,
+    type: string,
+    cb: any,
+  ): void {
+    const id = `${type}_${Math.random()}`;
+    el.addEventListener(type, cb);
+    this.listeners[id] = { el, type, cb };
   }
 
   /**
@@ -143,24 +310,16 @@ export class EscenaNiveles extends Phaser.Scene {
     if (this.transicionando) return;
     this.transicionando = true;
 
-    // TODO: Sonido de selección (Música de Mapa -> Transición)
-
-    // Activar animación CSS
     container.classList.add("ui-fade-out");
 
-    // FALLBACK DE SEGURIDAD: Si por alguna razón el evento de animación no dispara, 
-    // cambiamos de escena de todos modos tras 400ms (el doble del tiempo de la animación).
     const timeoutFallback = setTimeout(() => {
-      console.log("[Selector] Fallback de transición activado.");
       this.scene.start(ESCENAS.JUEGO, { idNivel: id });
     }, 400);
 
-    // Evento oficial de fin de animación
     container.addEventListener(
       "animationend",
       () => {
         clearTimeout(timeoutFallback);
-        console.log("[Selector] Transición de salida completada. Iniciando nivel:", id);
         this.scene.start(ESCENAS.JUEGO, { idNivel: id });
       },
       { once: true },
@@ -171,8 +330,17 @@ export class EscenaNiveles extends Phaser.Scene {
    * Destrucción manual para evitar memory leaks (Anti-Ghost Buttons)
    */
   private limpiarUI(): void {
+    console.log("[EscenaNiveles] Iniciando limpieza profunda de memoria...");
+
+    // 1. Limpieza de Listeners Manuales (Senior Cleanup)
+    Object.values(this.listeners).forEach((obj) => {
+      obj.el.removeEventListener(obj.type, obj.cb);
+    });
+    this.listeners = {};
+    document.body.classList.remove("no-scroll");
+
+    // 2. Destrucción de DOM Phaser
     if (this.uiElement) {
-      console.log("[EscenaNiveles] Desmontando UI DOM...");
       this.uiElement.destroy();
     }
   }

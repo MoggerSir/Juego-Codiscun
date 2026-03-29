@@ -83,16 +83,16 @@
   overflow: hidden;
 }
 
-.nivel-card:hover,
-.nivel-card:active {
+.nivel-card:not(.bloqueado):hover,
+.nivel-card:not(.bloqueado):active {
   background: var(--neon-cyan);
   border-color: #fff;
   transform: translate(-4px, -4px);
   box-shadow: 12px 12px 0px #000;
 }
 
-.nivel-card:hover .nivel-numero,
-.nivel-card:hover .nivel-nombre {
+.nivel-card:not(.bloqueado):hover .nivel-numero,
+.nivel-card:not(.bloqueado):hover .nivel-nombre {
   color: #000;
 }
 
@@ -179,7 +179,138 @@
   to { opacity: 0; transform: scale(0.9); filter: blur(10px); }
 }
 
-/* Adaptación para Pantallas Pequeñas (Móvil) */
+/* --- SISTEMA DE AJUSTES SENIOR --- */
+.settings-hud {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 10001;
+}
+
+.settings-btn {
+  width: 50px;
+  height: 50px;
+  background: #333;
+  border: 4px solid #fff;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 4px 4px 0px #000;
+  transition: transform 0.1s steps(2);
+}
+
+.settings-btn:hover {
+  background: #555;
+  transform: scale(1.1);
+}
+
+.settings-btn img {
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+}
+
+/* Panel Desplegable */
+.settings-panel {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  width: 250px;
+  background: #222;
+  border: 4px solid #fff;
+  box-shadow: 8px 8px 0px #000;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out, opacity 0.2s ease;
+  padding: 0 15px;
+  pointer-events: none;
+}
+
+.settings-panel.active {
+  max-height: 500px;
+  opacity: 1;
+  padding: 15px;
+  pointer-events: auto;
+}
+
+.settings-titulo {
+  font-size: 0.8rem;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #444;
+  padding-bottom: 10px;
+  text-align: center;
+}
+
+.reset-btn {
+  width: 100%;
+  padding: 12px;
+  background: #8e1c1c; /* Rojo destructivo */
+  color: white;
+  border: 2px solid #fff;
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.reset-btn:hover {
+  background: #ff0000;
+  box-shadow: 0 0 10px #ff0000;
+}
+
+/* Módulo de Confirmación Interno */
+.confirm-module {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+  margin-top: 10px;
+  background: #111;
+  border: 2px dashed #ff0000;
+  padding: 0;
+}
+
+.confirm-module.active {
+  max-height: 200px;
+  opacity: 1;
+  padding: 10px;
+}
+
+.confirm-txt {
+  font-size: 0.5rem;
+  color: #ff0000;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.confirm-botones {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-confirm { background: #ff0000; border: 2px solid #fff; color: #fff; flex: 1; padding: 5px; cursor: pointer; font-family: var(--font-pixel); font-size: 0.4rem; }
+.btn-cancel { background: #555; border: 2px solid #fff; color: #fff; flex: 1; padding: 5px; cursor: pointer; font-family: var(--font-pixel); font-size: 0.4rem; }
+
+/* Overlay de cierre */
+.settings-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 10000;
+  display: none;
+}
+
+.settings-overlay.active {
+  display: block;
+}
+
+/* Bloqueo de Scroll Nativo */
+body.no-scroll {
+  overflow: hidden !important;
+}
+
 @media (max-width: 600px) {
   .selector-titulo {
     font-size: 1rem;
@@ -190,5 +321,8 @@
   }
   .nivel-numero {
     font-size: 2rem;
+  }
+  .settings-panel {
+    width: 200px;
   }
 }
