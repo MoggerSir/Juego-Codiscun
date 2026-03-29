@@ -8,7 +8,6 @@ import { EstadoSession } from "@sistemas/EstadoSession";
 
 export class EscenaUI extends Phaser.Scene {
   private uiMonedas!: ContadorMonedas;
-  private uiTiempo!: ContadorTiempo;
 
   constructor() {
     super({ key: ESCENAS.UI });
@@ -24,7 +23,7 @@ export class EscenaUI extends Phaser.Scene {
     const session = EstadoSession.obtener();
     const configNivel = GestorNiveles.obtenerConfig(session.getIdNivelActual());
     
-    this.uiTiempo = new ContadorTiempo(this, width - 20, 20, configNivel.tiempoLimite);
+    new ContadorTiempo(this, width - 20, 20, configNivel.tiempoLimite);
 
     // Escuchar cambios globales
     const bus = SistemaEventos.obtener();
