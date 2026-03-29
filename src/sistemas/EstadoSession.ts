@@ -58,6 +58,10 @@ export class EstadoSession {
     this.vidas -= 1;
   }
 
+  public forzarGameOver(): void {
+    this.vidas = 0;
+  }
+
   /**
    * Reseteo Parcial: El jugador muere pero aún le quedan vidas.
    * La puntuación y las monedas actuales se reducen a un punto de guardado (checkpoint lógico) 

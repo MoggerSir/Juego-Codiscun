@@ -128,7 +128,7 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
     this.setVelocityY(-250);
   }
 
-  private morir(): void {
+  public morir(): void {
     this.estadoLogico = EstadoLogicoJugador.MUERTO;
     this.estado = "muerto";
     this.setTint(0xff0000);

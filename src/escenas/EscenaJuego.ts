@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { ESCENAS } from '@constantes/constantes-escenas';
 import { ASSETS } from '@constantes/constantes-assets';
-import { Jugador } from '@entidades/jugador/Jugador';
+import { Jugador, EstadoLogicoJugador } from '@entidades/jugador/Jugador';
 import { FabricaEnemigos } from '@entidades/enemigos/FabricaEnemigos';
 import { SistemaFisicas } from '@sistemas/SistemaFisicas';
 import { SistemaColisiones } from '@sistemas/SistemaColisiones';
@@ -17,6 +17,7 @@ import { ConfigNivel } from '@tipos/tipos-nivel';
 import { GestorNiveles } from '@niveles/GestorNiveles';
 import { LevelFlowManager } from '@sistemas/LevelFlowManager';
 import { Bandera } from '@entidades/objetos/Bandera';
+import { EstadoSession } from '@sistemas/EstadoSession';
 export class EscenaJuego extends Phaser.Scene {
   private jugador!: Jugador;
   private grupoEnemigos!: Phaser.Physics.Arcade.Group;
@@ -202,8 +203,32 @@ export class EscenaJuego extends Phaser.Scene {
   }
 
   update(): void {
+    if (this.jugador.estadoLogico === EstadoLogicoJugador.MUERTO || 
+        this.jugador.estadoLogico === EstadoLogicoJugador.TERMINANDO_NIVEL) {
+      return;
+    }
+
     this.jugador.update();
-    
+
+    // Detección de caída al vacío (Fuera de los límites del mapa)
+    // El (+100) es un margen de cortesía para ver la caída antes del Game Over
+    if (this.jugador.y > this.physics.world.bounds.height + 100) {
+      this.manejarCaidaAlVacio();
+    }
   }
-  
+
+  private manejarCaidaAlVacio(): void {
+    const session = EstadoSession.obtener();
+    
+    // El requerimiento Senior: Caer es Muerte Súbita (Vidas -> 0)
+    session.forzarGameOver();
+    
+    // Forzamos la muerte del jugador (esto disparará el flujo hacia Game Over)
+    // Usamos un pequeño "truco" para llamar a morir directamente si es necesario, 
+    // o simplemente llamar a recibirDano() pero como vidas es 0, el sistema lo manejará.
+    
+    // Accedemos a morir vía cast o simplemente emitiendo el evento que el LevelFlowManager escucha
+    // Pero lo más limpio es que el Jugador sepa que murió.
+    this.jugador.morir(); 
+  }
 }
