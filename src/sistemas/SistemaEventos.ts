@@ -29,7 +29,11 @@ export const EVENTOS = {
   // Estado de Juego
   META_ALCANZADA: 'nivel:meta-alcanzada', // Interno: Disparador fisico
   NIVEL_COMPLETADO: 'nivel:completado',   // Oficial: Transición aprobada
-  GAME_OVER: 'juego:game-over'
+  GAME_OVER: 'juego:game-over',
+  
+  // Temporizador
+  TIEMPO_CAMBIO: 'tiempo:cambio',
+  TIEMPO_AGOTADO: 'tiempo:agotado'
 };
 
 /**

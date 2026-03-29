@@ -20,7 +20,6 @@ Esta fase conecta todo eso:
 5. **Bandera funcional** — Meta del nivel que dispara la transición correcta
 6. **TemporizadorNivel** — Cuenta regresiva con penalización al agotarse
 7. **EscenaVictoria** — Pantalla de nivel completado con resumen de puntos y tiempo
-8. **Checkpoint system** — Punto de respawn intermedio dentro del nivel
 
 **Al terminar esta fase el juego debe poderse jugar de principio a fin:** menú → selector → nivel 1 → victoria → nivel 2 → victoria → nivel 3 → victoria final → créditos o loop.
 
@@ -33,7 +32,6 @@ Esta fase conecta todo eso:
 3. [NivelBase y clases de nivel](#3-nivelbase-y-clases-de-nivel)
 4. [GestorNiveles](#4-gestorniveles)
 5. [Bandera — meta del nivel](#5-bandera--meta-del-nivel)
-6. [Checkpoint](#6-checkpoint)
 7. [TemporizadorNivel](#7-temporizadornivel)
 8. [SistemaGuardado](#8-sistemaguardado)
 9. [EscenaVictoria](#9-escenavicloria)
@@ -53,7 +51,6 @@ Esta fase conecta todo eso:
 
 ```
 Dev 1 → GestorNiveles + SistemaGuardado + NivelBase + clases de nivel
-Dev 2 → Diseño de los 3 niveles en Tiled + Bandera + Checkpoint + TemporizadorNivel
 Dev 3 → EscenaVictoria + EscenaNiveles + EscenaMenu actualizado + Actualizar EscenaJuego
 ```
 
@@ -88,7 +85,6 @@ plataformas        → Tile Layer     — suelo y plataformas con colisión
 objetos-bloques    → Object Layer   — BloqueLadrillo, BloqueInterrogacion
 objetos-monedas    → Object Layer   — Monedas flotantes
 enemigos           → Object Layer   — Goombas, Koopas, Tanques, Voladores
-spawns             → Object Layer   — spawn-jugador, zona-meta, checkpoints
 ```
 
 ### Objetos requeridos en la capa `spawns`
@@ -98,8 +94,8 @@ Cada nivel necesita al menos estos objetos en la capa `spawns`:
 | Nombre (`name`) | Descripción |
 |---|---|
 | `spawn-jugador` | Punto de inicio del jugador al comenzar el nivel |
+| `spawn-jugador` | Punto de inicio del jugador al comenzar el nivel |
 | `zona-meta` | Zona donde está la bandera — dispara la victoria |
-| `checkpoint-1` | Punto de respawn intermedio (puede haber más de uno) |
 
 ### Guía de dificultad progresiva
 
@@ -331,77 +327,6 @@ public registrarJugadorConBandera(
   })
 }
 ```
-
----
-
-## 6. Checkpoint
-
-**Responsable:** Dev 2  
-**Archivo:** `src/entidades/objetos/Checkpoint.ts` — clase nueva
-
-### ¿Qué es un checkpoint?
-
-Un punto de respawn intermedio dentro del nivel. Cuando el jugador lo toca por primera vez, queda activado. Si el jugador muere después, reaparece en el último checkpoint activado en vez del spawn inicial.
-
-### Comportamiento
-
-```
-Jugador hace overlap con el checkpoint (primera vez)
-  → checkpoint se activa visualmente (cambio de sprite/color)
-  → emitir evento EVENTOS.CHECKPOINT_ACTIVADO con la posición
-  → Jugador actualiza su posicionSpawn a las coordenadas del checkpoint
-  → los checkpoints anteriores siguen activados pero el spawn se actualiza al más reciente
-```
-
-```typescript
-// src/entidades/objetos/Checkpoint.ts
-import Phaser from 'phaser'
-import { SistemaEventos } from '@sistemas/SistemaEventos'
-import { EVENTOS } from '@constantes/constantes-eventos'
-import { ASSETS } from '@constantes/constantes-assets'
-
-export class Checkpoint extends Phaser.Physics.Arcade.Sprite {
-  private activado: boolean = false
-
-  constructor(escena: Phaser.Scene, x: number, y: number) {
-    super(escena, x, y, ASSETS.CHECKPOINT_SPRITE)
-    escena.add.existing(this)
-    escena.physics.add.existing(this, true)
-  }
-
-  public intentarActivar(): void {
-    if (this.activado) return
-    this.activado = true
-
-    // Cambio visual — de inactivo a activo
-    this.setTexture(ASSETS.CHECKPOINT_ACTIVO_SPRITE)
-
-    SistemaEventos.obtener().emit(EVENTOS.CHECKPOINT_ACTIVADO, {
-      x: this.x,
-      y: this.y,
-    })
-  }
-
-  public estaActivado(): boolean {
-    return this.activado
-  }
-}
-```
-
-### Actualizar Jugador.ts para checkpoints
-
-```typescript
-// En Jugador.ts — actualizar posicionSpawn al activarse un checkpoint
-// Se hace dentro del create() de EscenaJuego escuchando el evento:
-
-SistemaEventos.obtener().on(EVENTOS.CHECKPOINT_ACTIVADO, (datos: { x: number, y: number }) => {
-  this.jugador.actualizarSpawn(datos.x, datos.y)
-})
-```
-
-### Persistencia del checkpoint entre muertes
-
-El checkpoint no se guarda en `LocalStorage` — solo persiste mientras la escena está activa. Si el jugador cierra el juego y vuelve, empieza desde el inicio del nivel. Guardar el checkpoint es complejidad extra que no aporta suficiente en este punto.
 
 ---
 
@@ -913,7 +838,6 @@ private escucharEventosDeJuego(): void {
     }
   })
 
-  bus.on(EVENTOS.CHECKPOINT_ACTIVADO, (pos: { x: number, y: number }) => {
     this.jugador.actualizarSpawn(pos.x, pos.y)
   })
 }
@@ -930,7 +854,6 @@ shutdown(): void {
   bus.off(EVENTOS.JUGADOR_SIN_VIDAS)
   bus.off(EVENTOS.NIVEL_COMPLETADO)
   bus.off(EVENTOS.TIEMPO_AGOTADO)
-  bus.off(EVENTOS.CHECKPOINT_ACTIVADO)
   this.temporizador?.detener()
 }
 ```
@@ -973,7 +896,6 @@ init(datos: { indiceNivel: number }): void {
 ```typescript
 // Agregar a EVENTOS:
 NIVEL_COMPLETADO:      'nivel:completado',
-CHECKPOINT_ACTIVADO:   'checkpoint:activado',
 TIEMPO_ACTUALIZADO:    'tiempo:actualizado',
 TIEMPO_AGOTADO:        'tiempo:agotado',
 NIVEL_DESBLOQUEADO:    'nivel:desbloqueado',
@@ -1001,8 +923,6 @@ export const JUEGO = {
 export const ASSETS = {
   // ... existentes ...
   BANDERA_SPRITE:          'bandera-sprite',
-  CHECKPOINT_SPRITE:       'checkpoint-sprite',
-  CHECKPOINT_ACTIVO_SPRITE: 'checkpoint-activo-sprite',
   MAPA_NIVEL_02:           'mapa-nivel-02',
   MAPA_NIVEL_03:           'mapa-nivel-03',
   MUSICA_NIVEL_01:         'musica-nivel-01',
@@ -1053,35 +973,29 @@ export interface ConfigNivel {
 ## 17. Checklist de verificación
 
 ### Niveles y mapas
-- [ ] Los 3 niveles existen como archivos `.json` en `assets/tilemaps/`
-- [ ] Cada nivel tiene las 6 capas requeridas con nombres exactos
-- [ ] Cada nivel tiene los objetos `spawn-jugador` y `zona-meta` en la capa `spawns`
-- [ ] Los 3 niveles tienen al menos un `checkpoint-1`
-- [ ] La dificultad sube progresivamente entre niveles
+- [x] Los 3 niveles existen como archivos `.json` en `assets/tilemaps/`
+- [x] Cada nivel tiene las 6 capas requeridas con nombres exactos
+- [x] Cada nivel tiene los objetos `spawn-jugador` y `zona-meta` en la capa `spawns`
+- [x] La dificultad sube progresivamente entre niveles
 
 ### Progresión y guardado
-- [ ] Al completar Nivel 1 se desbloquea el Nivel 2
-- [ ] Al completar Nivel 2 se desbloquea el Nivel 3
-- [ ] El progreso persiste al recargar el navegador (F5)
-- [ ] `SistemaGuardado.resetearProgreso()` vuelve al estado inicial
-- [ ] La puntuación máxima se actualiza solo si se supera la anterior
+- [x] Al completar Nivel 1 se desbloquea el Nivel 2
+- [x] Al completar Nivel 2 se desbloquea el Nivel 3
+- [x] El progreso persiste al recargar el navegador (F5)
+- [x] `SistemaGuardado.resetearProgreso()` vuelve al estado inicial
+- [x] La puntuación máxima se actualiza solo si se supera la anterior
 
 ### Flujo completo
-- [ ] Menú → Nivel 1 → Victoria → Nivel 2 → Victoria → Nivel 3 → Victoria final
-- [ ] Menú → Selector → Nivel 2 (si está desbloqueado) → funciona
-- [ ] Morir en Nivel 2 → GameOver → Reintentar → vuelve al inicio del Nivel 2 (no al 1)
-- [ ] El temporizador se detiene al morir y al completar el nivel
+- [x] Menú → Nivel 1 → Victoria → Nivel 2 → Victoria → Nivel 3 → Victoria final
+- [x] Menú → Selector → Nivel 2 (si está desbloqueado) → funciona
+- [x] Morir en Nivel 2 → GameOver → Reintentar → vuelve al inicio del Nivel 2 (no al 1)
+- [x] El temporizador se detiene al morir y al completar el nivel
 - [ ] Al agotar el tiempo el jugador pierde una vida y el temporizador se reinicia
 - [ ] Los puntos se resetean a 0 al iniciar cada nivel
-- [ ] El bonus de tiempo se calcula y suma correctamente en EscenaVictoria
-
-### Checkpoints
-- [ ] Activar un checkpoint cambia su apariencia visual
-- [ ] Morir después de activar un checkpoint respawnea en ese punto
-- [ ] Los checkpoints NO se guardan en LocalStorage
+- [x] El bonus de tiempo se calcula y suma correctamente en EscenaVictoria
 
 ### Memory leaks
-- [ ] Jugar Nivel 1 → morir 3 veces → reintentar → los eventos no se disparan múltiples veces
+- [x] Jugar Nivel 1 → morir 3 veces → reintentar → los eventos no se disparan múltiples veces
 - [ ] `npm run build` pasa sin errores
 - [ ] `npm run preview` funciona igual que `npm run dev`
 

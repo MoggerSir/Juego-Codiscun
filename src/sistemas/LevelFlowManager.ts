@@ -6,6 +6,7 @@ import { ESCENAS } from "@constantes/constantes-escenas";
 import { Jugador } from "@entidades/jugador/Jugador";
 import { Bandera } from "@entidades/objetos/Bandera";
 import { GestorNiveles } from "@niveles/GestorNiveles";
+import { TemporizadorNivel } from "@ui/TemporizadorNivel";
 
 /**
  * Gestor Arquitectónico (Anti-God Scene).
@@ -16,6 +17,7 @@ export class LevelFlowManager {
   private escena: Phaser.Scene;
   private configNivel: ConfigNivel;
   private jugador: Jugador;
+  private temporizador: TemporizadorNivel;
   private procesandoFalloInterno: boolean = false;
 
   constructor(
@@ -26,6 +28,11 @@ export class LevelFlowManager {
     this.escena = escena;
     this.configNivel = configNivel;
     this.jugador = jugador;
+    
+    // Inicialización del Temporizador Senior
+    this.temporizador = new TemporizadorNivel(this.escena, configNivel.tiempoLimite);
+    this.temporizador.iniciar();
+
     this.registrarEscuchas();
   }
 
@@ -35,11 +42,15 @@ export class LevelFlowManager {
     // Registro específico reteniendo contexto `this` para desregistro direccional
     bus.on(EVENTOS.JUGADOR_SIN_VIDAS, this.manejarFallo, this);
     bus.on(EVENTOS.META_ALCANZADA, this.manejarVictoria, this);
+    bus.on(EVENTOS.TIEMPO_AGOTADO, this.manejarTiempoAgotado, this);
 
     // Sanidad total en la recolección de basura del ciclo de vida de Phaser
     this.escena.events.once("shutdown", () => {
       bus.off(EVENTOS.JUGADOR_SIN_VIDAS, this.manejarFallo, this);
       bus.off(EVENTOS.META_ALCANZADA, this.manejarVictoria, this);
+      bus.off(EVENTOS.TIEMPO_AGOTADO, this.manejarTiempoAgotado, this);
+      
+      this.temporizador.destruir();
 
       // Extirpación total de asincronía pendiente post-muerte/transición
       this.escena.tweens.killAll();
@@ -47,13 +58,20 @@ export class LevelFlowManager {
     });
   }
 
+  private manejarTiempoAgotado(): void {
+    console.warn("[LevelFlow] ¡Tiempo agotado! Forzando muerte del jugador.");
+    this.jugador.morir();
+  }
+
   private manejarFallo(): void {
     const session = EstadoSession.obtener();
 
     // 0. Bloqueo Maestreo (Atomic Guard local)
-    // Usamos una variable de instancia para no chocar con el estado FALLANDO ya puesto por el Jugador
     if (this.procesandoFalloInterno) return;
     this.procesandoFalloInterno = true;
+    
+    // Detener Timer Senior (Evitar muertes dobles)
+    this.temporizador.detener();
 
     session.setEstado(EstadoJuego.FALLANDO);
 
@@ -90,21 +108,27 @@ export class LevelFlowManager {
   }): void {
     // 1. Inmuniza Inquebrantablemente al personaje de cualquier daño extra
     this.jugador.comenzarTransicionVictoria();
+    
+    // 2. Detener Timer Senior (Evitar muertes durante la animación)
+    this.temporizador.detener();
 
-    // 2. Ordenamos a la Bandera desencadenar cinemática bajando
+    // 3. Ordenamos a la Bandera desencadenar cinemática bajando
     datos.bandera.animarBajada(() => {
-      // 3. Oficializamos que el Nivel está terminado al finalizar la animación
+      // 4. Oficializamos que el Nivel está terminado al finalizar la animación
       const session = EstadoSession.obtener();
+      const tiempoRestante = this.temporizador.obtenerTiempoRestante();
+      const bonoTiempo = Math.floor(tiempoRestante * 0.2);
+      const puntuacionFinal = session.getScore() + bonoTiempo;
 
       const finNivelParams: DatosFinNivel = {
         idNivel: this.configNivel.id,
         puntos: session.getScore(),
         monedas: session.getMonedas(),
-        tiempoRestante: 0, // Integrable luego
+        tiempoRestante: tiempoRestante,
       };
 
-      // REGISTRO DE VICTORIA: Desbloqueo y Persistencia Blindada
-      GestorNiveles.registrarVictoria(this.configNivel.id, session.getScore());
+      // REGISTRO DE VICTORIA: Desbloqueo y Persistencia Blindada (Incluyendo Bono)
+      GestorNiveles.registrarVictoria(this.configNivel.id, puntuacionFinal);
 
       SistemaEventos.obtener().emit(EVENTOS.NIVEL_COMPLETADO, finNivelParams);
 

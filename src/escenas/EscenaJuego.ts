@@ -41,6 +41,9 @@ export class EscenaJuego extends Phaser.Scene {
     // 4. Inyección segura de datos iniciales. Si falla, cae al 'nivel-1'.
     this.idNivel = data?.idNivel ?? "nivel-1";
     this.configNivel = GestorNiveles.obtenerConfig(this.idNivel);
+
+    // Sincronización con el Estado Global para la UI
+    EstadoSession.obtener().setIdNivelActual(this.idNivel);
   }
 
   create(): void {

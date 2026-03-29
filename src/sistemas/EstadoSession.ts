@@ -18,6 +18,7 @@ export class EstadoSession {
   private vidas: number;
   private score: number;
   private monedas: number;
+  private idNivelActual: string = "nivel-1";
   private estado: EstadoJuego = EstadoJuego.JUGANDO;
 
   private constructor() {
@@ -44,6 +45,14 @@ export class EstadoSession {
 
   public getMonedas(): number {
     return this.monedas;
+  }
+
+  public getIdNivelActual(): string {
+    return this.idNivelActual;
+  }
+
+  public setIdNivelActual(id: string): void {
+    this.idNivelActual = id;
   }
 
   public getEstado(): EstadoJuego {
