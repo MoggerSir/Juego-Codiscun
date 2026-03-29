@@ -5,6 +5,7 @@ import { ConfigNivel, DatosFinNivel } from '@tipos/tipos-nivel';
 import { ESCENAS } from '@constantes/constantes-escenas';
 import { Jugador } from '@entidades/jugador/Jugador';
 import { Bandera } from '@entidades/objetos/Bandera';
+import { GestorNiveles } from '@niveles/GestorNiveles';
 
 /**
  * Gestor Arquitectónico (Anti-God Scene).
@@ -56,7 +57,10 @@ export class LevelFlowManager {
     } else {
       // Game Over Definitivo: Pierde todas las vidas.
       session.resetTotal();
-      this.escena.scene.start(ESCENAS.GAME_OVER, { puntos: session.getScore() });
+      this.escena.scene.start(ESCENAS.GAME_OVER, { 
+        puntos: session.getScore(),
+        idNivel: this.configNivel.id 
+      });
     }
   }
 
@@ -75,6 +79,9 @@ export class LevelFlowManager {
         monedas: session.getMonedas(),
         tiempoRestante: 0 // Integrable luego
       };
+
+      // REGISTRO DE VICTORIA: Desbloqueo y Persistencia Blindada
+      GestorNiveles.registrarVictoria(this.configNivel.id, session.getScore());
 
       SistemaEventos.obtener().emit(EVENTOS.NIVEL_COMPLETADO, finNivelParams);
       

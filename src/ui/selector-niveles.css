@@ -1,0 +1,194 @@
+/* 
+   NIVELES-UI: ESTILO CARTUCHO PIXEL ART
+*/
+
+.selector-container {
+  width: 800px;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-deep); /* Fondo sólido NES */
+  font-family: var(--font-pixel);
+  color: white;
+  -webkit-tap-highlight-color: transparent;
+  animation: uiFadeIn 0.3s steps(4) forwards;
+  pointer-events: auto;
+  overflow: hidden;
+  position: relative;
+  z-index: 9999;
+}
+
+/* Título Estilo Nintendo */
+.selector-titulo {
+  font-size: 1.4rem;
+  font-weight: normal;
+  margin-bottom: 3rem;
+  letter-spacing: 2px;
+  color: #fff;
+  text-shadow: 6px 6px 0px #000;
+  text-transform: uppercase;
+}
+
+/* Carrusel de Cartuchos */
+.niveles-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 30px;
+  padding: 20px 60px;
+  padding-bottom: 50px;
+  overflow-x: auto;
+  max-width: 95%;
+  pointer-events: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #fff #000;
+  cursor: grab;
+  scroll-behavior: smooth;
+}
+
+.niveles-wrapper.dragging {
+  cursor: grabbing;
+}
+
+/* Scrollbar Pixel */
+.niveles-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+.niveles-wrapper::-webkit-scrollbar-track {
+  background: #000;
+  border: 2px solid #333;
+}
+.niveles-wrapper::-webkit-scrollbar-thumb {
+  background: #fff;
+  border: 1px solid #000;
+}
+
+/* Tarjeta CARTUCHO */
+.nivel-card {
+  min-width: 180px;
+  height: 250px;
+  background: #222;
+  border: 4px solid #fff;
+  box-shadow: 8px 8px 0px #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  cursor: pointer;
+  transition: transform 0.1s steps(2);
+  position: relative;
+  overflow: hidden;
+}
+
+.nivel-card:hover,
+.nivel-card:active {
+  background: var(--neon-cyan);
+  border-color: #fff;
+  transform: translate(-4px, -4px);
+  box-shadow: 12px 12px 0px #000;
+}
+
+.nivel-card:hover .nivel-numero,
+.nivel-card:hover .nivel-nombre {
+  color: #000;
+}
+
+/* Elementos del Cartucho */
+.nivel-numero {
+  font-size: 1.8rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 5px;
+}
+
+.nivel-nombre {
+  font-size: 0.6rem;
+  text-align: center;
+  color: var(--neon-cyan);
+  margin-top: 15px;
+  line-height: 1.4;
+}
+
+.nivel-record {
+  font-size: 0.5rem;
+  color: #888;
+  margin-top: 10px;
+}
+
+.nivel-icono {
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Imágenes de Status (Candados) */
+.img-status {
+  width: 48px;
+  height: 48px;
+  image-rendering: pixelated;
+  object-fit: contain;
+  pointer-events: none; /* NO INTERFIERE CON EL CLICK */
+}
+
+/* Palomita de Completado */
+.nivel-check {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.img-check {
+  width: 52px;
+  height: 52px;
+  image-rendering: pixelated;
+  filter: drop-shadow(2px 2px 0px #000);
+}
+
+/* Bloqueado */
+.nivel-card.bloqueado {
+  background: #111;
+  border-color: #333;
+  opacity: 0.6;
+  filter: grayscale(1);
+  cursor: not-allowed;
+  box-shadow: 4px 4px 0px #000;
+}
+
+.instrucciones {
+  margin-top: 2rem;
+  font-size: 0.5rem;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+@keyframes uiFadeIn {
+  from { opacity: 0; transform: scale(1.1); filter: blur(10px); }
+  to { opacity: 1; transform: scale(1); filter: blur(0); }
+}
+
+.ui-fade-out {
+  animation: uiFadeOut 0.3s steps(4) forwards !important;
+}
+
+@keyframes uiFadeOut {
+  from { opacity: 1; transform: scale(1); filter: blur(0); }
+  to { opacity: 0; transform: scale(0.9); filter: blur(10px); }
+}
+
+/* Adaptación para Pantallas Pequeñas (Móvil) */
+@media (max-width: 600px) {
+  .selector-titulo {
+    font-size: 1rem;
+  }
+  .nivel-card {
+    min-width: 160px;
+    height: 220px;
+  }
+  .nivel-numero {
+    font-size: 2rem;
+  }
+}

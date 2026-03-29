@@ -1,0 +1,104 @@
+/* 
+   GAME-UI: SISTEMA DE DISEÑO NEO-RETRO (NINTENDO STYLE)
+   Contiene tokens de diseño Pixel-Art con post-procesado moderno.
+*/
+
+:root {
+  --neon-cyan: #00f2ff;
+  --neon-red: #ff3c41;
+  --neon-gold: #ffcc00;
+  --bg-deep: #0a0a14;
+  --pixel-border: 4px solid #fff;
+  --font-pixel: 'Press Start 2P', cursive;
+}
+
+/* Escaneado de TV Antigua (Scanlines) */
+.ui-screen::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+              linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  z-index: 10;
+  background-size: 100% 4px, 3px 100%;
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+.ui-screen {
+  width: 800px;
+  height: 600px;
+  background: var(--bg-deep);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-pixel);
+  color: white;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: auto;
+  overflow: hidden;
+  position: relative;
+  text-rendering: pixelated;
+}
+
+/* Panel Retro con Bordes Dobles */
+.glass-panel {
+  background: rgba(20, 20, 30, 0.8);
+  border: 4px solid #fff;
+  outline: 4px solid #000;
+  box-shadow: 10px 10px 0px rgba(0, 0, 0, 0.5);
+  padding: 2rem;
+  image-rendering: pixelated;
+  animation: uiBounceIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Botones Estilo Arcade */
+.btn-neon {
+  padding: 15px 20px;
+  border: 4px solid #fff;
+  background: #222;
+  color: #fff;
+  font-family: var(--font-pixel);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.1s steps(2);
+  position: relative;
+  box-shadow: 6px 6px 0px #000;
+  margin: 10px;
+}
+
+.btn-neon:hover {
+  background: var(--neon-cyan);
+  color: #000;
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0px #000;
+}
+
+.btn-neon:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0px 0px 0px #000;
+}
+
+/* Tipografía Neón Retro */
+.text-highlight {
+  color: var(--neon-gold);
+  text-shadow: 4px 4px 0px #000;
+  animation: textFlash 2s infinite;
+}
+
+@keyframes textFlash {
+  0%, 100% { opacity: 1; text-shadow: 0 0 10px var(--neon-gold); }
+  50% { opacity: 0.8; text-shadow: 0 0 2px var(--neon-gold); }
+}
+
+@keyframes uiBounceIn {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Utilidades de Padding y Margen Retro */
+.mt-2 { margin-top: 20px; }
+.mb-2 { margin-bottom: 20px; }

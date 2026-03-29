@@ -1,101 +1,119 @@
-import Phaser from 'phaser';
-import { ASSETS } from '@constantes/constantes-assets';
-import { ESCENAS } from '@constantes/constantes-escenas';
-import { GestorNiveles } from '@niveles/GestorNiveles';
+import Phaser from "phaser";
+import { ASSETS } from "@constantes/constantes-assets";
+import { ESCENAS } from "@constantes/constantes-escenas";
+import { GestorNiveles } from "@niveles/GestorNiveles";
+import "../ui/game-ui.css"; // Estilos globales
 
 export class EscenaCarga extends Phaser.Scene {
+  private domLoader!: Phaser.GameObjects.DOMElement;
+
   constructor() {
     super({ key: ESCENAS.CARGA });
   }
 
   preload(): void {
-    this.mostrarBarraCarga();
+    // 1. Mostrar Pantalla de Carga Premium (DOM)
+    this.createDOMLoader();
 
-    // Generar placeholder de Tileset
-    const graphicsTileset = this.make.graphics({ x: 0, y: 0 });
-    graphicsTileset.fillStyle(0x00FF00);
-    graphicsTileset.fillRect(0, 0, 32, 32);
-    graphicsTileset.lineStyle(1, 0xFFFFFF, 0.5);
-    graphicsTileset.strokeRect(0, 0, 32, 32);
-    graphicsTileset.generateTexture(ASSETS.TILESET_PRINCIPAL, 32, 32);
-    graphicsTileset.destroy();
+    // 2. Generar placeholders (Tileset, Jugador, Moneda, etc.)
+    // Mantenemos la lógica de texturas dinámicas para no romper el renderizado
+    this.generarTexturasBase();
 
-    // Generar placeholder Jugador
-    const gJugador = this.make.graphics({ x: 0, y: 0 });
-    for (let f = 0; f < 5; f++) {
-      gJugador.fillStyle(f === 4 ? 0xFF0000 : 0x3b82f6);
-      gJugador.fillRect(f * 32, 0, 32, 48);
-      gJugador.lineStyle(2, 0xFFFFFF);
-      gJugador.strokeRect(f * 32, 0, 32, 48);
-    }
-    gJugador.generateTexture('temp_jugador', 32 * 5, 48);
-    gJugador.destroy();
-    
-    // Generar placeholder Moneda
-    const gMoneda = this.make.graphics({ x: 0, y: 0 });
-    for (let f = 0; f < 4; f++) {
-      gMoneda.fillStyle(0xFFD700); // Dorado
-      gMoneda.fillCircle(16 + (f * 32), 16, 12);
-      gMoneda.lineStyle(2, 0xFFAA00);
-      gMoneda.strokeCircle(16 + (f * 32), 16, 12);
-    }
-    gMoneda.generateTexture('temp_moneda', 32 * 4, 32);
-    gMoneda.destroy();
-
-    // Generar placeholder Bandera (Fase 3)
-    const gBandera = this.make.graphics({ x: 0, y: 0 });
-    gBandera.fillStyle(0xFFFFFF, 1); // Palo blanco
-    gBandera.fillRect(14, 0, 4, 64);
-    gBandera.fillStyle(0xFF0000, 1); // Bandera roja
-    gBandera.fillRect(14, 0, 18, 20);
-    gBandera.generateTexture(ASSETS.BANDERA_SPRITE, 32, 64);
-    gBandera.destroy();
-
-    // Precarga dinámica de todos los mapas del juego basados en el Manifest Data-Driven
-    GestorNiveles.obtenerTodos().forEach(config => {
+    // 3. Precarga dinámica de niveles
+    GestorNiveles.obtenerTodos().forEach((config) => {
       this.load.tilemapTiledJSON(config.nombreMapa, config.rutaMapa);
-      // Aquí también se cargaría la música dinámica: this.load.audio(config.nombreMusica, config.rutaMusica);
     });
-    
-    // Intentar cargar la imagen real. Si no existe, el juego mostrará un cuadrado verde por defecto
-    // Pero para evitar el error de consola, podemos registrarla.
-    this.load.image(ASSETS.TILESET_TERRENOS, 'assets/sprites/objetos/terrenos.png');
+
+    this.load.image(ASSETS.TILESET_TERRENOS, "assets/sprites/objetos/terrenos.png");
+
+    // 4. Sincronización del DOM con Phaser Load Event
+    this.load.on("progress", (progreso: number) => {
+      const progressBar = this.domLoader.getChildByID("progress-bar") as HTMLElement;
+      const progressText = this.domLoader.getChildByID("progress-text") as HTMLElement;
+      if (progressBar) progressBar.style.width = `${progreso * 100}%`;
+      if (progressText) progressText.innerText = `${Math.round(progreso * 100)}%`;
+    });
   }
 
   create(): void {
-    const tex = this.sys.textures.get('temp_jugador');
-    if (tex) {
-      const img = tex.getSourceImage();
-      // @ts-ignore - Using undocumented feature of addSpriteSheet on canvases
-      this.textures.addSpriteSheet(ASSETS.JUGADOR_SPRITE, img, { frameWidth: 32, frameHeight: 48 });
+    // Registro de Spritesheets desde Texturas generadas
+    this.registrarSpritesheets();
+
+    // Pequeño delay para dejar que la animación de carga se complete visualmente
+    this.time.delayedCall(500, () => {
+      this.scene.start(ESCENAS.NIVELES);
+    });
+
+    // Cleanup del DOM al salir
+    this.events.once("shutdown", () => {
+      if (this.domLoader) this.domLoader.destroy();
+    });
+  }
+
+  private createDOMLoader(): void {
+    const html = `
+      <div class="ui-screen">
+        <div class="glass-panel" style="width: 500px; text-align: center; border-color: var(--neon-cyan);">
+          <h1 style="font-size: 1.5rem; color: #fff; margin-bottom: 2.5rem; text-shadow: 4px 4px 0px #000;">Nintendo <span style="color: var(--neon-cyan);">Empresa</span></h1>
+          
+          <div style="border: 4px solid #fff; padding: 4px; background: #000; margin-bottom: 1.5rem; position: relative; height: 30px;">
+            <div id="progress-bar" style="width: 0%; height: 100%; background: var(--neon-cyan); transition: width 0.1s steps(10);"></div>
+          </div>
+          
+          <p id="progress-text" style="font-size: 0.8rem; letter-spacing: 2px; color: #fff;">LOAD 0%</p>
+          
+          <div style="margin-top: 3rem; font-size: 0.6rem; color: #555; text-transform: uppercase;">
+             &copy; 2024 MARIO EMPRESA LTD.<br>
+             LICENSED BY CODICUN
+          </div>
+        </div>
+      </div>
+    `;
+    this.domLoader = this.add.dom(0, 0).setOrigin(0, 0).createFromHTML(html);
+  }
+
+  private generarTexturasBase(): void {
+    // Tileset Principal
+    const gTileset = this.make.graphics({ x: 0, y: 0 });
+    gTileset.fillStyle(0x00ff00).fillRect(0, 0, 32, 32).generateTexture(ASSETS.TILESET_PRINCIPAL, 32, 32);
+    gTileset.destroy();
+
+    // Jugador (Placeholder)
+    const gJugador = this.make.graphics({ x: 0, y: 0 });
+    for (let f = 0; f < 5; f++) {
+      gJugador.fillStyle(f === 4 ? 0xff0000 : 0x3b82f6).fillRect(f * 32, 0, 32, 48);
     }
-    
-    const texMoneda = this.sys.textures.get('temp_moneda');
-    if (texMoneda) {
-      const img = texMoneda.getSourceImage();
-      // @ts-ignore
-      this.textures.addSpriteSheet(ASSETS.MONEDA_SPRITE, img, { frameWidth: 32, frameHeight: 32 });
+    gJugador.generateTexture("temp_jugador", 32 * 5, 48);
+    gJugador.destroy();
+
+    // Moneda
+    const gMoneda = this.make.graphics({ x: 0, y: 0 });
+    for (let f = 0; f < 4; f++) {
+      gMoneda.fillStyle(0xffd700).fillCircle(16 + f * 32, 16, 12);
     }
-    
-    // Crear sprite anim de moneda (placeholder)
+    gMoneda.generateTexture("temp_moneda", 32 * 4, 32);
+    gMoneda.destroy();
+
+    // Bandera
+    const gBandera = this.make.graphics({ x: 0, y: 0 });
+    gBandera.fillStyle(0xffffff).fillRect(14, 0, 4, 64).fillStyle(0xff0000).fillRect(14, 0, 18, 20);
+    gBandera.generateTexture(ASSETS.BANDERA_SPRITE, 32, 64);
+    gBandera.destroy();
+  }
+
+  private registrarSpritesheets(): void {
+    const texJ = this.sys.textures.get("temp_jugador");
+    if (texJ) this.textures.addSpriteSheet(ASSETS.JUGADOR_SPRITE, texJ.getSourceImage() as HTMLImageElement, { frameWidth: 32, frameHeight: 48 });
+
+    const texM = this.sys.textures.get("temp_moneda");
+    if (texM) this.textures.addSpriteSheet(ASSETS.MONEDA_SPRITE, texM.getSourceImage() as HTMLImageElement, { frameWidth: 32, frameHeight: 32 });
+
     this.anims.create({
       key: `${ASSETS.MONEDA_SPRITE}-anim`,
       frames: this.anims.generateFrameNumbers(ASSETS.MONEDA_SPRITE, { start: 0, end: 3 }),
       frameRate: 8,
-      repeat: -1
-    });
-
-    this.scene.start(ESCENAS.JUEGO);
-  }
-
-  private mostrarBarraCarga(): void {
-    const { width, height } = this.scale;
-    this.add.rectangle(width / 2, height / 2, 400, 20, 0x333333);
-    const barra = this.add.rectangle(width / 2 - 200, height / 2, 0, 16, 0x4ade80);
-    barra.setOrigin(0, 0.5);
-
-    this.load.on('progress', (progreso: number) => {
-      barra.width = 400 * progreso;
+      repeat: -1,
     });
   }
 }
+

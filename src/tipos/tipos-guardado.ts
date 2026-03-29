@@ -1,0 +1,9 @@
+/**
+ * Estructura de datos para la persistencia del progreso del jugador.
+ * Versionada para permitir migraciones futuras sin romper el guardado.
+ */
+export interface ProgresoJugador {
+  version: number;
+  nivelesDesbloqueados: string[];
+  mejoresPuntajes: Record<string, number>;
+}
