@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { EVENTOS, SistemaEventos } from '@sistemas/SistemaEventos';
 import type { Jugador } from '@entidades/jugador/Jugador';
 import type { EnemigoBase } from '@entidades/enemigos/EnemigoBase';
+import { EstadoSession, EstadoJuego } from '@sistemas/EstadoSession';
 
 /**
  * Sistema que orquesta las reglas de daño y combate.
@@ -60,8 +61,12 @@ export class SistemaDano {
   /**
    * Resuelve el resultado del combate basado en la posición y estado.
    */
-  private manejarColision(data: { jugador: Jugador, enemigo: EnemigoBase }): void {
+   private manejarColision(data: { jugador: Jugador, enemigo: EnemigoBase }): void {
     const { jugador, enemigo } = data;
+    const session = EstadoSession.obtener();
+
+    // 0. Si el mundo ya está en fallo o transición, ignoramos daño extra
+    if (session.getEstado() !== EstadoJuego.JUGANDO) return;
 
     if (!jugador.active || !enemigo.active) return;
 

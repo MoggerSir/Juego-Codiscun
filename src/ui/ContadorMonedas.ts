@@ -32,6 +32,9 @@ export class ContadorMonedas {
    * Actualiza el texto mostrado y ejecuta un pequeño salto visual para dar feedback.
    */
   public actualizar(monedas: number): void {
+    // Seguridad: Si el objeto fue destruido o la escena ya no es válida, abortamos
+    if (!this.texto || !this.texto.scene || !this.texto.active) return;
+
     if (this.texto.text === `MONEDAS: ${monedas}`) return;
 
     this.texto.setText(`MONEDAS: ${monedas}`);

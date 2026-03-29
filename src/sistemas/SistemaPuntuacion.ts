@@ -12,9 +12,11 @@ export class SistemaPuntuacion {
     this.session = EstadoSession.obtener();
     this.registrarEscuchas();
     
-    // Fuerza una emision inicial para que al iniciar EscenaJuego 
-    // la EscenaUI tome inmediatamente los valores actuales de Session
-    this.emitirCambio();
+    // Diferimos la emisión inicial al siguiente frame para evitar carreras de eventos
+    // con la EscenaUI durante el arranque de la EscenaJuego.
+    this.escena.events.once('update', () => {
+      this.emitirCambio();
+    });
   }
 
   private registrarEscuchas(): void {

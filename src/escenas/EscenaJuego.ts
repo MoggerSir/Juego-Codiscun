@@ -1,24 +1,25 @@
-import Phaser from 'phaser';
-import { ESCENAS } from '@constantes/constantes-escenas';
-import { ASSETS } from '@constantes/constantes-assets';
-import { Jugador, EstadoLogicoJugador } from '@entidades/jugador/Jugador';
-import { FabricaEnemigos } from '@entidades/enemigos/FabricaEnemigos';
-import { SistemaFisicas } from '@sistemas/SistemaFisicas';
-import { SistemaColisiones } from '@sistemas/SistemaColisiones';
-import { SistemaDano } from '@sistemas/SistemaDano';
-import { AnimacionesJugador } from '../animaciones/AnimacionesJugador';
-import { SistemaPuntuacion } from '@sistemas/SistemaPuntuacion';
-import { EVENTOS, SistemaEventos } from '@sistemas/SistemaEventos';
-import { Moneda } from '@entidades/objetos/Moneda';
-import { BloqueLadrillo } from '@entidades/objetos/BloqueLadrillo';
-import { BloqueInterrogacion } from '@entidades/objetos/BloqueInterrogacion';
-import { BloqueMonedas } from '@entidades/objetos/BloqueMonedas';
-import { ConfigNivel } from '@tipos/tipos-nivel';
-import { GestorNiveles } from '@niveles/GestorNiveles';
-import { LevelFlowManager } from '@sistemas/LevelFlowManager';
-import { Bandera } from '@entidades/objetos/Bandera';
-import { EstadoSession } from '@sistemas/EstadoSession';
-import { VisualPuntuacion } from '@componentes/VisualPuntuacion';
+import Phaser from "phaser";
+import { ESCENAS } from "@constantes/constantes-escenas";
+import { ASSETS } from "@constantes/constantes-assets";
+import { Jugador, EstadoLogicoJugador } from "@entidades/jugador/Jugador";
+import { FabricaEnemigos } from "@entidades/enemigos/FabricaEnemigos";
+import { SistemaFisicas } from "@sistemas/SistemaFisicas";
+import { SistemaColisiones } from "@sistemas/SistemaColisiones";
+import { SistemaDano } from "@sistemas/SistemaDano";
+import { AnimacionesJugador } from "../animaciones/AnimacionesJugador";
+import { SistemaPuntuacion } from "@sistemas/SistemaPuntuacion";
+import { EVENTOS, SistemaEventos } from "@sistemas/SistemaEventos";
+import { Moneda } from "@entidades/objetos/Moneda";
+import { EstadoSession, EstadoJuego } from "@sistemas/EstadoSession";
+import { BloqueLadrillo } from "@entidades/objetos/BloqueLadrillo";
+import { BloqueInterrogacion } from "@entidades/objetos/BloqueInterrogacion";
+import { BloqueMonedas } from "@entidades/objetos/BloqueMonedas";
+import { ConfigNivel } from "@tipos/tipos-nivel";
+import { GestorNiveles } from "@niveles/GestorNiveles";
+import { LevelFlowManager } from "@sistemas/LevelFlowManager";
+import { Bandera } from "@entidades/objetos/Bandera";
+// import { EstadoSession } from '@sistemas/EstadoSession';
+import { VisualPuntuacion } from "@componentes/VisualPuntuacion";
 export class EscenaJuego extends Phaser.Scene {
   private jugador!: Jugador;
   private grupoEnemigos!: Phaser.Physics.Arcade.Group;
@@ -27,7 +28,7 @@ export class EscenaJuego extends Phaser.Scene {
   private idNivel!: string;
   private configNivel!: ConfigNivel;
   private bandera!: Bandera;
-  
+
   private grupoMonedas!: Phaser.Physics.Arcade.Group;
   private grupoBloques!: Phaser.Physics.Arcade.StaticGroup;
   private grupoPowerUps!: Phaser.Physics.Arcade.Group;
@@ -38,48 +39,57 @@ export class EscenaJuego extends Phaser.Scene {
 
   init(data?: { idNivel?: string }): void {
     // 4. Inyección segura de datos iniciales. Si falla, cae al 'nivel-1'.
-    this.idNivel = data?.idNivel ?? 'nivel-1';
+    this.idNivel = data?.idNivel ?? "nivel-1";
     this.configNivel = GestorNiveles.obtenerConfig(this.idNivel);
   }
 
   create(): void {
     AnimacionesJugador.crear(this);
-    
+
     const mapa = this.crearMapa();
     this.crearEntidadesBase(mapa);
     this.crearEnemigos(mapa);
     this.crearObjetos(mapa);
     new SistemaDano(this);
     new SistemaPuntuacion(this);
-    
+
     this.configurarFisica(mapa);
     this.configurarColisiones();
     this.configurarCamara(mapa);
-    
+
     // Inyección de lógica de flujo aislada (Anti-God Scene)
     new LevelFlowManager(this, this.configNivel, this.jugador);
-    
-    this.scene.launch(ESCENAS.UI); 
+
+    this.scene.launch(ESCENAS.UI);
 
     // Registrar Feedback Visual de Puntos
-    SistemaEventos.obtener().on(EVENTOS.PUNTOS_FLOTANTES, (datos: { x: number, y: number, puntos: number }) => {
-      VisualPuntuacion.mostrar(this, datos.x, datos.y, datos.puntos);
-    });
+    SistemaEventos.obtener().on(
+      EVENTOS.PUNTOS_FLOTANTES,
+      (datos: { x: number; y: number; puntos: number }) => {
+        VisualPuntuacion.mostrar(this, datos.x, datos.y, datos.puntos);
+      },
+    );
   }
 
   private crearEnemigos(mapa: Phaser.Tilemaps.Tilemap): void {
     this.grupoEnemigos = this.physics.add.group({ runChildUpdate: true });
-    
+
     // Leemos la capa de objetos 'enemigos' definida en Tiled
-    const capaObjetos = mapa.getObjectLayer('enemigos');
-    
-    capaObjetos?.objects.forEach(obj => {
+    const capaObjetos = mapa.getObjectLayer("enemigos");
+
+    capaObjetos?.objects.forEach((obj) => {
       const x = obj.x! + (obj.width ? obj.width / 2 : 0);
       const y = obj.y! + (obj.height ? -obj.height / 2 : 0);
 
       // Delegamos la creación al Patrón Factory usando la propiedad 'type' del JSON
       if (obj.type) {
-        const enemigo = FabricaEnemigos.crear(obj.type, this, x, y, this.capaPlataformas);
+        const enemigo = FabricaEnemigos.crear(
+          obj.type,
+          this,
+          x,
+          y,
+          this.capaPlataformas,
+        );
         if (enemigo) {
           this.grupoEnemigos.add(enemigo);
         }
@@ -95,25 +105,22 @@ export class EscenaJuego extends Phaser.Scene {
     // Helper para leer cada subcapa de Object Layers
     const parsearCapa = (nombreCapa: string) => {
       const capa = mapa.getObjectLayer(nombreCapa);
-      
-      capa?.objects.forEach(obj => {
+
+      capa?.objects.forEach((obj) => {
         const x = obj.x! + (obj.width ? obj.width / 2 : 0);
         // Centrado robusto: Detecta si es un Tile (GID) o un Rectángulo
-        const y = obj.gid 
-          ? obj.y! - (obj.height! / 2) 
-          : obj.y! + (obj.height! / 2);
+        const y = obj.gid ? obj.y! - obj.height! / 2 : obj.y! + obj.height! / 2;
 
-
-        if (obj.type === 'moneda') {
+        if (obj.type === "moneda") {
           const moneda = new Moneda(this, x, y);
           this.grupoMonedas.add(moneda);
-        } else if (obj.type === 'bloque-ladrillo') {
+        } else if (obj.type === "bloque-ladrillo") {
           const bloque = new BloqueLadrillo(this, x, y);
           this.grupoBloques.add(bloque);
-        } else if (obj.type === 'bloque-interrogacion') {
+        } else if (obj.type === "bloque-interrogacion") {
           const bloque = new BloqueInterrogacion(this, x, y);
           this.grupoBloques.add(bloque);
-        } else if (obj.type === 'bloque-monedas') {
+        } else if (obj.type === "bloque-monedas") {
           const bloque = new BloqueMonedas(this, x, y);
           this.grupoBloques.add(bloque);
         }
@@ -121,29 +128,42 @@ export class EscenaJuego extends Phaser.Scene {
     };
 
     // Procesamos todas las capas de objetos interactivos
-    parsearCapa('objetos-bloques');
-    parsearCapa('objetos-monedas');
+    parsearCapa("objetos-bloques");
+    parsearCapa("objetos-monedas");
 
     // Escuchar el spawn de items dede los bloques
-    SistemaEventos.obtener().on(EVENTOS.ITEM_RECOGIDO, (datos: { item: any }) => {
-      this.grupoPowerUps.add(datos.item);
-    });
+    SistemaEventos.obtener().on(
+      EVENTOS.ITEM_RECOGIDO,
+      (datos: { item: any }) => {
+        this.grupoPowerUps.add(datos.item);
+      },
+    );
   }
 
   private crearMapa(): Phaser.Tilemaps.Tilemap {
     const mapa = this.make.tilemap({ key: this.configNivel.nombreMapa });
-    
+
     // Cargamos todos los tilesets necesarios
-    const tilesetPrincipal = mapa.addTilesetImage('tileset-principal', ASSETS.TILESET_PRINCIPAL)!;
+    const tilesetPrincipal = mapa.addTilesetImage(
+      "tileset-principal",
+      ASSETS.TILESET_PRINCIPAL,
+    )!;
     // Terrenos usa 35x35 con 1px de margen, hay que especificarlo o Phaser asume 32x32 por el mapa
-    const tilesetTerrenos = mapa.addTilesetImage('terrenos', ASSETS.TILESET_TERRENOS, 35, 35, 1, 0) || tilesetPrincipal; 
-    
+    const tilesetTerrenos =
+      mapa.addTilesetImage("terrenos", ASSETS.TILESET_TERRENOS, 35, 35, 1, 0) ||
+      tilesetPrincipal;
+
     const listaTilesets = [tilesetPrincipal, tilesetTerrenos];
 
-    mapa.createLayer('fondo', listaTilesets, 0, 0);
+    mapa.createLayer("fondo", listaTilesets, 0, 0);
 
-    this.capaPlataformas = mapa.createLayer('plataformas', listaTilesets, 0, 0)!;
-    
+    this.capaPlataformas = mapa.createLayer(
+      "plataformas",
+      listaTilesets,
+      0,
+      0,
+    )!;
+
     // Hacemos que CUALQUIER tile con GID del 1 al 5000 sea sólido.
     // Esto es lo más agresivo y efectivo para asegurar que Mario choque con todo el terreno.
     this.capaPlataformas.setCollisionBetween(1, 5000);
@@ -152,29 +172,34 @@ export class EscenaJuego extends Phaser.Scene {
   }
 
   private crearEntidadesBase(mapa: Phaser.Tilemaps.Tilemap): void {
-    const capaSpawns = mapa.getObjectLayer('spawns');
-    const capaMetaDedicada = mapa.getObjectLayer('zona-meta');
+    const capaSpawns = mapa.getObjectLayer("spawns");
+    const capaMetaDedicada = mapa.getObjectLayer("zona-meta");
 
     // 1. Spawning del Jugador
-    const puntoSpawn = capaSpawns?.objects.find(o => o.name === 'spawn-jugador');
+    const puntoSpawn = capaSpawns?.objects.find(
+      (o) => o.name === "spawn-jugador",
+    );
     const x = puntoSpawn?.x ?? 100;
     const y = puntoSpawn?.y ?? 400;
     this.jugador = new Jugador(this, x, y);
 
     // 2. Detección de la Meta (Búsqueda cruzada en ambas capas)
-    const buscador = (o: any) => o.name === 'zona-meta' || o.name === 'meta' || o.type === 'meta';
-    const zonaMeta = capaSpawns?.objects.find(buscador) || capaMetaDedicada?.objects.find(buscador);
-    
+    const buscador = (o: any) =>
+      o.name === "zona-meta" || o.name === "meta" || o.type === "meta";
+    const zonaMeta =
+      capaSpawns?.objects.find(buscador) ||
+      capaMetaDedicada?.objects.find(buscador);
+
     if (zonaMeta) {
       const bX = zonaMeta.x! + (zonaMeta.width ? zonaMeta.width / 2 : 0);
-      
-      // FIX Tiled Math: 
+
+      // FIX Tiled Math:
       // Si tiene GID es un objeto de imagen/tile (Y es la base -> restar h/2)
       // Si NO tiene GID es un Rectángulo/Forma (Y es el tope -> sumar h/2)
-      const bY = zonaMeta.gid 
-        ? zonaMeta.y! - (zonaMeta.height! / 2) 
-        : zonaMeta.y! + (zonaMeta.height! / 2);
-        
+      const bY = zonaMeta.gid
+        ? zonaMeta.y! - zonaMeta.height! / 2
+        : zonaMeta.y! + zonaMeta.height! / 2;
+
       this.bandera = new Bandera(this, bX, bY);
     }
   }
@@ -183,21 +208,33 @@ export class EscenaJuego extends Phaser.Scene {
     SistemaFisicas.configurarMundo(
       this,
       mapa.widthInPixels,
-      mapa.heightInPixels
+      mapa.heightInPixels,
     );
   }
 
   private configurarColisiones(): void {
     this.colisiones = new SistemaColisiones(this);
     this.colisiones.registrarJugadorConMapa(this.jugador, this.capaPlataformas);
-    this.colisiones.registrarJugadorConEnemigos(this.jugador, this.grupoEnemigos);
-    this.colisiones.registrarEnemigosConMapa(this.grupoEnemigos, this.capaPlataformas);
-    
+    this.colisiones.registrarJugadorConEnemigos(
+      this.jugador,
+      this.grupoEnemigos,
+    );
+    this.colisiones.registrarEnemigosConMapa(
+      this.grupoEnemigos,
+      this.capaPlataformas,
+    );
+
     this.colisiones.registrarJugadorConMonedas(this.jugador, this.grupoMonedas);
     this.colisiones.registrarJugadorConBloques(this.jugador, this.grupoBloques);
-    this.colisiones.registrarJugadorConPowerUps(this.jugador, this.grupoPowerUps);
-    this.colisiones.registrarPowerUpsConMapa(this.grupoPowerUps, this.capaPlataformas);
-    
+    this.colisiones.registrarJugadorConPowerUps(
+      this.jugador,
+      this.grupoPowerUps,
+    );
+    this.colisiones.registrarPowerUpsConMapa(
+      this.grupoPowerUps,
+      this.capaPlataformas,
+    );
+
     if (this.bandera) {
       this.colisiones.registrarJugadorConBandera(this.jugador, this.bandera);
     }
@@ -209,32 +246,40 @@ export class EscenaJuego extends Phaser.Scene {
   }
 
   update(): void {
-    if (this.jugador.estadoLogico === EstadoLogicoJugador.MUERTO || 
-        this.jugador.estadoLogico === EstadoLogicoJugador.TERMINANDO_NIVEL) {
+    const session = EstadoSession.obtener();
+
+    // 0. Bloqueo Sistémico: Si el juego ya está en falla o transición, no procesamos NADA
+    if (session.getEstado() !== EstadoJuego.JUGANDO) return;
+
+    // 1. Detección de caída al vacío (Fuera de los límites del mapa)
+    if (this.jugador.y > this.physics.world.bounds.height + 100) {
+      this.manejarCaidaAlVacio();
+      return;
+    }
+
+    // 2. Control de actualización lógica
+    if (
+      this.jugador.estadoLogico === EstadoLogicoJugador.MUERTO ||
+      this.jugador.estadoLogico === EstadoLogicoJugador.TERMINANDO_NIVEL
+    ) {
       return;
     }
 
     this.jugador.update();
-
-    // Detección de caída al vacío (Fuera de los límites del mapa)
-    // El (+100) es un margen de cortesía para ver la caída antes del Game Over
-    if (this.jugador.y > this.physics.world.bounds.height + 100) {
-      this.manejarCaidaAlVacio();
-    }
   }
 
   private manejarCaidaAlVacio(): void {
     const session = EstadoSession.obtener();
-    
+
     // El requerimiento Senior: Caer es Muerte Súbita (Vidas -> 0)
     session.forzarGameOver();
-    
+
     // Forzamos la muerte del jugador (esto disparará el flujo hacia Game Over)
-    // Usamos un pequeño "truco" para llamar a morir directamente si es necesario, 
+    // Usamos un pequeño "truco" para llamar a morir directamente si es necesario,
     // o simplemente llamar a recibirDano() pero como vidas es 0, el sistema lo manejará.
-    
+
     // Accedemos a morir vía cast o simplemente emitiendo el evento que el LevelFlowManager escucha
     // Pero lo más limpio es que el Jugador sepa que murió.
-    this.jugador.morir(); 
+    this.jugador.morir();
   }
 }

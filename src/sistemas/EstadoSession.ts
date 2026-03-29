@@ -4,7 +4,13 @@ export interface SessionData {
   monedas: number;
 }
 
-const VIDAS_INICIALES = 3;
+const VIDAS_INICIALES = 1;
+
+export enum EstadoJuego {
+  JUGANDO = "JUGANDO",
+  FALLANDO = "FALLANDO",
+  NIVEL_COMPLETADO = "NIVEL_COMPLETADO",
+}
 
 export class EstadoSession {
   private static instancia: EstadoSession;
@@ -12,11 +18,13 @@ export class EstadoSession {
   private vidas: number;
   private score: number;
   private monedas: number;
+  private estado: EstadoJuego = EstadoJuego.JUGANDO;
 
   private constructor() {
     this.vidas = VIDAS_INICIALES;
     this.score = 0;
     this.monedas = 0;
+    this.estado = EstadoJuego.JUGANDO;
   }
 
   public static obtener(): EstadoSession {
@@ -36,6 +44,15 @@ export class EstadoSession {
 
   public getMonedas(): number {
     return this.monedas;
+  }
+
+  public getEstado(): EstadoJuego {
+    return this.estado;
+  }
+
+  public setEstado(nuevoEstado: EstadoJuego): void {
+    this.estado = nuevoEstado;
+    console.log(`[Session] Cambio de Estado Global: ${this.estado}`);
   }
 
   public agregarScore(puntos: number): void {
@@ -82,5 +99,6 @@ export class EstadoSession {
     this.vidas = VIDAS_INICIALES;
     this.score = 0;
     this.monedas = 0;
+    this.estado = EstadoJuego.JUGANDO;
   }
 }

@@ -1,4 +1,5 @@
 import { ASSETS } from "@constantes/constantes-assets";
+import { EstadoSession, EstadoJuego } from "@sistemas/EstadoSession";
 import { ControlJugador } from "./ControlJugador";
 import { EstadosJugador } from "./EstadosJugador";
 import { ComponenteSalud } from "@componentes/ComponenteSalud";
@@ -73,24 +74,18 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
       return;
     }
 
+    // Feedback sonoro/visual de golpe
     this.scene.game.events.emit(EVENTOS.JUGADOR_HERIDO);
 
-    // NUEVO: Si es grande, pierde la vida extra que ganó con el hongo,
-    // encoge a su tamaño normal, e inicia la secuencia de daño (salto hacia atrás e invencibilidad).
     if (this.esGrande) {
-      this.salud.reducir();
+      // 1. Caso Mario Grande: Pierde el estado pero sobrevive
       this.encoger();
       this.entrarEnEstadoDaniado();
-      return;
-    }
-
-    // Si es pequeño, el daño le reduce otra vida y si llega a cero, muere
-    const haMuerto = this.salud.reducir();
-
-    if (haMuerto) {
-      this.morir();
+      console.log("[Jugador] Mario golpeado: Encogiendo...");
     } else {
-      this.entrarEnEstadoDaniado();
+      // 2. Caso Mario Pequeño: Muerte instantánea
+      console.log("[Jugador] Mario golpeado siendo pequeño: Muerto!");
+      this.morir();
     }
   }
 
@@ -129,22 +124,34 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
   }
 
   public morir(): void {
+    const session = EstadoSession.obtener();
+
+    // 0. Bloqueo Sistémico Inmediato (Senior Protection)
+    if (this.estadoLogico === EstadoLogicoJugador.MUERTO || session.getEstado() !== EstadoJuego.JUGANDO) {
+      return;
+    }
+
+    // 1. Congelar el Mundo
+    session.setEstado(EstadoJuego.FALLANDO);
+    this.scene.input.enabled = false;
+
     this.estadoLogico = EstadoLogicoJugador.MUERTO;
     this.estado = "muerto";
     this.setTint(0xff0000);
     this.scene.game.events.emit(EVENTOS.JUGADOR_MUERTO);
 
-    // Deshabilitar físicas
+    // 2. Transición Física
     const body = this.body as Phaser.Physics.Arcade.Body;
     body.enable = false;
 
     this.setVelocity(0, -450); // Salto de muerte dramático
     
-    // Reproducir animación (si existe) y asegurar la transición con un timer
+    // Reproducir animación (si existe) 
     if (this.anims.exists('jugador-muerte')) {
       this.anims.play('jugador-muerte');
     }
     
+    // Emitir el fallo total tras la animación (el LevelFlowManager se encargará del resto)
     this.scene.time.delayedCall(1500, () => {
       SistemaEventos.obtener().emit(EVENTOS.JUGADOR_SIN_VIDAS);
     });

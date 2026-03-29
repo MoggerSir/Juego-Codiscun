@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { EstadoSession, EstadoJuego } from "../../sistemas/EstadoSession";
 
 /**
  * Clase base para todos los enemigos del juego.
@@ -39,6 +40,13 @@ export abstract class EnemigoBase extends Phaser.Physics.Arcade.Sprite {
    */
   update(): void {
     if (!this.active || !this.body) return;
+
+    const session = EstadoSession.obtener();
+    if (session.getEstado() !== EstadoJuego.JUGANDO) {
+      this.setVelocityX(0); // Congelar movimiento horizontal
+      this.anims.stop();    // Congelar visualmente
+      return;
+    }
 
     this.patrullar();
     this.revisarObstaculos();
