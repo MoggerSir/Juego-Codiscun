@@ -15,6 +15,7 @@ export enum EstadoLogicoJugador {
   DANIADO,
   INVENCIBLE,
   MUERTO,
+  TERMINANDO_NIVEL,
 }
 
 export class Jugador extends Phaser.Physics.Arcade.Sprite {
@@ -64,7 +65,11 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
    * Orquestador senior con guard clauses explícitas.
    */
   public recibirDano(): void {
-    if (this.invencibilidad.estaActiva() || this.estadoLogico === EstadoLogicoJugador.MUERTO) {
+    if (
+      this.invencibilidad.estaActiva() || 
+      this.estadoLogico === EstadoLogicoJugador.MUERTO || 
+      this.estadoLogico === EstadoLogicoJugador.TERMINANDO_NIVEL
+    ) {
       return;
     }
 
@@ -145,6 +150,21 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
     });
   }
 
+  /**
+   * Congela al jugador ignorando inputs y anulando físicas para proteger 
+   * la secuencia cinematica de transición de nivel (Ej: Bajar Bandera).
+   */
+  public comenzarTransicionVictoria(): void {
+    this.estadoLogico = EstadoLogicoJugador.TERMINANDO_NIVEL;
+    const body = this.body as Phaser.Physics.Arcade.Body;
+    body.enable = false;
+    this.setVelocity(0, 0);
+    
+    if (this.anims.exists('jugador-idle')) {
+      this.anims.play('jugador-idle');
+    }
+  }
+
   private configurarCuerpo(): void {
     const body = this.body as Phaser.Physics.Arcade.Body;
     body.setSize(24, 40);
@@ -154,6 +174,9 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
   }
 
   update(): void {
+    // Si el nivel se terminó, el jugador entra en letargo absoluto.
+    if (this.estadoLogico === EstadoLogicoJugador.TERMINANDO_NIVEL) return;
+    
     this.estados.actualizar(this.control.obtenerInput());
   }
 

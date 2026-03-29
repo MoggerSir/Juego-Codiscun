@@ -3,6 +3,7 @@ import { EscenaCarga } from "@escenas/EscenaCarga";
 import { EscenaJuego } from "@escenas/EscenaJuego";
 import { EscenaUI } from "@escenas/EscenaUI";
 import { EscenaGameOver } from "@escenas/EscenaGameOver";
+import { EscenaVictoria } from "@escenas/EscenaVictoria";
 
 export const configuracionJuego: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO, 
@@ -13,7 +14,7 @@ export const configuracionJuego: Phaser.Types.Core.GameConfig = {
     default: "arcade",
     arcade: {
       gravity: { x: 0, y: 600 },
-      debug: false, 
+      debug: true, 
     },
   },
   scale: {
@@ -24,7 +25,8 @@ export const configuracionJuego: Phaser.Types.Core.GameConfig = {
     EscenaCarga, 
     EscenaJuego,
     EscenaUI,
-    EscenaGameOver
+    EscenaGameOver,
+    EscenaVictoria
   ],
   parent: "game-container",
   render: {

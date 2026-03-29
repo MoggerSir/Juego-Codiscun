@@ -92,4 +92,19 @@ export class SistemaColisiones {
       }
     });
   }
+
+  public registrarJugadorConBandera(
+    jugador: Jugador,
+    bandera: Phaser.Physics.Arcade.Sprite
+  ): void {
+    const banderaObj = bandera as any;
+    // Usamos overlap para que Mario pase a través de la bandera sin ser empujado,
+    // y aplicamos una precaución estricta evaluando banderaObj.tocar() dentro.
+    this.escena.physics.add.overlap(jugador, bandera, (_j, _b) => {
+      // tocar() devuelve false si ya fue activada, evitando el doble trigger del engine
+      if (banderaObj.tocar) {
+        banderaObj.tocar();
+      }
+    });
+  }
 }

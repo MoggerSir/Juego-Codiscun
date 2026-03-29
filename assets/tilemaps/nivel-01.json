@@ -233,11 +233,11 @@
                  "name":"meta",
                  "opacity":1,
                  "rotation":0,
-                 "type":"",
+                 "type":"meta",
                  "visible":true,
                  "width":64,
-                 "x":1505.32978014657,
-                 "y":519.920053297802
+                 "x":1510.65956029314,
+                 "y":533.244503664224
                 }],
          "opacity":1,
          "type":"objectgroup",

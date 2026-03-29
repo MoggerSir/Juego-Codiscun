@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { ASSETS } from '@constantes/constantes-assets';
 import { ESCENAS } from '@constantes/constantes-escenas';
+import { GestorNiveles } from '@niveles/GestorNiveles';
 
 export class EscenaCarga extends Phaser.Scene {
   constructor() {
@@ -41,7 +42,20 @@ export class EscenaCarga extends Phaser.Scene {
     gMoneda.generateTexture('temp_moneda', 32 * 4, 32);
     gMoneda.destroy();
 
-    this.load.tilemapTiledJSON(ASSETS.MAPA_NIVEL_01, 'assets/tilemaps/nivel-01.json');
+    // Generar placeholder Bandera (Fase 3)
+    const gBandera = this.make.graphics({ x: 0, y: 0 });
+    gBandera.fillStyle(0xFFFFFF, 1); // Palo blanco
+    gBandera.fillRect(14, 0, 4, 64);
+    gBandera.fillStyle(0xFF0000, 1); // Bandera roja
+    gBandera.fillRect(14, 0, 18, 20);
+    gBandera.generateTexture(ASSETS.BANDERA_SPRITE, 32, 64);
+    gBandera.destroy();
+
+    // Precarga dinámica de todos los mapas del juego basados en el Manifest Data-Driven
+    GestorNiveles.obtenerTodos().forEach(config => {
+      this.load.tilemapTiledJSON(config.nombreMapa, config.rutaMapa);
+      // Aquí también se cargaría la música dinámica: this.load.audio(config.nombreMusica, config.rutaMusica);
+    });
     
     // Intentar cargar la imagen real. Si no existe, el juego mostrará un cuadrado verde por defecto
     // Pero para evitar el error de consola, podemos registrarla.

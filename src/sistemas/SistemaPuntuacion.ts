@@ -1,41 +1,48 @@
-import Phaser from "phaser";
-import { EVENTOS, SistemaEventos } from "./SistemaEventos";
-import { JUEGO } from "@constantes/constantes-juego";
+import Phaser from 'phaser';
+import { EVENTOS, SistemaEventos } from '@sistemas/SistemaEventos';
+import { JUEGO } from '@constantes/constantes-juego';
+import { EstadoSession } from '@sistemas/EstadoSession';
 
 export class SistemaPuntuacion {
-  private puntos: number = 0;
-  private monedas: number = 0;
   private escena: Phaser.Scene;
+  private session: EstadoSession;
 
   constructor(escena: Phaser.Scene) {
     this.escena = escena;
+    this.session = EstadoSession.obtener();
     this.registrarEscuchas();
+    
+    // Fuerza una emision inicial para que al iniciar EscenaJuego 
+    // la EscenaUI tome inmediatamente los valores actuales de Session
+    this.emitirCambio();
   }
 
   private registrarEscuchas(): void {
-    const bus = SistemaEventos.obtener(this.escena);
+    const bus = SistemaEventos.obtener();
 
     bus.on(EVENTOS.PUNTUACION_SUMAR, this.sumarPuntos, this);
     bus.on(EVENTOS.MONEDA_RECOGIDA, this.sumarMoneda, this);
     
-    // Al reiniciar la escena/juego, limpiamos las escuchas para evitar memory leaks
-    this.escena.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+    // IMPORTANTE (Regla de Oro en Phaser On/Off):
+    // Limpieza direccionada con "this" para prevenir memory leaks al transicionar Escenas
+    this.escena.events.once('shutdown', () => {
       bus.off(EVENTOS.PUNTUACION_SUMAR, this.sumarPuntos, this);
       bus.off(EVENTOS.MONEDA_RECOGIDA, this.sumarMoneda, this);
     });
   }
 
   private sumarPuntos(datos: { puntos: number }): void {
-    this.puntos += datos.puntos;
+    this.session.agregarScore(datos.puntos);
     this.emitirCambio();
   }
 
   private sumarMoneda(): void {
-    this.monedas += 1;
+    this.session.agregarMonedas(1);
     
     // Cada X monedas, podríamos dar una vida extra
-    if (this.monedas >= JUEGO.MONEDAS_VIDA_EXTRA) {
-      this.monedas -= JUEGO.MONEDAS_VIDA_EXTRA;
+    if (this.session.getMonedas() >= JUEGO.MONEDAS_VIDA_EXTRA) {
+      this.session.restarMonedas(JUEGO.MONEDAS_VIDA_EXTRA);
+      this.session.agregarVida();
       SistemaEventos.obtener().emit(EVENTOS.SALUD_CAMBIO, { extra: true }); 
     }
     
@@ -43,20 +50,18 @@ export class SistemaPuntuacion {
   }
 
   private emitirCambio(): void {
-    SistemaEventos.obtener().emit(EVENTOS.PUNTUACION_CAMBIO, { puntos: this.puntos, monedas: this.monedas });
+    SistemaEventos.obtener().emit(EVENTOS.PUNTUACION_CAMBIO, { 
+      puntos: this.session.getScore(), 
+      monedas: this.session.getMonedas(),
+      vidas: this.session.getVidas() // Emitimos vidas actualizadas para UI global
+    });
   }
 
   public obtenerPuntos(): number {
-    return this.puntos;
+    return this.session.getScore();
   }
 
   public obtenerMonedas(): number {
-    return this.monedas;
-  }
-
-  public reiniciar(): void {
-    this.puntos = 0;
-    this.monedas = 0;
-    this.emitirCambio();
+    return this.session.getMonedas();
   }
 }

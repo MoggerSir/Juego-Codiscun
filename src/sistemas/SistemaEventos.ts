@@ -26,7 +26,8 @@ export const EVENTOS = {
   ITEM_RECOGIDO: 'objeto:item-recogido',
   
   // Estado de Juego
-  NIVEL_COMPLETADO: 'nivel:completado',
+  META_ALCANZADA: 'nivel:meta-alcanzada', // Interno: Disparador fisico
+  NIVEL_COMPLETADO: 'nivel:completado',   // Oficial: Transición aprobada
   GAME_OVER: 'juego:game-over'
 };
 
