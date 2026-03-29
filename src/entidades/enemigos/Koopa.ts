@@ -41,23 +41,22 @@ export class Koopa extends EnemigoBase {
   public alSerPisado(): void {
     if (this.estadoKoopa === "caminando") {
       this.entrarEnConcha();
-    } else if (this.estadoKoopa === "concha") {
-      this.patearConcha(this.x < 400 ? 1 : -1); // Dirección simplificada para prueba
-    } else {
-      this.detenerConcha();
-    }
-
-    import("@sistemas/SistemaEventos").then((mod) => {
-      const bus = mod.SistemaEventos.obtener();
-      if (this.estadoKoopa !== "concha-movimiento") {
+      
+      // Solo sumamos puntos la primera vez que se pisa (al entrar en concha)
+      import("@sistemas/SistemaEventos").then((mod) => {
+        const bus = mod.SistemaEventos.obtener();
         bus.emit(mod.EVENTOS.PUNTUACION_SUMAR, { puntos: JUEGO.PUNTOS_KOOPA });
         bus.emit(mod.EVENTOS.PUNTOS_FLOTANTES, {
           x: this.x,
           y: this.y,
           puntos: JUEGO.PUNTOS_KOOPA,
         });
-      }
-    });
+      });
+    } else if (this.estadoKoopa === "concha") {
+      this.patearConcha(this.x < 400 ? 1 : -1); // Dirección simplificada para prueba
+    } else {
+      this.detenerConcha();
+    }
   }
 
   private entrarEnConcha(): void {
