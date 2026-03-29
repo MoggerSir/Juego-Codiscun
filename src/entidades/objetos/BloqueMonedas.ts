@@ -23,7 +23,10 @@ export class BloqueMonedas extends Phaser.Physics.Arcade.Image {
     this.soltarMonedasVisuales();
 
     // Puntos por romper el bloque
-    SistemaEventos.obtener().emit(EVENTOS.PUNTUACION_SUMAR, { puntos: JUEGO.PUNTOS_BLOQUE });
+    const bus = SistemaEventos.obtener();
+    bus.emit(EVENTOS.PUNTUACION_SUMAR, { puntos: JUEGO.PUNTOS_BLOQUE });
+    bus.emit(EVENTOS.PUNTOS_FLOTANTES, { x: this.x, y: this.y, puntos: JUEGO.PUNTOS_BLOQUE });
+
     
     // El bloque se rompe inmediatamente y desaparece
     this.destroy();
@@ -53,7 +56,10 @@ export class BloqueMonedas extends Phaser.Physics.Arcade.Image {
       });
 
       // Efectuamos lógicamente la recolección
-      SistemaEventos.obtener().emit(EVENTOS.MONEDA_RECOGIDA);
+      const bus = SistemaEventos.obtener();
+      bus.emit(EVENTOS.MONEDA_RECOGIDA);
+      bus.emit(EVENTOS.PUNTUACION_SUMAR, { puntos: JUEGO.PUNTOS_MONEDA });
+      bus.emit(EVENTOS.PUNTOS_FLOTANTES, { x: this.x + offsetX, y: this.y - 32, puntos: JUEGO.PUNTOS_MONEDA });
     }
   }
 }

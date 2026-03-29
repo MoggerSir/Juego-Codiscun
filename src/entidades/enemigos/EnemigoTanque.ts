@@ -48,9 +48,9 @@ export class EnemigoTanque extends EnemigoBase {
 
       // Sumamos unos pocos puntos por el primer golpe
       import("@sistemas/SistemaEventos").then((mod) => {
-        mod.SistemaEventos.obtener().emit(mod.EVENTOS.PUNTUACION_SUMAR, {
-          puntos: 50,
-        });
+        const bus = mod.SistemaEventos.obtener();
+        bus.emit(mod.EVENTOS.PUNTUACION_SUMAR, { puntos: 50 });
+        bus.emit(mod.EVENTOS.PUNTOS_FLOTANTES, { x: this.x, y: this.y, puntos: 50 });
       });
     } else {
       // Golpe fatal
@@ -59,9 +59,9 @@ export class EnemigoTanque extends EnemigoBase {
 
       // Recompensa final (400 puntos totales por matar al tanque)
       import("@sistemas/SistemaEventos").then((mod) => {
-        mod.SistemaEventos.obtener().emit(mod.EVENTOS.PUNTUACION_SUMAR, {
-          puntos: 300,
-        });
+        const bus = mod.SistemaEventos.obtener();
+        bus.emit(mod.EVENTOS.PUNTUACION_SUMAR, { puntos: 300 });
+        bus.emit(mod.EVENTOS.PUNTOS_FLOTANTES, { x: this.x, y: this.y, puntos: 300 });
       });
 
       this.morir();

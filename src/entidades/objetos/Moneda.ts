@@ -28,8 +28,10 @@ export class Moneda extends Phaser.Physics.Arcade.Sprite {
     body.enable = false;
 
     // Emitir eventos para la UI y el SistemaPuntuacion
-    SistemaEventos.obtener().emit(EVENTOS.MONEDA_RECOGIDA);
-    SistemaEventos.obtener().emit(EVENTOS.PUNTUACION_SUMAR, { puntos: JUEGO.PUNTOS_MONEDA });
+    const bus = SistemaEventos.obtener();
+    bus.emit(EVENTOS.MONEDA_RECOGIDA);
+    bus.emit(EVENTOS.PUNTUACION_SUMAR, { puntos: JUEGO.PUNTOS_MONEDA });
+    bus.emit(EVENTOS.PUNTOS_FLOTANTES, { x: this.x, y: this.y, puntos: JUEGO.PUNTOS_MONEDA });
 
     // Tween visual de recolección
     this.scene.tweens.add({

@@ -20,6 +20,7 @@ export const EVENTOS = {
   // Puntuación
   PUNTUACION_SUMAR: 'puntuacion:sumar',
   PUNTUACION_CAMBIO: 'puntuacion:cambio',
+  PUNTOS_FLOTANTES: 'visual:puntos-flotantes', // Feedback visual
   
   // Objetos
   MONEDA_RECOGIDA: 'objeto:moneda-recogida',

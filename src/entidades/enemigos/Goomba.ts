@@ -38,7 +38,9 @@ export class Goomba extends EnemigoBase {
 
     // Sumar puntos a través del sistema global de eventos
     import("@sistemas/SistemaEventos").then(mod => {
-      mod.SistemaEventos.obtener().emit(mod.EVENTOS.PUNTUACION_SUMAR, { puntos: JUEGO.PUNTOS_GOOMBA });
+      const bus = mod.SistemaEventos.obtener();
+      bus.emit(mod.EVENTOS.PUNTUACION_SUMAR, { puntos: JUEGO.PUNTOS_GOOMBA });
+      bus.emit(mod.EVENTOS.PUNTOS_FLOTANTES, { x: this.x, y: this.y, puntos: JUEGO.PUNTOS_GOOMBA });
     });
 
     // Ejecutar la secuencia de muerte (animación y destrucción)

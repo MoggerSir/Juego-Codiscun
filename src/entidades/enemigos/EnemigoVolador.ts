@@ -59,7 +59,9 @@ export class EnemigoVolador extends EnemigoBase {
 
     // Sumar puntos (damos más puntos porque es volador)
     import("@sistemas/SistemaEventos").then(mod => {
-      mod.SistemaEventos.obtener().emit(mod.EVENTOS.PUNTUACION_SUMAR, { puntos: 300 });
+      const bus = mod.SistemaEventos.obtener();
+      bus.emit(mod.EVENTOS.PUNTUACION_SUMAR, { puntos: 300 });
+      bus.emit(mod.EVENTOS.PUNTOS_FLOTANTES, { x: this.x, y: this.y, puntos: 300 });
     });
 
     this.morir();

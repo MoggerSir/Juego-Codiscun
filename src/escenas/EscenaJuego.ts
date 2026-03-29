@@ -18,6 +18,7 @@ import { GestorNiveles } from '@niveles/GestorNiveles';
 import { LevelFlowManager } from '@sistemas/LevelFlowManager';
 import { Bandera } from '@entidades/objetos/Bandera';
 import { EstadoSession } from '@sistemas/EstadoSession';
+import { VisualPuntuacion } from '@componentes/VisualPuntuacion';
 export class EscenaJuego extends Phaser.Scene {
   private jugador!: Jugador;
   private grupoEnemigos!: Phaser.Physics.Arcade.Group;
@@ -59,6 +60,11 @@ export class EscenaJuego extends Phaser.Scene {
     new LevelFlowManager(this, this.configNivel, this.jugador);
     
     this.scene.launch(ESCENAS.UI); 
+
+    // Registrar Feedback Visual de Puntos
+    SistemaEventos.obtener().on(EVENTOS.PUNTOS_FLOTANTES, (datos: { x: number, y: number, puntos: number }) => {
+      VisualPuntuacion.mostrar(this, datos.x, datos.y, datos.puntos);
+    });
   }
 
   private crearEnemigos(mapa: Phaser.Tilemaps.Tilemap): void {

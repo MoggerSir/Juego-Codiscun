@@ -16,10 +16,10 @@ export class Koopa extends EnemigoBase {
     escena: Phaser.Scene,
     x: number,
     y: number,
-    capaPlataformas: Phaser.Tilemaps.TilemapLayer
+    capaPlataformas: Phaser.Tilemaps.TilemapLayer,
   ) {
     super(escena, x, y, ASSETS.KOOPA_SPRITE, capaPlataformas);
-    
+
     const body = this.body as Phaser.Physics.Arcade.Body;
     body.setSize(24, 32);
     body.setOffset(4, 0);
@@ -47,8 +47,16 @@ export class Koopa extends EnemigoBase {
       this.detenerConcha();
     }
 
-    import("@sistemas/SistemaEventos").then(mod => {
-      mod.SistemaEventos.obtener().emit(mod.EVENTOS.PUNTUACION_SUMAR, { puntos: JUEGO.PUNTOS_KOOPA });
+    import("@sistemas/SistemaEventos").then((mod) => {
+      const bus = mod.SistemaEventos.obtener();
+      if (this.estadoKoopa !== "concha-movimiento") {
+        bus.emit(mod.EVENTOS.PUNTUACION_SUMAR, { puntos: JUEGO.PUNTOS_KOOPA });
+        bus.emit(mod.EVENTOS.PUNTOS_FLOTANTES, {
+          x: this.x,
+          y: this.y,
+          puntos: JUEGO.PUNTOS_KOOPA,
+        });
+      }
     });
   }
 
@@ -56,7 +64,7 @@ export class Koopa extends EnemigoBase {
     this.estadoKoopa = "concha";
     this.setVelocityX(0);
     this.anims.play(`${this.claveAnimacion}-concha`, true);
-    
+
     // Ajustar hitbox para la concha (más baja)
     const body = this.body as Phaser.Physics.Arcade.Body;
     body.setSize(24, 20);
@@ -89,7 +97,9 @@ export class Koopa extends EnemigoBase {
   /**
    * Sobrescribe el golpe lateral para permitir patear la concha.
    */
-  public override recibirGolpeLateral(jugador: Phaser.GameObjects.Components.Transform): boolean {
+  public override recibirGolpeLateral(
+    jugador: Phaser.GameObjects.Components.Transform,
+  ): boolean {
     if (this.estadoKoopa === "concha") {
       // Determinar dirección del pateo según posición relativa
       const direccion = jugador.x < this.x ? 1 : -1;

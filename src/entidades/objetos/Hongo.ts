@@ -46,7 +46,9 @@ export class Hongo extends PowerUp {
     this.setActive(false);
 
     // Sumar puntos
-    SistemaEventos.obtener().emit(EVENTOS.PUNTUACION_SUMAR, { puntos: JUEGO.PUNTOS_HONGO });
+    const bus = SistemaEventos.obtener();
+    bus.emit(EVENTOS.PUNTUACION_SUMAR, { puntos: JUEGO.PUNTOS_HONGO });
+    bus.emit(EVENTOS.PUNTOS_FLOTANTES, { x: this.x, y: this.y, puntos: JUEGO.PUNTOS_HONGO });
 
     // Hacer crecer al jugador y darle vida extra real
     jugador.crecer();
