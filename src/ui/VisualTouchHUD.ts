@@ -11,6 +11,9 @@ export class VisualTouchHUD {
     private contenedor: Phaser.GameObjects.Container;
     private zonaMov: Phaser.GameObjects.Rectangle;
     private zonaSalto: Phaser.GameObjects.Rectangle;
+    private iconoIzq!: Phaser.GameObjects.Container;
+    private iconoDer!: Phaser.GameObjects.Container;
+    private iconoSalto!: Phaser.GameObjects.Container;
     private visible: boolean = false;
 
     constructor(escena: Phaser.Scene) {
@@ -21,27 +24,81 @@ export class VisualTouchHUD {
         this.contenedor.setScrollFactor(0);
         this.contenedor.setDepth(1000); // Siempre encima de todo
 
-        // Zona Izquierda: Movimiento (Sutil indicador)
-        this.zonaMov = escena.add.rectangle(0, 0, width / 2, height, 0xffffff, 0.05);
+        // Fondo de Zonas (Sutileza extrema)
+        this.zonaMov = escena.add.rectangle(0, 0, width / 2, height, 0xffffff, 0.02);
         this.zonaMov.setOrigin(0, 0);
-        
-        // Zona Derecha: Acción/Salto
-        this.zonaSalto = escena.add.rectangle(width / 2, 0, width / 2, height, 0x00ffff, 0.05);
+        this.zonaSalto = escena.add.rectangle(width / 2, 0, width / 2, height, 0x00ffff, 0.02);
         this.zonaSalto.setOrigin(0, 0);
 
-        this.contenedor.add([this.zonaMov, this.zonaSalto]);
+        // --- ICONOS DE CRISTAL ---
+        const paddingBottom = height * 0.2; // Altura ergonómica para los pulgares
+        const iconY = height - paddingBottom;
+        const iconSize = 60;
+
+        // 1. Icono Izquierda (Puntero en 11% aprox)
+        this.iconoIzq = this.crearIconoFlecha(width * 0.11, iconY, iconSize, true);
+        
+        // 2. Icono Derecha (Puntero en 39% aprox)
+        this.iconoDer = this.crearIconoFlecha(width * 0.39, iconY, iconSize, false);
+
+        // 3. Icono Salto (Puntero en 75% aprox)
+        this.iconoSalto = this.crearIconoSalto(width * 0.75, iconY, iconSize + 20);
+
+        this.contenedor.add([this.zonaMov, this.zonaSalto, this.iconoIzq, this.iconoDer, this.iconoSalto]);
         this.contenedor.setAlpha(0); // Empezar oculto
 
         // Registrar escucha de cambio de modo (Uso de Bus Global)
         const bus = SistemaEventos.obtener();
         bus.on('input:modo-cambio', this.manejarCambioModo, this);
-        bus.on('input:flash-zona', this.flashZona, this);
+        bus.on('input:flash-zona', this.flashInput, this);
         
         // Limpieza
         this.escena.events.once('shutdown', () => {
             bus.off('input:modo-cambio', this.manejarCambioModo, this);
-            bus.off('input:flash-zona', this.flashZona, this);
+            bus.off('input:flash-zona', this.flashInput, this);
         });
+    }
+
+    private crearIconoFlecha(x: number, y: number, size: number, invertida: boolean): Phaser.GameObjects.Container {
+        const container = this.escena.add.container(x, y);
+        const g = this.escena.add.graphics();
+        
+        // Círculo de fondo translúcido (Glassmorphism)
+        g.fillStyle(0xffffff, 0.1);
+        g.fillCircle(0, 0, size / 2);
+        g.lineStyle(2, 0xffffff, 0.3);
+        g.strokeCircle(0, 0, size / 2);
+
+        // Triángulo (Flecha)
+        g.fillStyle(0xffffff, 0.8);
+        const s = size * 0.4;
+        const pts = invertida 
+            ? [{ x: -s/2, y: 0 }, { x: s/2, y: -s/2 }, { x: s/2, y: s/2 }]
+            : [{ x: s/2, y: 0 }, { x: -s/2, y: -s/2 }, { x: -s/2, y: s/2 }];
+        
+        g.fillPoints(pts, true);
+        
+        container.add(g);
+        return container;
+    }
+
+    private crearIconoSalto(x: number, y: number, size: number): Phaser.GameObjects.Container {
+        const container = this.escena.add.container(x, y);
+        const g = this.escena.add.graphics();
+        
+        // Círculo de fondo cian (Glassmorphism)
+        g.fillStyle(0x00ffff, 0.15);
+        g.fillCircle(0, 0, size / 2);
+        g.lineStyle(3, 0x00ffff, 0.4);
+        g.strokeCircle(0, 0, size / 2);
+
+        // Icono de Salto (Flecha arriba)
+        g.fillStyle(0xffffff, 0.9);
+        const s = size * 0.35;
+        g.fillPoints([{ x: 0, y: -s/2 }, { x: -s/2, y: s/2 }, { x: s/2, y: s/2 }], true);
+        
+        container.add(g);
+        return container;
     }
 
     private manejarCambioModo(modo: ModoInput): void {
@@ -62,16 +119,31 @@ export class VisualTouchHUD {
     /**
      * Feedback visual rápido cuando se toca una zona.
      */
-    public flashZona(lado: 'izq' | 'der'): void {
+    public flashInput(lado: 'mov_izq' | 'mov_der' | 'jump'): void {
         if (!this.visible) return;
         
-        const target = lado === 'izq' ? this.zonaMov : this.zonaSalto;
+        // Mapeo inteligente de eventos a iconos
+        let target: Phaser.GameObjects.Container | null = null;
+
+        switch(lado) {
+            case 'mov_izq': target = this.iconoIzq; break;
+            case 'mov_der': target = this.iconoDer; break;
+            case 'jump':    target = this.iconoSalto; break;
+        }
         
+        if (target) {
+            this.animarPulsacion(target);
+        }
+    }
+
+    private animarPulsacion(target: Phaser.GameObjects.Container): void {
         this.escena.tweens.add({
             targets: target,
-            fillAlpha: 0.2,
-            duration: 100,
-            yoyo: true
+            scale: 0.85,
+            alpha: 1,
+            duration: 80,
+            yoyo: true,
+            ease: 'Back.easeOut'
         });
     }
 }

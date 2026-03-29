@@ -117,16 +117,17 @@ export class ControlJugador {
       // Dividimos pantalla en 50/50
       if (pointer.x < width / 2) {
         // ZONA MOVIMIENTO (Mitad Izquierda)
-        // Feedback visual Senior
+        const ratioX = pointer.x / width;
+        
         if (pointer.getDuration() < 50) {
-            SistemaEventos.obtener().emit(EVENTOS.INPUT_FLASH_ZONA, 'izq');
+            const zonaFlash = ratioX < 0.25 ? 'mov_izq' : 'mov_der';
+            SistemaEventos.obtener().emit(EVENTOS.INPUT_FLASH_ZONA, zonaFlash);
         }
 
         // Sub-división Pro de la zona de movimiento:
         // 0% - 22%: Izquierda
         // 22% - 28%: Zona Muerta (Evitar jitter)
         // 28% - 50%: Derecha
-        const ratioX = pointer.x / width;
         if (ratioX < 0.22) {
           izquierda = true;
         } else if (ratioX > 0.28) {
@@ -136,7 +137,7 @@ export class ControlJugador {
         // ZONA ACCIÓN (Mitad Derecha)
         if (pointer.getDuration() < 50) {
           this.saltoBufferTiempo = time;
-          SistemaEventos.obtener().emit(EVENTOS.INPUT_FLASH_ZONA, 'der');
+          SistemaEventos.obtener().emit(EVENTOS.INPUT_FLASH_ZONA, 'jump');
         }
         quiereSaltar = true; 
       }
