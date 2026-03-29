@@ -105,31 +105,35 @@ export class ControlJugador {
   private procesarInputTouch(): InputJugador {
     const time = Date.now();
     const { width } = this.escena.scale;
-    const pointers = [this.escena.input.pointer1, this.escena.input.pointer2, this.escena.input.pointer3];
+    
+    // Obtenemos TODOS los punteros activos del manager (Soporte Multitouch Real)
+    const activePointers = this.escena.input.manager.pointers.filter((p: Phaser.Input.Pointer) => p.isDown);
     
     let izquierda = false;
     let derecha = false;
     let quiereSaltar = false;
 
-    // Zona de Muerte (Dead Zone) Proporcional: 10% del centro del área de movimiento
-    const centroMov = width * 0.25;
-    const deadZone = width * 0.05;
-
-    pointers.forEach(pointer => {
-      if (!pointer || !pointer.isDown) return;
-
+    activePointers.forEach((pointer: Phaser.Input.Pointer) => {
       // Dividimos pantalla en 50/50
       if (pointer.x < width / 2) {
-        // ZONA MOVIMIENTO (Izquierda)
+        // ZONA MOVIMIENTO (Mitad Izquierda)
+        // Feedback visual Senior
         if (pointer.getDuration() < 50) {
             SistemaEventos.obtener().emit(EVENTOS.INPUT_FLASH_ZONA, 'izq');
         }
 
-        // Dividido en izquierda y derecha
-        if (pointer.x < centroMov - deadZone) izquierda = true;
-        if (pointer.x > centroMov + deadZone) derecha = true;
+        // Sub-división Pro de la zona de movimiento:
+        // 0% - 22%: Izquierda
+        // 22% - 28%: Zona Muerta (Evitar jitter)
+        // 28% - 50%: Derecha
+        const ratioX = pointer.x / width;
+        if (ratioX < 0.22) {
+          izquierda = true;
+        } else if (ratioX > 0.28) {
+          derecha = true;
+        }
       } else {
-        // ZONA ACCIÓN (Derecha)
+        // ZONA ACCIÓN (Mitad Derecha)
         if (pointer.getDuration() < 50) {
           this.saltoBufferTiempo = time;
           SistemaEventos.obtener().emit(EVENTOS.INPUT_FLASH_ZONA, 'der');
@@ -153,10 +157,9 @@ export class ControlJugador {
     if (this.modoInput === 'teclado') {
       return this.teclas.saltar.isUp && this.teclas.saltarAlt.isUp;
     } else {
-      // En touch, se suelta si no hay ningún pointer presionando la zona de acción
+      // En touch, se suelta si no hay ningún puntero presionando la zona de acción
       const { width } = this.escena.scale;
-      const ptrs = [this.escena.input.pointer1, this.escena.input.pointer2, this.escena.input.pointer3];
-      return !ptrs.some(p => p && p.isDown && p.x > width / 2);
+      return !this.escena.input.manager.pointers.some((p: Phaser.Input.Pointer) => p.isDown && p.x > width / 2);
     }
   }
 
