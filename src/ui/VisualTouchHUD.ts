@@ -24,16 +24,16 @@ export class VisualTouchHUD {
         this.contenedor.setScrollFactor(0);
         this.contenedor.setDepth(1000); // Siempre encima de todo
 
-        // Fondo de Zonas (Sutileza extrema)
-        this.zonaMov = escena.add.rectangle(0, 0, width / 2, height, 0xffffff, 0.02);
+        // Fondo de Zonas (Sutileza extrema pero visible)
+        this.zonaMov = escena.add.rectangle(0, 0, width / 2, height, 0x000000, 0.05); // Ligeramente oscuro para dar contraste
         this.zonaMov.setOrigin(0, 0);
-        this.zonaSalto = escena.add.rectangle(width / 2, 0, width / 2, height, 0x00ffff, 0.02);
+        this.zonaSalto = escena.add.rectangle(width / 2, 0, width / 2, height, 0x00ffff, 0.05);
         this.zonaSalto.setOrigin(0, 0);
 
         // --- ICONOS DE CRISTAL ---
-        const paddingBottom = height * 0.2; // Altura ergonómica para los pulgares
+        const paddingBottom = height * 0.25; // Subimos un poco más para ergonomía
         const iconY = height - paddingBottom;
-        const iconSize = 60;
+        const iconSize = height * 0.15; // Proporcional al alto (Aprox 90px en 600h)
 
         // 1. Icono Izquierda (Puntero en 11% aprox)
         this.iconoIzq = this.crearIconoFlecha(width * 0.11, iconY, iconSize, true);
@@ -42,10 +42,15 @@ export class VisualTouchHUD {
         this.iconoDer = this.crearIconoFlecha(width * 0.39, iconY, iconSize, false);
 
         // 3. Icono Salto (Puntero en 75% aprox)
-        this.iconoSalto = this.crearIconoSalto(width * 0.75, iconY, iconSize + 20);
+        this.iconoSalto = this.crearIconoSalto(width * 0.75, iconY, iconSize + 10);
 
         this.contenedor.add([this.zonaMov, this.zonaSalto, this.iconoIzq, this.iconoDer, this.iconoSalto]);
-        this.contenedor.setAlpha(0); // Empezar oculto
+        // Lógica de visibilidad inicial Pro: Si el dispositivo es touch, empezamos visibles
+        const inicialmenteTouch = navigator.maxTouchPoints > 0;
+        this.visible = inicialmenteTouch;
+        this.contenedor.setAlpha(inicialmenteTouch ? 1 : 0);
+        
+        console.log(`[VisualTouchHUD] Inicializado. Modo inicial: ${inicialmenteTouch ? 'touch' : 'PC'}`);
 
         // Registrar escucha de cambio de modo (Uso de Bus Global)
         const bus = SistemaEventos.obtener();
