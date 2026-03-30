@@ -191,6 +191,42 @@
                  "width":32,
                  "x":300,
                  "y":420
+                }, 
+                {
+                 "height":41.8590335487843,
+                 "id":4,
+                 "name":"ventana",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"mensajeId",
+                         "type":"string",
+                         "value":"secreto"
+                        }],
+                 "rotation":0,
+                 "type":"popup",
+                 "visible":true,
+                 "width":54.1705140043091,
+                 "x":741.151123422592,
+                 "y":342.259156663589
+                }, 
+                {
+                 "height":105.878731917513,
+                 "id":5,
+                 "name":"ventana2",
+                 "opacity":1,
+                 "properties":[
+                        {
+                         "name":"mensajeId",
+                         "type":"string",
+                         "value":"instrucciones"
+                        }],
+                 "rotation":0,
+                 "type":"popup",
+                 "visible":true,
+                 "width":120.652508464143,
+                 "x":44.3213296398892,
+                 "y":502.308402585411
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -246,7 +282,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":4,
+ "nextobjectid":6,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.12.1",

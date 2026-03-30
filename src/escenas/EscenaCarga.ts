@@ -24,15 +24,32 @@ export class EscenaCarga extends Phaser.Scene {
       this.load.tilemapTiledJSON(config.nombreMapa, config.rutaMapa);
     });
 
-    this.load.image(ASSETS.TILESET_TERRENOS, "assets/sprites/objetos/terrenos.png");
+    this.load.image(
+      ASSETS.TILESET_TERRENOS,
+      "assets/sprites/objetos/terrenos.png",
+    );
+    this.load.spritesheet(
+      ASSETS.JUGADOR_SPRITE,
+      "assets/sprites/jugador/correr.png",
+      {
+        frameWidth: 115,
+        frameHeight: 130,
+        spacing: 20,
+      },
+    );
 
     // 4. Sincronización del DOM con Phaser Load Event
     this.load.on("progress", (progreso: number) => {
       if (!this.uiElement) return;
-      const progressBar = this.uiElement.querySelector("#progress-bar") as HTMLElement;
-      const progressText = this.uiElement.querySelector("#progress-text") as HTMLElement;
+      const progressBar = this.uiElement.querySelector(
+        "#progress-bar",
+      ) as HTMLElement;
+      const progressText = this.uiElement.querySelector(
+        "#progress-text",
+      ) as HTMLElement;
       if (progressBar) progressBar.style.width = `${progreso * 100}%`;
-      if (progressText) progressText.innerText = `${Math.round(progreso * 100)}%`;
+      if (progressText)
+        progressText.innerText = `${Math.round(progreso * 100)}%`;
     });
   }
 
@@ -73,7 +90,7 @@ export class EscenaCarga extends Phaser.Scene {
     `;
 
     // Inyección Nativa
-    const tempDiv = document.createElement('div');
+    const tempDiv = document.createElement("div");
     tempDiv.innerHTML = html.trim();
     this.uiElement = tempDiv.firstChild as HTMLElement;
     document.body.appendChild(this.uiElement);
@@ -89,13 +106,18 @@ export class EscenaCarga extends Phaser.Scene {
   private generarTexturasBase(): void {
     // Tileset Principal
     const gTileset = this.make.graphics({ x: 0, y: 0 });
-    gTileset.fillStyle(0x00ff00).fillRect(0, 0, 32, 32).generateTexture(ASSETS.TILESET_PRINCIPAL, 32, 32);
+    gTileset
+      .fillStyle(0x00ff00)
+      .fillRect(0, 0, 32, 32)
+      .generateTexture(ASSETS.TILESET_PRINCIPAL, 32, 32);
     gTileset.destroy();
 
     // Jugador (Placeholder)
     const gJugador = this.make.graphics({ x: 0, y: 0 });
     for (let f = 0; f < 5; f++) {
-      gJugador.fillStyle(f === 4 ? 0xff0000 : 0x3b82f6).fillRect(f * 32, 0, 32, 48);
+      gJugador
+        .fillStyle(f === 4 ? 0xff0000 : 0x3b82f6)
+        .fillRect(f * 32, 0, 32, 48);
     }
     gJugador.generateTexture("temp_jugador", 32 * 5, 48);
     gJugador.destroy();
@@ -110,24 +132,43 @@ export class EscenaCarga extends Phaser.Scene {
 
     // Bandera
     const gBandera = this.make.graphics({ x: 0, y: 0 });
-    gBandera.fillStyle(0xffffff).fillRect(14, 0, 4, 64).fillStyle(0xff0000).fillRect(14, 0, 18, 20);
+    gBandera
+      .fillStyle(0xffffff)
+      .fillRect(14, 0, 4, 64)
+      .fillStyle(0xff0000)
+      .fillRect(14, 0, 18, 20);
     gBandera.generateTexture(ASSETS.BANDERA_SPRITE, 32, 64);
     gBandera.destroy();
   }
 
   private registrarSpritesheets(): void {
-    const texJ = this.sys.textures.get("temp_jugador");
-    if (texJ) this.textures.addSpriteSheet(ASSETS.JUGADOR_SPRITE, texJ.getSourceImage() as HTMLImageElement, { frameWidth: 32, frameHeight: 48 });
+    // Solo registramos el placeholder si no se ha cargado el asset real
+    if (!this.textures.exists(ASSETS.JUGADOR_SPRITE)) {
+      const texJ = this.sys.textures.get("temp_jugador");
+      if (texJ)
+        this.textures.addSpriteSheet(
+          ASSETS.JUGADOR_SPRITE,
+          texJ.getSourceImage() as HTMLImageElement,
+          { frameWidth: 32, frameHeight: 48 },
+        );
+    }
 
     const texM = this.sys.textures.get("temp_moneda");
-    if (texM) this.textures.addSpriteSheet(ASSETS.MONEDA_SPRITE, texM.getSourceImage() as HTMLImageElement, { frameWidth: 32, frameHeight: 32 });
+    if (texM)
+      this.textures.addSpriteSheet(
+        ASSETS.MONEDA_SPRITE,
+        texM.getSourceImage() as HTMLImageElement,
+        { frameWidth: 32, frameHeight: 32 },
+      );
 
     this.anims.create({
       key: `${ASSETS.MONEDA_SPRITE}-anim`,
-      frames: this.anims.generateFrameNumbers(ASSETS.MONEDA_SPRITE, { start: 0, end: 3 }),
+      frames: this.anims.generateFrameNumbers(ASSETS.MONEDA_SPRITE, {
+        start: 0,
+        end: 3,
+      }),
       frameRate: 8,
       repeat: -1,
     });
   }
 }
-

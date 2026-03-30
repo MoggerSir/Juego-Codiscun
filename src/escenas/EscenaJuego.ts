@@ -20,6 +20,7 @@ import { LevelFlowManager } from "@sistemas/LevelFlowManager";
 import { Bandera } from "@entidades/objetos/Bandera";
 // import { EstadoSession } from '@sistemas/EstadoSession';
 import { VisualPuntuacion } from "@componentes/VisualPuntuacion";
+import { PopupInfo } from "@entidades/objetos/PopupInfo";
 export class EscenaJuego extends Phaser.Scene {
   private jugador!: Jugador;
   private grupoEnemigos!: Phaser.Physics.Arcade.Group;
@@ -32,6 +33,7 @@ export class EscenaJuego extends Phaser.Scene {
   private grupoMonedas!: Phaser.Physics.Arcade.Group;
   private grupoBloques!: Phaser.Physics.Arcade.StaticGroup;
   private grupoPowerUps!: Phaser.Physics.Arcade.Group;
+  private grupoPopups!: Phaser.Physics.Arcade.StaticGroup;
 
   constructor() {
     super({ key: ESCENAS.JUEGO });
@@ -110,6 +112,7 @@ export class EscenaJuego extends Phaser.Scene {
     this.grupoMonedas = this.physics.add.group();
     this.grupoBloques = this.physics.add.staticGroup();
     this.grupoPowerUps = this.physics.add.group({ runChildUpdate: true });
+    this.grupoPopups = this.physics.add.staticGroup();
 
     // Helper para leer cada subcapa de Object Layers
     const parsearCapa = (nombreCapa: string) => {
@@ -132,6 +135,12 @@ export class EscenaJuego extends Phaser.Scene {
         } else if (obj.type === "bloque-monedas") {
           const bloque = new BloqueMonedas(this, x, y);
           this.grupoBloques.add(bloque);
+        } else if (obj.type === "popup") {
+          const mensajeId = obj.properties?.find((p: any) => p.name === "mensajeId")?.value;
+          if (mensajeId) {
+            const popup = new PopupInfo(this, x, y, obj.width || 32, obj.height || 32, mensajeId);
+            this.grupoPopups.add(popup);
+          }
         }
       });
     };
@@ -243,6 +252,22 @@ export class EscenaJuego extends Phaser.Scene {
       this.grupoPowerUps,
       this.capaPlataformas,
     );
+
+    // Detección de Popups (Overlap sensillo directo en la escena)
+    this.physics.add.overlap(this.jugador, this.grupoPopups, (_j, p) => {
+      (p as PopupInfo).mostrar();
+    });
+
+    // Lógica avanzada para ocultar al alejarse
+    this.events.on('update', () => {
+      this.grupoPopups.getChildren().forEach((p: any) => {
+        const popup = p as PopupInfo;
+        const distancia = Phaser.Math.Distance.Between(this.jugador.x, this.jugador.y, popup.x, popup.y);
+        if (distancia > 100 && popup.estaActivo) {
+          popup.ocultar();
+        }
+      });
+    });
 
     if (this.bandera) {
       this.colisiones.registrarJugadorConBandera(this.jugador, this.bandera);

@@ -67,8 +67,8 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
    */
   public recibirDano(): void {
     if (
-      this.invencibilidad.estaActiva() || 
-      this.estadoLogico === EstadoLogicoJugador.MUERTO || 
+      this.invencibilidad.estaActiva() ||
+      this.estadoLogico === EstadoLogicoJugador.MUERTO ||
       this.estadoLogico === EstadoLogicoJugador.TERMINANDO_NIVEL
     ) {
       return;
@@ -90,23 +90,25 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
   }
 
   public crecer(): void {
-    if (this.esGrande || this.estadoLogico === EstadoLogicoJugador.MUERTO) return;
+    if (this.esGrande || this.estadoLogico === EstadoLogicoJugador.MUERTO)
+      return;
     this.esGrande = true;
-    
-    // El Origen por defecto es (0.5, 0.5). Al crecer Y escala * 1.5, la mitad inferior 
+
+    // El Origen por defecto es (0.5, 0.5). Al crecer Y escala * 1.5, la mitad inferior
     // se empuja hacia abajo. Movemos `y` exactamente esa cantidad hacia arriba para que
     // los pies queden en su posición original y no traspasen el suelo.
-    this.y -= 10; 
-    
+    this.y -= 10;
+
     // Escalar sprite (Phaser auto-ajusta el tamaño del Arcade Body proporcionalmente)
-    this.setScale(1, 1.5);
+    // Ajuste de escala relativo para el nuevo asset HD (0.4 base * 1.5 = 0.6)
+    this.setScale(0.6, 0.7);
   }
 
   public encoger(): void {
     if (!this.esGrande) return;
     this.esGrande = false;
-    
-    this.setScale(1, 1);
+
+    this.setScale(0.6);
   }
 
   public ganarVidaExtra(): void {
@@ -117,7 +119,6 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
     this.estadoLogico = EstadoLogicoJugador.DANIADO;
     this.invencibilidad.activar();
 
-
     // Feedback físico (retroceso / knockback inicial)
     // Nota: El SistemaDano aplicará un retroceso más preciso, pero aquí damos un salto
     this.setVelocityY(-250);
@@ -127,7 +128,10 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
     const session = EstadoSession.obtener();
 
     // 0. Bloqueo Sistémico Inmediato (Senior Protection)
-    if (this.estadoLogico === EstadoLogicoJugador.MUERTO || session.getEstado() !== EstadoJuego.JUGANDO) {
+    if (
+      this.estadoLogico === EstadoLogicoJugador.MUERTO ||
+      session.getEstado() !== EstadoJuego.JUGANDO
+    ) {
       return;
     }
 
@@ -145,12 +149,12 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
     body.enable = false;
 
     this.setVelocity(0, -450); // Salto de muerte dramático
-    
-    // Reproducir animación (si existe) 
-    if (this.anims.exists('jugador-muerte')) {
-      this.anims.play('jugador-muerte');
+
+    // Reproducir animación (si existe)
+    if (this.anims.exists("jugador-muerte")) {
+      this.anims.play("jugador-muerte");
     }
-    
+
     // Emitir el fallo total tras la animación (el LevelFlowManager se encargará del resto)
     this.scene.time.delayedCall(1500, () => {
       SistemaEventos.obtener().emit(EVENTOS.JUGADOR_SIN_VIDAS);
@@ -158,7 +162,7 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
   }
 
   /**
-   * Congela al jugador ignorando inputs y anulando físicas para proteger 
+   * Congela al jugador ignorando inputs y anulando físicas para proteger
    * la secuencia cinematica de transición de nivel (Ej: Bajar Bandera).
    */
   public comenzarTransicionVictoria(): void {
@@ -166,16 +170,23 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
     const body = this.body as Phaser.Physics.Arcade.Body;
     body.enable = false;
     this.setVelocity(0, 0);
-    
-    if (this.anims.exists('jugador-idle')) {
-      this.anims.play('jugador-idle');
+
+    if (this.anims.exists("jugador-idle")) {
+      this.anims.play("jugador-idle");
     }
   }
 
   private configurarCuerpo(): void {
     const body = this.body as Phaser.Physics.Arcade.Body;
-    body.setSize(24, 40);
-    body.setOffset(4, 8);
+
+    // Nueva escala base para el asset de 128px
+    this.setScale(0.6);
+
+    // Ajuste de colisión (Hitbox) para el frame de 104x128
+    // Estos valores son en píxeles originales del asset
+    body.setSize(60, 110);
+    body.setOffset(22, 18);
+
     body.setMaxVelocityX(150);
     body.setGravityY(0);
   }
@@ -183,7 +194,7 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
   update(): void {
     // Si el nivel se terminó, el jugador entra en letargo absoluto.
     if (this.estadoLogico === EstadoLogicoJugador.TERMINANDO_NIVEL) return;
-    
+
     this.estados.actualizar(this.control.obtenerInput());
   }
 

@@ -17,7 +17,7 @@ export class AnimacionesJugador {
       key: "jugador-correr",
       frames: escena.anims.generateFrameNumbers(ASSETS.JUGADOR_SPRITE, {
         start: 0,
-        end: 3,
+        end: 7,
       }),
       frameRate: 10,
       repeat: -1,

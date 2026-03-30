@@ -10,6 +10,7 @@ export enum EstadoJuego {
   JUGANDO = "JUGANDO",
   FALLANDO = "FALLANDO",
   NIVEL_COMPLETADO = "NIVEL_COMPLETADO",
+  MOSTRANDO_INFO = "MOSTRANDO_INFO",
 }
 
 export class EstadoSession {
