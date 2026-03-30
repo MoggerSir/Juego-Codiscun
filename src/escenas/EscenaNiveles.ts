@@ -10,7 +10,7 @@ import "../ui/selector-niveles.css";
  * Utiliza Phaser DOM para un renderizado dinámico y responsivo con estética Premium.
  */
 export class EscenaNiveles extends Phaser.Scene {
-  private uiElement!: Phaser.GameObjects.DOMElement;
+  private uiElement: HTMLElement | null = null;
   private transicionando: boolean = false;
   private movido: boolean = false;
   private isDown: boolean = false;
@@ -99,15 +99,13 @@ export class EscenaNiveles extends Phaser.Scene {
       </div>
     `;
 
-    // 4. Inyectar en el Engine de Phaser (DOMElement)
-    this.uiElement = this.add
-      .dom(0, 0)
-      .setOrigin(0, 0)
-      .createFromHTML(htmlContent);
+    // 4. Inyección Nativa en Body (Full Screen Illusion)
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlContent.trim();
+    this.uiElement = tempDiv.firstChild as HTMLElement;
+    document.body.appendChild(this.uiElement);
 
-    const container = this.uiElement.getChildByID(
-      "selector-niveles",
-    ) as HTMLElement;
+    const container = this.uiElement;
 
     // 5. Inyección de Lógica Senior (Settings)
     this.setupSettingsHUD(container);
@@ -339,9 +337,10 @@ export class EscenaNiveles extends Phaser.Scene {
     this.listeners = {};
     document.body.classList.remove("no-scroll");
 
-    // 2. Destrucción de DOM Phaser
-    if (this.uiElement) {
-      this.uiElement.destroy();
+    // 2. Destrucción de DOM Nativo
+    if (this.uiElement && this.uiElement.parentNode) {
+      this.uiElement.parentNode.removeChild(this.uiElement);
+      this.uiElement = null;
     }
   }
 }

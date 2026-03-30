@@ -5,7 +5,7 @@ import { GestorNiveles } from "@niveles/GestorNiveles";
 import "../ui/game-ui.css"; // Estilos globales
 
 export class EscenaCarga extends Phaser.Scene {
-  private domLoader!: Phaser.GameObjects.DOMElement;
+  private uiElement: HTMLElement | null = null;
 
   constructor() {
     super({ key: ESCENAS.CARGA });
@@ -28,8 +28,9 @@ export class EscenaCarga extends Phaser.Scene {
 
     // 4. Sincronización del DOM con Phaser Load Event
     this.load.on("progress", (progreso: number) => {
-      const progressBar = this.domLoader.getChildByID("progress-bar") as HTMLElement;
-      const progressText = this.domLoader.getChildByID("progress-text") as HTMLElement;
+      if (!this.uiElement) return;
+      const progressBar = this.uiElement.querySelector("#progress-bar") as HTMLElement;
+      const progressText = this.uiElement.querySelector("#progress-text") as HTMLElement;
       if (progressBar) progressBar.style.width = `${progreso * 100}%`;
       if (progressText) progressText.innerText = `${Math.round(progreso * 100)}%`;
     });
@@ -41,20 +42,21 @@ export class EscenaCarga extends Phaser.Scene {
 
     // Pequeño delay para dejar que la animación de carga se complete visualmente
     this.time.delayedCall(500, () => {
+      this.limpiarUI();
       this.scene.start(ESCENAS.NIVELES);
     });
 
     // Cleanup del DOM al salir
     this.events.once("shutdown", () => {
-      if (this.domLoader) this.domLoader.destroy();
+      this.limpiarUI();
     });
   }
 
   private createDOMLoader(): void {
     const html = `
-      <div class="ui-screen">
-        <div class="glass-panel" style="width: 500px; text-align: center; border-color: var(--neon-cyan);">
-          <h1 style="font-size: 1.5rem; color: #fff; margin-bottom: 2.5rem; text-shadow: 4px 4px 0px #000;">Nintendo <span style="color: var(--neon-cyan);">Empresa</span></h1>
+      <div id="loader-screen" class="ui-screen">
+        <div class="glass-panel" style="width: 90%; max-width: 500px; text-align: center; border-color: var(--neon-cyan);">
+          <h1 style="font-size: clamp(1rem, 5vw, 1.5rem); color: #fff; margin-bottom: clamp(1.5rem, 5vh, 2.5rem); text-shadow: 4px 4px 0px #000;">Nintendo <span style="color: var(--neon-cyan);">Empresa</span></h1>
           
           <div style="border: 4px solid #fff; padding: 4px; background: #000; margin-bottom: 1.5rem; position: relative; height: 30px;">
             <div id="progress-bar" style="width: 0%; height: 100%; background: var(--neon-cyan); transition: width 0.1s steps(10);"></div>
@@ -69,7 +71,19 @@ export class EscenaCarga extends Phaser.Scene {
         </div>
       </div>
     `;
-    this.domLoader = this.add.dom(0, 0).setOrigin(0, 0).createFromHTML(html);
+
+    // Inyección Nativa
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html.trim();
+    this.uiElement = tempDiv.firstChild as HTMLElement;
+    document.body.appendChild(this.uiElement);
+  }
+
+  private limpiarUI(): void {
+    if (this.uiElement && this.uiElement.parentNode) {
+      this.uiElement.parentNode.removeChild(this.uiElement);
+      this.uiElement = null;
+    }
   }
 
   private generarTexturasBase(): void {

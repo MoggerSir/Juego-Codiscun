@@ -6,7 +6,7 @@ import "../ui/game-ui.css";
 
 export class EscenaVictoria extends Phaser.Scene {
   private datosFinNivel!: DatosFinNivel;
-  private domUI!: Phaser.GameObjects.DOMElement;
+  private uiElement: HTMLElement | null = null;
 
   constructor() {
     super({ key: ESCENAS.VICTORIA });
@@ -30,7 +30,7 @@ export class EscenaVictoria extends Phaser.Scene {
 
     // 3. Cleanup
     this.events.once("shutdown", () => {
-      if (this.domUI) this.domUI.destroy();
+      this.limpiarUI();
     });
   }
 
@@ -52,10 +52,10 @@ export class EscenaVictoria extends Phaser.Scene {
     };
 
     const html = `
-      <div class="ui-screen">
-        <div class="glass-panel" style="width: 550px; text-align: center; padding: 3rem;">
-          <h2 style="color: var(--neon-gold); font-size: 1.5rem; margin-bottom: 0.5rem; text-shadow: 4px 4px 0px #000;">¡MISIÓN ÉXITO!</h2>
-          <p style="font-size: 0.7rem; color: #888; margin-bottom: 2.5rem; letter-spacing: 2px;">${configNivel.nombreDisplay}</p>
+      <div id="victory-screen" class="ui-screen">
+        <div class="glass-panel" style="width: 90%; max-width: 550px; text-align: center; padding: clamp(1rem, 5vw, 2.5rem); margin: 0 auto;">
+          <h2 style="color: var(--neon-gold); font-size: clamp(1rem, 5vw, 1.5rem); margin-bottom: 0.5rem; text-shadow: 4px 4px 0px #000;">¡MISIÓN ÉXITO!</h2>
+          <p style="font-size: 0.6rem; color: #888; margin-bottom: 1.5rem; letter-spacing: 2px;">${configNivel.nombreDisplay}</p>
           
           <div style="display: flex; flex-direction: column; gap: 1.2rem; margin-bottom: 2.5rem; text-align: left;">
             <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
@@ -88,24 +88,35 @@ export class EscenaVictoria extends Phaser.Scene {
       </div>
     `;
 
-    this.domUI = this.add.dom(0, 0).setOrigin(0, 0).createFromHTML(html);
+    // Inyección Nativa para CENTRADO PERFECTO
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html.trim();
+    this.uiElement = tempDiv.firstChild as HTMLElement;
+    document.body.appendChild(this.uiElement);
 
     // Eventos de botones
-    const btnSiguiente = this.domUI.getChildByID(
-      "btn-siguiente",
-    ) as HTMLElement;
-    const btnSelector = this.domUI.getChildByID("btn-selector") as HTMLElement;
+    const btnSiguiente = this.uiElement.querySelector("#btn-siguiente") as HTMLElement;
+    const btnSelector = this.uiElement.querySelector("#btn-selector") as HTMLElement;
 
     if (btnSiguiente) {
       btnSiguiente.onclick = () => {
+        this.limpiarUI();
         this.scene.start(ESCENAS.JUEGO, { idNivel: siguienteId });
       };
     }
 
     if (btnSelector) {
       btnSelector.onclick = () => {
+        this.limpiarUI();
         this.scene.start(ESCENAS.NIVELES);
       };
+    }
+  }
+
+  private limpiarUI(): void {
+    if (this.uiElement && this.uiElement.parentNode) {
+      this.uiElement.parentNode.removeChild(this.uiElement);
+      this.uiElement = null;
     }
   }
 }

@@ -60,6 +60,12 @@ export class EscenaJuego extends Phaser.Scene {
     this.configurarColisiones();
     this.configurarCamara(mapa);
 
+    // Sistema de Adaptación Dinámica (Senior Resize Pattern)
+    this.scale.on('resize', this.manejarResize, this);
+    this.events.once('shutdown', () => {
+        this.scale.off('resize', this.manejarResize, this);
+    });
+
     // Inyección de lógica de flujo aislada (Anti-God Scene)
     new LevelFlowManager(this, this.configNivel, this.jugador);
 
@@ -284,5 +290,15 @@ export class EscenaJuego extends Phaser.Scene {
     // Accedemos a morir vía cast o simplemente emitiendo el evento que el LevelFlowManager escucha
     // Pero lo más limpio es que el Jugador sepa que murió.
     this.jugador.morir();
+  }
+
+  private manejarResize(gameSize: Phaser.Structs.Size): void {
+    const { width, height } = gameSize;
+    
+    // Sincronizar cámaras con las nuevas dimensiones
+    this.cameras.main.setSize(width, height);
+    
+    // Si tenemos HUD visual, avisar (aunque el HUD DOM se auto-ajusta)
+    console.log(`[EscenaJuego] Resize detectado: ${width}x${height}`);
   }
 }

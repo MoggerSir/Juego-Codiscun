@@ -6,7 +6,7 @@ import "../ui/game-ui.css";
 export class EscenaGameOver extends Phaser.Scene {
   private puntosFinal: number = 0;
   private idNivelActual: string = "nivel-1";
-  private domUI!: Phaser.GameObjects.DOMElement;
+  private uiElement: HTMLElement | null = null;
 
   constructor() {
     super({ key: ESCENAS.GAME_OVER });
@@ -26,19 +26,26 @@ export class EscenaGameOver extends Phaser.Scene {
 
     // 3. Cleanup
     this.events.once("shutdown", () => {
-      if (this.domUI) this.domUI.destroy();
+      this.limpiarUI();
+    });
+
+    // 4. Soporte para tecla Espacio (Reintentar nivel actual)
+    this.input.keyboard?.once("keydown-SPACE", () => {
+      this.limpiarUI();
+      EstadoSession.obtener().resetTotal();
+      this.scene.start(ESCENAS.JUEGO, { idNivel: this.idNivelActual });
     });
   }
 
   private createDOMUI(): void {
     const html = `
-      <div class="ui-screen" style="background: #1a0000;">
-        <div class="glass-panel" style="width: 500px; text-align: center; border-color: var(--neon-red); background: rgba(0,0,0,0.8);">
-          <h1 style="color: var(--neon-red); font-size: 1.8rem; text-shadow: 6px 6px 0px #000; margin-bottom: 2rem; animation: textFlicker 0.2s infinite alternate;">GAME OVER</h1>
+      <div id="gameover-screen" class="ui-screen" style="background: rgba(26, 0, 0, 0.9);">
+        <div class="glass-panel" style="width: 90%; max-width: 500px; text-align: center; border-color: var(--neon-red); background: rgba(0,0,0,0.8);">
+          <h1 style="color: var(--neon-red); font-size: clamp(1.2rem, 6vw, 1.8rem); text-shadow: 4px 4px 0px #000; margin-bottom: 2rem; animation: textFlicker 0.2s infinite alternate;">GAME OVER</h1>
           
-          <div style="margin: 3rem 0; color: #fff;">
-            <p style="font-size: 0.6rem; color: #888; margin-bottom: 1rem;">PLAYER 1 SCORE</p>
-            <div style="font-size: 1.5rem; color: #fff;">${this.puntosFinal.toLocaleString().padStart(7, '0')}</div>
+          <div style="margin: 2rem 0; color: #fff;">
+            <p style="font-size: 0.6rem; color: #888; margin-bottom: 0.5rem;">PLAYER 1 SCORE</p>
+            <div style="font-size: clamp(1rem, 5vw, 1.5rem); color: #fff;">${this.puntosFinal.toLocaleString().padStart(7, '0')}</div>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 1rem;">
@@ -57,26 +64,34 @@ export class EscenaGameOver extends Phaser.Scene {
         </style>
       </div>
     `;
-    this.domUI = this.add.dom(0, 0).setOrigin(0, 0).createFromHTML(html);
+
+    // Inyección Nativa para CENTRADO PERFECTO
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html.trim();
+    this.uiElement = tempDiv.firstChild as HTMLElement;
+    document.body.appendChild(this.uiElement);
 
     // Eventos
-    const btnReintentar = this.domUI.getChildByID("btn-reintentar") as HTMLElement;
-    const btnSelector = this.domUI.getChildByID("btn-selector") as HTMLElement;
+    const btnReintentar = this.uiElement.querySelector("#btn-reintentar") as HTMLElement;
+    const btnSelector = this.uiElement.querySelector("#btn-selector") as HTMLElement;
 
     btnReintentar.onclick = () => {
+      this.limpiarUI();
       EstadoSession.obtener().resetTotal();
       this.scene.start(ESCENAS.JUEGO, { idNivel: this.idNivelActual }); 
     };
 
     btnSelector.onclick = () => {
+      this.limpiarUI();
       EstadoSession.obtener().resetTotal();
       this.scene.start(ESCENAS.NIVELES);
     };
+  }
 
-    // Soporte para tecla Espacio (Reintentar nivel actual)
-    this.input.keyboard?.once("keydown-SPACE", () => {
-      EstadoSession.obtener().resetTotal();
-      this.scene.start(ESCENAS.JUEGO, { idNivel: this.idNivelActual });
-    });
+  private limpiarUI(): void {
+    if (this.uiElement && this.uiElement.parentNode) {
+      this.uiElement.parentNode.removeChild(this.uiElement);
+      this.uiElement = null;
+    }
   }
 }

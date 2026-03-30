@@ -3,49 +3,56 @@
 */
 
 .selector-container {
-  width: 800px;
-  height: 600px;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
   align-items: center;
-  justify-content: center;
-  background: var(--bg-deep); /* Fondo sólido NES */
+  justify-content: flex-start;
+  background: var(--bg-deep);
   font-family: var(--font-pixel);
   color: white;
-  -webkit-tap-highlight-color: transparent;
-  animation: uiFadeIn 0.3s steps(4) forwards;
-  pointer-events: auto;
   overflow: hidden;
-  position: relative;
-  z-index: 9999;
+  z-index: 10003;
 }
 
 /* Título Estilo Nintendo */
 .selector-titulo {
-  font-size: 1.4rem;
+  font-size: clamp(0.9rem, 4vw, 1.5rem);
   font-weight: normal;
-  margin-bottom: 3rem;
+  margin-top: clamp(1rem, 6vh, 4rem);
+  margin-bottom: 1rem;
   letter-spacing: 2px;
   color: #fff;
-  text-shadow: 6px 6px 0px #000;
+  text-shadow: 4px 4px 0px #000;
   text-transform: uppercase;
+  width: 100%;
+  text-align: center;
 }
 
 /* Carrusel de Cartuchos */
 .niveles-wrapper {
+  flex: 1; /* OCUPA EL ESPACIO CENTRAL RESTANTE */
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  gap: 30px;
-  padding: 20px 60px;
-  padding-bottom: 50px;
+  gap: 20px;
+  padding: 0 10%;
+  align-items: center; /* CENTRADO VERTICAL REAL */
   overflow-x: auto;
-  max-width: 95%;
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
   pointer-events: auto;
   scrollbar-width: thin;
   scrollbar-color: #fff #000;
   cursor: grab;
   scroll-behavior: smooth;
+  min-height: 0;
 }
 
 .niveles-wrapper.dragging {
@@ -67,8 +74,8 @@
 
 /* Tarjeta CARTUCHO */
 .nivel-card {
-  min-width: 180px;
-  height: 250px;
+  min-width: 160px;
+  height: 220px;
   background: #222;
   border: 4px solid #fff;
   box-shadow: 8px 8px 0px #000;
@@ -158,11 +165,13 @@
 }
 
 .instrucciones {
-  margin-top: 2rem;
-  font-size: 0.5rem;
-  color: #555;
+  margin-bottom: clamp(1rem, 4vh, 3rem);
+  font-size: clamp(0.4rem, 2vw, 0.6rem);
+  color: #888;
   text-transform: uppercase;
   letter-spacing: 2px;
+  text-align: center;
+  width: 100%;
 }
 
 @keyframes uiFadeIn {

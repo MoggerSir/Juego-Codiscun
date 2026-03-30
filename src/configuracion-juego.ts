@@ -7,35 +7,35 @@ import { EscenaVictoria } from "@escenas/EscenaVictoria";
 import { EscenaNiveles } from "@escenas/EscenaNiveles";
 
 export const configuracionJuego: Phaser.Types.Core.GameConfig = {
-  type: Phaser.AUTO, 
-  width: 800,
+  type: Phaser.AUTO,
+  width: 1200,
   height: 600,
   backgroundColor: "#1a1a2e",
   parent: "game-container",
   dom: {
-    createContainer: true
+    createContainer: true,
   },
   physics: {
     default: "arcade",
     arcade: {
       gravity: { x: 0, y: 600 },
-      debug: true, 
+      debug: true,
     },
   },
   scale: {
-    mode: Phaser.Scale.FIT, 
+    mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
   input: {
-    activePointers: 3
+    activePointers: 3,
   },
   scene: [
-    EscenaCarga, 
+    EscenaCarga,
     EscenaJuego,
     EscenaUI,
     EscenaGameOver,
     EscenaVictoria,
-    EscenaNiveles
+    EscenaNiveles,
   ],
   render: {
     pixelArt: true,

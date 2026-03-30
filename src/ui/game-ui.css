@@ -27,9 +27,13 @@
 }
 
 .ui-screen {
-  width: 800px;
-  height: 600px;
-  background: var(--bg-deep);
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  background: var(--bg-deep); /* Fondo igual al de Phaser */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -37,11 +41,9 @@
   font-family: var(--font-pixel);
   color: white;
   user-select: none;
-  -webkit-user-select: none;
-  pointer-events: auto;
   overflow: hidden;
-  position: relative;
   text-rendering: pixelated;
+  z-index: 10002;
 }
 
 /* Panel Retro con Bordes Dobles */
