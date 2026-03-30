@@ -53,34 +53,34 @@ export class EscenaVictoria extends Phaser.Scene {
 
     const html = `
       <div id="victory-screen" class="ui-screen">
-        <div class="glass-panel" style="width: 90%; max-width: 550px; text-align: center; padding: clamp(1rem, 5vw, 2.5rem); margin: 0 auto;">
-          <h2 style="color: var(--neon-gold); font-size: clamp(1rem, 5vw, 1.5rem); margin-bottom: 0.5rem; text-shadow: 4px 4px 0px #000;">¡MISIÓN ÉXITO!</h2>
-          <p style="font-size: 0.6rem; color: #888; margin-bottom: 1.5rem; letter-spacing: 2px;">${configNivel.nombreDisplay}</p>
+        <div class="glass-panel" id="panel-victoria" style="width: 90%; max-width: 550px; text-align: center; padding: clamp(0.5rem, 3vw, 2rem); margin: 0 auto;">
+          <h2 style="color: var(--neon-gold); font-size: clamp(0.9rem, 4vw, 1.3rem); margin-bottom: 0.3rem; text-shadow: 4px 4px 0px #000;">¡MISIÓN ÉXITO!</h2>
+          <p style="font-size: 0.5rem; color: #888; margin-bottom: clamp(0.5rem, 2vh, 1.5rem); letter-spacing: 2px;">${configNivel.nombreDisplay}</p>
           
-          <div style="display: flex; flex-direction: column; gap: 1.2rem; margin-bottom: 2.5rem; text-align: left;">
-            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
-              <span style="font-size: 0.7rem; color: #aaa;">PUNTOS BASE:</span>
-              <span style="font-size: 0.8rem; color: #fff; font-family: 'Courier New', monospace;">${this.datosFinNivel.puntos.toLocaleString()}</span>
+          <div style="display: flex; flex-direction: column; gap: clamp(0.3rem, 1.5vh, 1rem); margin-bottom: clamp(0.5rem, 2vh, 1.5rem); text-align: left;">
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px;">
+              <span style="font-size: 0.6rem; color: #aaa;">PUNTOS BASE:</span>
+              <span style="font-size: 0.7rem; color: #fff; font-family: 'Courier New', monospace;">${this.datosFinNivel.puntos.toLocaleString()}</span>
             </div>
-            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
-              <span style="font-size: 0.7rem; color: #aaa;">TIEMPO TRANSCURRIDO:</span>
-              <span style="font-size: 0.8rem; color: var(--neon-cyan); font-family: 'Courier New', monospace;">${formatear(tiempoTranscurrido)}</span>
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px;">
+              <span style="font-size: 0.6rem; color: #aaa;">TIEMPO:</span>
+              <span style="font-size: 0.7rem; color: var(--neon-cyan); font-family: 'Courier New', monospace;">${formatear(tiempoTranscurrido)}</span>
             </div>
-            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">
-              <span style="font-size: 0.7rem; color: #aaa;">BONO POR TIEMPO (x0.2):</span>
-              <span style="font-size: 0.8rem; color: var(--neon-gold); font-family: 'Courier New', monospace;">+${bonoTiempo.toLocaleString()}</span>
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px;">
+              <span style="font-size: 0.6rem; color: #aaa;">BONO:</span>
+              <span style="font-size: 0.7rem; color: var(--neon-gold); font-family: 'Courier New', monospace;">+${bonoTiempo.toLocaleString()}</span>
             </div>
-            <div style="display: flex; justify-content: space-between; margin-top: 1rem; padding: 15px; background: rgba(0,0,0,0.4); border-radius: 8px; border: 1px solid var(--neon-gold);">
-              <span style="font-size: 0.9rem; color: var(--neon-gold); font-weight: bold;">PUNTUACIÓN FINAL:</span>
-              <span style="font-size: 1.1rem; color: #fff; text-shadow: 0 0 10px var(--neon-gold); font-family: 'Courier New', monospace;">${puntosTotales.toLocaleString()}</span>
+            <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; padding: 10px; background: rgba(0,0,0,0.4); border-radius: 8px; border: 1px solid var(--neon-gold);">
+              <span style="font-size: 0.7rem; color: var(--neon-gold); font-weight: bold;">TOTAL:</span>
+              <span style="font-size: 1rem; color: #fff; text-shadow: 0 0 10px var(--neon-gold); font-family: 'Courier New', monospace;">${puntosTotales.toLocaleString()}</span>
             </div>
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
             ${
               siguienteId
                 ? `<button id="btn-siguiente" class="btn-neon" style="background: var(--neon-cyan); color: #000; font-weight: bold;">SIGUIENTE NIVEL</button>`
-                : '<div style="color: var(--neon-gold); font-size: 0.9rem; margin: 1rem 0; font-weight: bold; text-shadow: 0 0 15px var(--neon-gold);">⭐ ¡LEYENDA DEL JUEGO! ⭐</div>'
+                : '<div style="color: var(--neon-gold); font-size: 0.7rem; margin: 0.5rem 0; font-weight: bold; text-shadow: 0 0 15px var(--neon-gold);">⭐ ¡LEYENDA! ⭐</div>'
             }
             <button id="btn-selector" class="btn-neon">REGRESAR AL MAPA</button>
           </div>

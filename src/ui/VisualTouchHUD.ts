@@ -151,4 +151,27 @@ export class VisualTouchHUD {
             ease: 'Back.easeOut'
         });
     }
+
+    /**
+     * Reajusta dinámicamente el HUD táctil al cambiar el tamaño de la pantalla.
+     */
+    public reposicionar(width: number, height: number): void {
+        const paddingBottom = height * 0.25;
+        const iconY = height - paddingBottom;
+        const iconSize = height * 0.15;
+
+        // 1. Reajustar Zonas de Interacción
+        this.zonaMov.setSize(width / 2, height);
+        this.zonaSalto.setPosition(width / 2, 0);
+        this.zonaSalto.setSize(width / 2, height);
+
+        // 2. Reposicionar Iconos (D-Pad Izquierda)
+        this.iconoIzq.setPosition(width * 0.11, iconY);
+        this.iconoDer.setPosition(width * 0.39, iconY);
+
+        // 3. Reposicionar Icono de Salto (Derecha)
+        this.iconoSalto.setPosition(width * 0.75, iconY);
+
+        console.log(`[VisualTouchHUD] HUD Reposicionado: ${width}x${height}`);
+    }
 }

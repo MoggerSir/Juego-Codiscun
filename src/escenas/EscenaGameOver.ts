@@ -40,20 +40,20 @@ export class EscenaGameOver extends Phaser.Scene {
   private createDOMUI(): void {
     const html = `
       <div id="gameover-screen" class="ui-screen" style="background: rgba(26, 0, 0, 0.9);">
-        <div class="glass-panel" style="width: 90%; max-width: 500px; text-align: center; border-color: var(--neon-red); background: rgba(0,0,0,0.8);">
-          <h1 style="color: var(--neon-red); font-size: clamp(1.2rem, 6vw, 1.8rem); text-shadow: 4px 4px 0px #000; margin-bottom: 2rem; animation: textFlicker 0.2s infinite alternate;">GAME OVER</h1>
+        <div class="glass-panel" id="panel-gameover" style="width: 90%; max-width: 500px; text-align: center; border-color: var(--neon-red); background: rgba(0,0,0,0.8);">
+          <h1 style="color: var(--neon-red); font-size: clamp(1.2rem, 6vw, 1.8rem); text-shadow: 4px 4px 0px #000; margin-bottom: clamp(1rem, 4vh, 2rem); animation: textFlicker 0.2s infinite alternate;">GAME OVER</h1>
           
-          <div style="margin: 2rem 0; color: #fff;">
-            <p style="font-size: 0.6rem; color: #888; margin-bottom: 0.5rem;">PLAYER 1 SCORE</p>
+          <div style="margin: clamp(0.5rem, 3vh, 2rem) 0; color: #fff;">
+            <p style="font-size: 0.6rem; color: #888; margin-bottom: 0.2rem;">PLAYER 1 SCORE</p>
             <div style="font-size: clamp(1rem, 5vw, 1.5rem); color: #fff;">${this.puntosFinal.toLocaleString().padStart(7, '0')}</div>
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <div style="display: flex; flex-direction: column; gap: clamp(0.5rem, 2vh, 1rem);">
             <button id="btn-reintentar" class="btn-neon" style="background: var(--neon-red); color: #fff;">REINTENTAR</button>
             <button id="btn-selector" class="btn-neon" style="font-size: 0.6rem; opacity: 0.7;">MAPA DEL MUNDO</button>
           </div>
 
-          <p style="margin-top: 3rem; font-size: 0.5rem; color: #444; animation: textFlash 1s infinite;">PRESS SPACE TO RETRY</p>
+          <p style="margin-top: clamp(1rem, 4vh, 3rem); font-size: 0.5rem; color: #444; animation: textFlash 1s infinite;">PRESS SPACE TO RETRY</p>
         </div>
 
         <style>

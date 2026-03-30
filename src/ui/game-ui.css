@@ -104,3 +104,35 @@
 /* Utilidades de Padding y Margen Retro */
 .mt-2 { margin-top: 20px; }
 .mb-2 { margin-bottom: 20px; }
+
+/* --- OPTIMIZACIÓN LANDSCAPE MÓVIL (Baja Altura) --- */
+@media (max-height: 450px) {
+  .ui-screen {
+    padding: 10px;
+  }
+  .glass-panel {
+    padding: 1rem !important;
+    gap: 0.5rem !important;
+    width: 95% !important;
+    max-width: 400px !important;
+  }
+  .glass-panel h1, .glass-panel h2 {
+    font-size: 1rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  .glass-panel p {
+    font-size: 0.45rem !important;
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  .btn-neon {
+    padding: 8px 15px !important;
+    font-size: 0.5rem !important;
+    margin: 2px 0 !important;
+  }
+  /* Reducir tabla de victoria */
+  .glass-panel div[style*="flex-direction: column"] {
+    gap: 0.4rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+}
