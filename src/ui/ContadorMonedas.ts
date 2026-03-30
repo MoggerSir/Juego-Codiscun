@@ -46,4 +46,10 @@ export class ContadorMonedas {
       yoyo: true,
     });
   }
+
+  public reposicionar(x: number, y: number): void {
+    if (this.texto) {
+      this.texto.setPosition(x, y);
+    }
+  }
 }

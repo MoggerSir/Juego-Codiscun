@@ -295,10 +295,14 @@ export class EscenaJuego extends Phaser.Scene {
   private manejarResize(gameSize: Phaser.Structs.Size): void {
     const { width, height } = gameSize;
     
-    // Sincronizar cámaras con las nuevas dimensiones
+    // 1. Reajustar Cámara al Viewport real del navegador
     this.cameras.main.setSize(width, height);
     
-    // Si tenemos HUD visual, avisar (aunque el HUD DOM se auto-ajusta)
-    console.log(`[EscenaJuego] Resize detectado: ${width}x${height}`);
+    // 2. Mantener límites si el mapa ya existe
+    if (this.capaPlataformas?.tilemap) {
+        this.cameras.main.setBounds(0, 0, this.capaPlataformas.tilemap.widthInPixels, this.capaPlataformas.tilemap.heightInPixels);
+    }
+
+    console.log(`[EscenaJuego] Cámara adaptada a Resolución Nativa: ${width}x${height}`);
   }
 }

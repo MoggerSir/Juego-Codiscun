@@ -9,6 +9,7 @@ import { EstadoSession } from "@sistemas/EstadoSession";
 
 export class EscenaUI extends Phaser.Scene {
   private uiMonedas!: ContadorMonedas;
+  private uiTiempo!: ContadorTiempo;
 
   constructor() {
     super({ key: ESCENAS.UI });
@@ -24,10 +25,13 @@ export class EscenaUI extends Phaser.Scene {
     const session = EstadoSession.obtener();
     const configNivel = GestorNiveles.obtenerConfig(session.getIdNivelActual());
     
-    new ContadorTiempo(this, width - 20, 20, configNivel.tiempoLimite);
+    this.uiTiempo = new ContadorTiempo(this, width - 20, 20, configNivel.tiempoLimite);
 
     // Inicializar HUD táctil Senior (Invisible por defecto)
     new VisualTouchHUD(this);
+
+    // Manejar Resize Dinámico del HUD
+    this.scale.on('resize', this.manejarResize, this);
 
     // Escuchar cambios globales
     const bus = SistemaEventos.obtener();
@@ -38,7 +42,14 @@ export class EscenaUI extends Phaser.Scene {
 
     // Limpieza Senior
     this.events.once("shutdown", () => {
+        this.scale.off('resize', this.manejarResize, this);
         bus.off(EVENTOS.PUNTUACION_CAMBIO);
     });
+  }
+
+  private manejarResize(gameSize: Phaser.Structs.Size): void {
+    const { width } = gameSize;
+    if (this.uiMonedas) this.uiMonedas.reposicionar(20, 20);
+    if (this.uiTiempo) this.uiTiempo.reposicionar(width - 20, 20);
   }
 }

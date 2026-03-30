@@ -58,13 +58,23 @@ export class ContadorTiempo {
     }
   }
 
+  public reposicionar(x: number, y: number): void {
+    if (this.texto) {
+      this.texto.setPosition(x, y);
+    }
+  }
+
   private aplicarSacudida(): void {
+    const originalX = this.texto.x;
     this.escena.tweens.add({
       targets: this.texto,
-      x: this.texto.x + 2,
+      x: originalX + 2,
       duration: 50,
       yoyo: true,
-      repeat: 2
+      repeat: 2,
+      onComplete: () => {
+          if(this.texto) this.texto.x = originalX;
+      }
     });
   }
 
