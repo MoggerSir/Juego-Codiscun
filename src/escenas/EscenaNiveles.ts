@@ -1,7 +1,9 @@
 import Phaser from "phaser";
 import { ESCENAS } from "@constantes/constantes-escenas";
+import { ASSETS } from "@constantes/constantes-assets";
 import { GestorNiveles } from "@niveles/GestorNiveles";
 import { SistemaGuardado } from "@sistemas/SistemaGuardado";
+import { RegistryManager } from "../registry/RegistryManager";
 import "../ui/game-ui.css";
 import "../ui/selector-niveles.css";
 
@@ -45,7 +47,10 @@ export class EscenaNiveles extends Phaser.Scene {
     // 2. Obtener Datos Reales de Progresión
     const niveles = GestorNiveles.obtenerEstadoProgresion();
 
-    // 3. Construir el HTML In-Memory (Template Literals)
+    // 3. Obtener rutas del registro para el DOM
+    const getPath = (key: string) => RegistryManager.getAssetPath(key);
+
+    // 4. Construir el HTML In-Memory (Template Literals)
     const htmlContent = `
       <div class="selector-container" id="selector-niveles">
         <h1 class="selector-titulo">Mundos de Aventura</h1>
@@ -53,7 +58,7 @@ export class EscenaNiveles extends Phaser.Scene {
         <!-- HUD DE AJUSTES SENIOR -->
         <div class="settings-hud">
           <div class="settings-btn" id="gear-btn">
-            <img src="assets/ui/gear.png" alt="settings">
+            <img src="${getPath(ASSETS.UI_GEAR)}" alt="settings">
           </div>
 
           <div class="settings-panel" id="settings-panel">
@@ -84,9 +89,10 @@ export class EscenaNiveles extends Phaser.Scene {
               <div class="nivel-nombre">${n.nombreDisplay}</div>
               <div class="nivel-record">Récord: ${n.mejorPuntaje}</div>
               <div class="nivel-icono">
-                <img src="${n.desbloqueado ? "assets/ui/unlock.png" : "assets/ui/lock.png"}" class="img-status ${n.desbloqueado ? "unlocked" : "locked"}" alt="status">
+                <img src="${n.desbloqueado ? getPath(ASSETS.UI_UNLOCK) : getPath(ASSETS.UI_LOCK)}" 
+                     class="img-status ${n.desbloqueado ? "unlocked" : "locked"}" alt="status">
               </div>
-              ${n.mejorPuntaje > 0 ? '<div class="nivel-check"><img src="assets/ui/check.png" class="img-check" alt="completado"></div>' : ""}
+              ${n.mejorPuntaje > 0 ? `<div class="nivel-check"><img src="${getPath(ASSETS.UI_CHECK)}" class="img-check" alt="completado"></div>` : ""}
             </div>
           `,
             )

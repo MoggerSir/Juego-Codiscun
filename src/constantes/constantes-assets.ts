@@ -26,4 +26,17 @@ export const ASSETS = {
   BANDERA_SPRITE: 'bandera-sprite',
   CHECKPOINT_SPRITE: 'checkpoint-sprite',
   CHECKPOINT_ACTIVO_SPRITE: 'checkpoint-activo-sprite',
+
+  // Efectos de Sonido (SFX)
+  SFX_SALTO: 'sfx-salto',
+  SFX_MONEDA: 'sfx-moneda',
+  SFX_ROMPER_BLOQUE: 'sfx-romper-bloque',
+  SFX_MUERTE: 'sfx-muerte',
+  SFX_POWER_UP: 'sfx-power-up',
+
+  // Iconos UI
+  UI_GEAR: 'ui-gear',
+  UI_LOCK: 'ui-lock',
+  UI_UNLOCK: 'ui-unlock',
+  UI_CHECK: 'ui-check',
 } as const;

@@ -1,36 +1,15 @@
 import Phaser from "phaser";
-import { ASSETS } from "@constantes/constantes-assets";
+import { RegistryManager } from "../registry/RegistryManager";
 
 export class AnimacionesJugador {
+  /**
+   * Registra las animaciones del jugador.
+   * Ahora delega en el RegistryManager para mantener la centralización.
+   */
   public static crear(escena: Phaser.Scene): void {
-    escena.anims.create({
-      key: "jugador-idle",
-      frames: escena.anims.generateFrameNumbers(ASSETS.JUGADOR_SPRITE, {
-        start: 0,
-        end: 0,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-
-    escena.anims.create({
-      key: "jugador-correr",
-      frames: escena.anims.generateFrameNumbers(ASSETS.JUGADOR_SPRITE, {
-        start: 0,
-        end: 7,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-
-    escena.anims.create({
-      key: "jugador-saltar",
-      frames: escena.anims.generateFrameNumbers(ASSETS.JUGADOR_SPRITE, {
-        start: 4,
-        end: 4,
-      }),
-      frameRate: 10,
-      repeat: 0,
-    });
+    // El RegistryManager ya se encarga de crear todas las animaciones registradas.
+    // Llamamos a createAnimations aquí por si esta escena se inicia de forma independiente
+    // o para asegurar que las animaciones del jugador existan.
+    RegistryManager.createAnimations(escena);
   }
 }

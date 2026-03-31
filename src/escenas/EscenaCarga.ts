@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { ASSETS } from "@constantes/constantes-assets";
 import { ESCENAS } from "@constantes/constantes-escenas";
 import { GestorNiveles } from "@niveles/GestorNiveles";
+import { RegistryManager } from "../registry/RegistryManager";
 import "../ui/game-ui.css"; // Estilos globales
 
 export class EscenaCarga extends Phaser.Scene {
@@ -19,26 +20,15 @@ export class EscenaCarga extends Phaser.Scene {
     // Mantenemos la lógica de texturas dinámicas para no romper el renderizado
     this.generarTexturasBase();
 
-    // 3. Precarga dinámica de niveles
+    // 3. Centralización: Precarga modular vía Registry
+    RegistryManager.preloadAll(this);
+
+    // 4. Precarga dinámica de niveles
     GestorNiveles.obtenerTodos().forEach((config) => {
       this.load.tilemapTiledJSON(config.nombreMapa, config.rutaMapa);
     });
 
-    this.load.image(
-      ASSETS.TILESET_TERRENOS,
-      "assets/sprites/objetos/terrenos.png",
-    );
-    this.load.spritesheet(
-      ASSETS.JUGADOR_SPRITE,
-      "assets/sprites/jugador/correr.png",
-      {
-        frameWidth: 115,
-        frameHeight: 130,
-        spacing: 20,
-      },
-    );
-
-    // 4. Sincronización del DOM con Phaser Load Event
+    // 5. Sincronización del DOM con Phaser Load Event
     this.load.on("progress", (progreso: number) => {
       if (!this.uiElement) return;
       const progressBar = this.uiElement.querySelector(
@@ -54,8 +44,11 @@ export class EscenaCarga extends Phaser.Scene {
   }
 
   create(): void {
-    // Registro de Spritesheets desde Texturas generadas
+    // Registro de Spritesheets desde Texturas generadas (Placeholders)
     this.registrarSpritesheets();
+
+    // Centralización: Creación de animaciones modular (Incluye Moneda, Jugador, Enemigos)
+    RegistryManager.createAnimations(this);
 
     // Pequeño delay para dejar que la animación de carga se complete visualmente
     this.time.delayedCall(500, () => {
@@ -160,15 +153,5 @@ export class EscenaCarga extends Phaser.Scene {
         texM.getSourceImage() as HTMLImageElement,
         { frameWidth: 32, frameHeight: 32 },
       );
-
-    this.anims.create({
-      key: `${ASSETS.MONEDA_SPRITE}-anim`,
-      frames: this.anims.generateFrameNumbers(ASSETS.MONEDA_SPRITE, {
-        start: 0,
-        end: 3,
-      }),
-      frameRate: 8,
-      repeat: -1,
-    });
   }
 }
