@@ -19,8 +19,10 @@ export class BloqueInterrogacion extends Phaser.Physics.Arcade.Image {
     if (!this.activo) return;
     this.activo = false;
 
-    // Feedback sonoro inmediato
-    this.scene.sound.play(ASSETS.SFX_ROMPER_BLOQUE, { volume: 0.4, detune: 500 });
+    // Feedback sonoro inmediato (Play Safe)
+    if (this.scene.cache.audio.exists(ASSETS.SFX_ROMPER_BLOQUE)) {
+      this.scene.sound.play(ASSETS.SFX_ROMPER_BLOQUE, { volume: 0.4, detune: 500 });
+    }
 
     // Cambiar visualmente a bloque vacío (desactivado)
     this.setTexture(ASSETS.BLOQUE_VACIO);

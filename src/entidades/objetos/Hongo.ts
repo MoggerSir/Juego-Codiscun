@@ -44,8 +44,10 @@ export class Hongo extends PowerUp {
     // Evitar recolecciones dobles
     if (!this.active) return;
 
-    // Feedback sonoro inmediato
-    this.scene.sound.play(ASSETS.SFX_POWER_UP, { volume: 0.7 });
+    // Feedback sonoro inmediato (Play Safe)
+    if (this.scene.cache.audio.exists(ASSETS.SFX_POWER_UP)) {
+      this.scene.sound.play(ASSETS.SFX_POWER_UP, { volume: 0.7 });
+    }
 
     this.setActive(false);
 

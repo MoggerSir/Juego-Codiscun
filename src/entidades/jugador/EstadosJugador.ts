@@ -64,8 +64,10 @@ export class EstadosJugador {
       this.tiempoUltimoSuelo = 0; // Agota coyote time
       this.jugador.consumirSalto(); // Limpia jump buffer
 
-      // Reproducir sonido de salto
-      this.jugador.scene.sound.play(ASSETS.SFX_SALTO, { volume: 0.6 });
+      // Reproducir sonido de salto (Play Safe)
+      if (this.jugador.scene.cache.audio.exists(ASSETS.SFX_SALTO)) {
+        this.jugador.scene.sound.play(ASSETS.SFX_SALTO, { volume: 0.6 });
+      }
     }
 
     // MEJORA: Controlador de Salto Variable
@@ -92,7 +94,12 @@ export class EstadosJugador {
     }
 
     if (currentAnim !== nextAnim) {
-      this.jugador.anims.play(nextAnim, true);
+      // Play Safe: Solo intentar reproducir si la animación existe
+      if (this.jugador.anims.exists(nextAnim)) {
+        this.jugador.anims.play(nextAnim, true);
+      } else {
+        console.warn(`[EstadosJugador] Animación no encontrada: ${nextAnim}. Usando fallback visual.`);
+      }
     }
   }
 }

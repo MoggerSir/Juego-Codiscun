@@ -62,12 +62,15 @@ export class EscenaJuego extends Phaser.Scene {
     this.configurarColisiones();
     this.configurarCamara(mapa);
 
-    // 4. Iniciar Música de Fondo por Nivel
-    if (this.configNivel.nombreMusica) {
-      this.sound.play(this.configNivel.nombreMusica, {
+    // 4. Iniciar Música de Fondo por Nivel (Play Safe)
+    const keyMusica = this.configNivel.nombreMusica;
+    if (keyMusica && this.cache.audio.exists(keyMusica)) {
+      this.sound.play(keyMusica, {
         loop: true,
         volume: 0.5,
       });
+    } else if (keyMusica) {
+      console.warn(`[EscenaJuego] Música no encontrada en cache: ${keyMusica}`);
     }
 
     // Sistema de Adaptación Dinámica (Senior Resize Pattern)
@@ -174,10 +177,13 @@ export class EscenaJuego extends Phaser.Scene {
       "tileset-principal",
       ASSETS.TILESET_PRINCIPAL,
     )!;
-    // Terrenos usa 35x35 con 1px de margen, hay que especificarlo o Phaser asume 32x32 por el mapa
-    const tilesetTerrenos =
-      mapa.addTilesetImage("terrenos", ASSETS.TILESET_TERRENOS, 35, 35, 1, 0) ||
-      tilesetPrincipal;
+
+    // Fallback Senior: Solo cargar terrenos si la textura existe
+    let tilesetTerrenos = tilesetPrincipal;
+    if (this.textures.exists(ASSETS.TILESET_TERRENOS)) {
+      const res = mapa.addTilesetImage("terrenos", ASSETS.TILESET_TERRENOS, 35, 35, 1, 0);
+      if (res) tilesetTerrenos = res;
+    }
 
     const listaTilesets = [tilesetPrincipal, tilesetTerrenos];
 
@@ -271,8 +277,9 @@ export class EscenaJuego extends Phaser.Scene {
       this.grupoPopups.getChildren().forEach((p: any) => {
         const popup = p as PopupInfo;
         const distancia = Phaser.Math.Distance.Between(this.jugador.x, this.jugador.y, popup.x, popup.y);
-        if (distancia > 100 && popup.estaActivo) {
-          popup.ocultar();
+        // Aumentamos a 250 para cubrir zonas de colisión grandes
+        if (distancia > 250 && popup.estaActivo) {
+          popup.ocultar(true);
         }
       });
     });

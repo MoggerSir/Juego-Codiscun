@@ -144,9 +144,11 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
     this.setTint(0xff0000);
     this.scene.game.events.emit(EVENTOS.JUGADOR_MUERTO);
 
-    // 2. Transición Sonora y Física
+    // 2. Transición Sonora y Física (Play Safe)
     this.scene.sound.stopAll();
-    this.scene.sound.play(ASSETS.SFX_MUERTE, { volume: 0.8 });
+    if (this.scene.cache.audio.exists(ASSETS.SFX_MUERTE)) {
+      this.scene.sound.play(ASSETS.SFX_MUERTE, { volume: 0.8 });
+    }
 
     const body = this.body as Phaser.Physics.Arcade.Body;
     body.enable = false;

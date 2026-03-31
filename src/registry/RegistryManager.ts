@@ -48,14 +48,21 @@ export class RegistryManager {
       if (!modulo.anims) return;
 
       Object.values(modulo.anims).forEach(anim => {
+        // Redirección Inteligente (Senior Robustness Pattern)
+        let finalAssetKey = anim.assetKey;
+        if (!scene.textures.exists(finalAssetKey)) {
+          console.warn(`[RegistryManager] Redireccionando animación '${anim.key}' al Fallback Maestro.`);
+          finalAssetKey = '__FALLBACK_MASTER__';
+        }
+
         // Evitar duplicados (Phaser arroja advertencia si ya existe)
         if (scene.anims.exists(anim.key)) return;
 
         scene.anims.create({
           key: anim.key,
-          frames: scene.anims.generateFrameNumbers(anim.assetKey, {
-            start: anim.start,
-            end: anim.end,
+          frames: scene.anims.generateFrameNumbers(finalAssetKey, {
+            start: Math.min(anim.start, 7), // El fallback tiene 8 frames
+            end: Math.min(anim.end, 7),
           }),
           frameRate: anim.frameRate,
           repeat: anim.repeat,

@@ -7,6 +7,7 @@ export class PopupInfo extends Phaser.GameObjects.Zone {
   private estaMostrando: boolean = false;
   private estaDestruyendo: boolean = false; 
   private idReferencia: string;
+  private tiempoApertura: number = 0;
 
   constructor(
     scene: Phaser.Scene,
@@ -58,6 +59,7 @@ export class PopupInfo extends Phaser.GameObjects.Zone {
   public mostrar(): void {
     if (this.estaMostrando || this.estaDestruyendo) return;
     this.estaMostrando = true;
+    this.tiempoApertura = Date.now();
     console.log(`[PopupInfo] Mostrando mensaje: ${this.idReferencia}`);
 
     // Pausar Juego (Reutilizando lógica de Estado Global)
@@ -68,8 +70,14 @@ export class PopupInfo extends Phaser.GameObjects.Zone {
     if (el) el.classList.add("active");
   }
 
-  public ocultar(): void {
+  public ocultar(porDistancia: boolean = false): void {
     if (!this.estaMostrando) return;
+
+    // Si es por distancia, ignorar si se abrió hace menos de 500ms (debounce)
+    if (porDistancia && Date.now() - this.tiempoApertura < 500) {
+      return;
+    }
+
     this.estaMostrando = false;
     this.estaDestruyendo = true;
 

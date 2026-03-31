@@ -97,61 +97,61 @@ export class EscenaCarga extends Phaser.Scene {
   }
 
   private generarTexturasBase(): void {
-    // Tileset Principal
+    // 1. Fallback Maestro (Spritesheet de 8 frames para animaciones rotas)
+    const canvaFallback = this.textures.createCanvas('__FALLBACK_MASTER__', 64 * 8, 64);
+    if (canvaFallback) {
+      const ctx = canvaFallback.getContext();
+      for (let i = 0; i < 8; i++) {
+        ctx.fillStyle = i % 2 === 0 ? '#ff00ff' : '#000000'; // Magenta/Negro (Clásico missing)
+        ctx.fillRect(i * 64, 0, 64, 64);
+        ctx.strokeStyle = '#ffffff';
+        ctx.strokeRect(i * 64, 0, 64, 64);
+        // Añadir el frame manualmente a la textura de Phaser
+        canvaFallback.add(i, 0, i * 64, 0, 64, 64);
+      }
+      canvaFallback.refresh();
+    }
+
+    // Tileset Principal (Ajustado a 32x32 real para evitar warnings)
     const gTileset = this.make.graphics({ x: 0, y: 0 });
-    gTileset
-      .fillStyle(0x00ff00)
-      .fillRect(0, 0, 32, 32)
-      .generateTexture(ASSETS.TILESET_PRINCIPAL, 32, 32);
+    gTileset.fillStyle(0x8b4513).fillRect(0, 0, 32, 32);
+    gTileset.generateTexture(ASSETS.TILESET_PRINCIPAL, 32, 32);
     gTileset.destroy();
 
-    // Jugador (Placeholder)
-    const gJugador = this.make.graphics({ x: 0, y: 0 });
-    for (let f = 0; f < 5; f++) {
-      gJugador
-        .fillStyle(f === 4 ? 0xff0000 : 0x3b82f6)
-        .fillRect(f * 32, 0, 32, 48);
+    // 2. Jugador (Rojo)
+    const canvaJugador = this.textures.createCanvas(ASSETS.JUGADOR_SPRITE, 64 * 8, 64);
+    if (canvaJugador) {
+      const ctx = canvaJugador.getContext();
+      for (let i = 0; i < 8; i++) {
+        ctx.fillStyle = i % 2 === 0 ? '#ff0000' : '#cc0000';
+        ctx.fillRect(i * 64, 0, 64, 64);
+        canvaJugador.add(i, 0, i * 64, 0, 64, 64);
+      }
+      canvaJugador.refresh();
     }
-    gJugador.generateTexture("temp_jugador", 32 * 5, 48);
-    gJugador.destroy();
 
     // Moneda
-    const gMoneda = this.make.graphics({ x: 0, y: 0 });
-    for (let f = 0; f < 4; f++) {
-      gMoneda.fillStyle(0xffd700).fillCircle(16 + f * 32, 16, 12);
+    const canvaMoneda = this.textures.createCanvas(ASSETS.MONEDA_SPRITE, 32 * 4, 32);
+    if (canvaMoneda) {
+       const ctx = canvaMoneda.getContext();
+       for (let i = 0; i < 4; i++) {
+         ctx.fillStyle = '#ffd700';
+         ctx.beginPath();
+         ctx.arc(i * 32 + 16, 16, 12, 0, Math.PI * 2);
+         ctx.fill();
+         canvaMoneda.add(i, 0, i * 32, 0, 32, 32);
+       }
+       canvaMoneda.refresh();
     }
-    gMoneda.generateTexture("temp_moneda", 32 * 4, 32);
-    gMoneda.destroy();
 
     // Bandera
     const gBandera = this.make.graphics({ x: 0, y: 0 });
-    gBandera
-      .fillStyle(0xffffff)
-      .fillRect(14, 0, 4, 64)
-      .fillStyle(0xff0000)
-      .fillRect(14, 0, 18, 20);
+    gBandera.fillStyle(0xffffff).fillRect(14, 0, 4, 64).fillStyle(0xff0000).fillRect(14, 0, 18, 20);
     gBandera.generateTexture(ASSETS.BANDERA_SPRITE, 32, 64);
     gBandera.destroy();
   }
 
   private registrarSpritesheets(): void {
-    // Solo registramos el placeholder si no se ha cargado el asset real
-    if (!this.textures.exists(ASSETS.JUGADOR_SPRITE)) {
-      const texJ = this.sys.textures.get("temp_jugador");
-      if (texJ)
-        this.textures.addSpriteSheet(
-          ASSETS.JUGADOR_SPRITE,
-          texJ.getSourceImage() as HTMLImageElement,
-          { frameWidth: 32, frameHeight: 48 },
-        );
-    }
-
-    const texM = this.sys.textures.get("temp_moneda");
-    if (texM)
-      this.textures.addSpriteSheet(
-        ASSETS.MONEDA_SPRITE,
-        texM.getSourceImage() as HTMLImageElement,
-        { frameWidth: 32, frameHeight: 32 },
-      );
+    // Ya no es necesario registrar manualmente ya que usamos CanvasTexture con frames definidos
   }
 }
