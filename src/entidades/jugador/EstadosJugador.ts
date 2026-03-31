@@ -1,4 +1,5 @@
 import { FISICA } from '@constantes/constantes-fisica';
+import { ASSETS } from '@constantes/constantes-assets';
 import type { Jugador } from './Jugador';
 import type { InputJugador } from '@tipos/tipos-jugador';
 import Phaser from 'phaser';
@@ -62,6 +63,9 @@ export class EstadosJugador {
       this.jugador.estado = 'saltando';
       this.tiempoUltimoSuelo = 0; // Agota coyote time
       this.jugador.consumirSalto(); // Limpia jump buffer
+
+      // Reproducir sonido de salto
+      this.jugador.scene.sound.play(ASSETS.SFX_SALTO, { volume: 0.6 });
     }
 
     // MEJORA: Controlador de Salto Variable

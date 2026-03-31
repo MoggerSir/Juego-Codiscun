@@ -43,6 +43,10 @@ export class Hongo extends PowerUp {
   public alSerRecogido(jugador: Jugador): void {
     // Evitar recolecciones dobles
     if (!this.active) return;
+
+    // Feedback sonoro inmediato
+    this.scene.sound.play(ASSETS.SFX_POWER_UP, { volume: 0.7 });
+
     this.setActive(false);
 
     // Sumar puntos

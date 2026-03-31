@@ -24,6 +24,9 @@ export class BloqueLadrillo extends Phaser.Physics.Arcade.Image {
   }
 
   private romper(): void {
+    // Feedback sonoro inmediato
+    this.scene.sound.play(ASSETS.SFX_ROMPER_BLOQUE, { volume: 0.8 });
+
     // TODO: Emitir partículas aquí en el futuro a través de SistemaParticulas
     SistemaEventos.obtener().emit(EVENTOS.PUNTUACION_SUMAR, { puntos: JUEGO.PUNTOS_BLOQUE });
     

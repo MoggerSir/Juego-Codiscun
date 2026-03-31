@@ -62,6 +62,14 @@ export class EscenaJuego extends Phaser.Scene {
     this.configurarColisiones();
     this.configurarCamara(mapa);
 
+    // 4. Iniciar Música de Fondo por Nivel
+    if (this.configNivel.nombreMusica) {
+      this.sound.play(this.configNivel.nombreMusica, {
+        loop: true,
+        volume: 0.5,
+      });
+    }
+
     // Sistema de Adaptación Dinámica (Senior Resize Pattern)
     this.scale.on('resize', this.manejarResize, this);
     this.events.once('shutdown', () => {

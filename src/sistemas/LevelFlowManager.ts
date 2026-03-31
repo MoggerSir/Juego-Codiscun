@@ -76,6 +76,7 @@ export class LevelFlowManager {
     session.setEstado(EstadoJuego.FALLANDO);
 
     // 1. Silenciar Escena (Soft Cleanup)
+    this.escena.sound.stopAll();
     this.escena.input.enabled = false;
     this.escena.scene.stop(ESCENAS.UI);
 
@@ -109,7 +110,8 @@ export class LevelFlowManager {
     // 1. Inmuniza Inquebrantablemente al personaje de cualquier daño extra
     this.jugador.comenzarTransicionVictoria();
     
-    // 2. Detener Timer Senior (Evitar muertes durante la animación)
+    // 2. Detener Música y Timer Senior
+    this.escena.sound.stopAll();
     this.temporizador.detener();
 
     // 3. Ordenamos a la Bandera desencadenar cinemática bajando

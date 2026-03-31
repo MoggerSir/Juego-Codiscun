@@ -21,6 +21,9 @@ export class Moneda extends Phaser.Physics.Arcade.Sprite {
   public alSerRecogida(): void {
     if (!this.active) return;
 
+    // Feedback sonoro inmediato
+    this.scene.sound.play(ASSETS.SFX_MONEDA, { volume: 0.6 });
+
     this.setActive(false);
     
     // Desactivar físicas para no recogerla múltiples veces
