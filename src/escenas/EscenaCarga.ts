@@ -47,8 +47,24 @@ export class EscenaCarga extends Phaser.Scene {
     // Registro de Spritesheets desde Texturas generadas (Placeholders)
     this.registrarSpritesheets();
 
-    // Centralización: Creación de animaciones modular (Incluye Moneda, Jugador, Enemigos)
+    ["jugador-idle", "jugador-correr", "jugador-saltar"].forEach((key) => {
+      if (this.anims.exists(key)) this.anims.remove(key);
+    });
+
     RegistryManager.createAnimations(this);
+
+    const tex = this.textures.get("jugador-sprite");
+    console.log("=== DIAGNÓSTICO JUGADOR ===");
+    console.log(
+      "frames reales:",
+      Object.keys(tex.frames).filter((k) => k !== "__BASE__"),
+    );
+    console.log(
+      "anims registradas:",
+      this.anims.exists("jugador-correr"),
+      this.anims.get("jugador-correr"),
+    );
+    // FIN LOG
 
     // Pequeño delay para dejar que la animación de carga se complete visualmente
     this.time.delayedCall(500, () => {
@@ -98,13 +114,17 @@ export class EscenaCarga extends Phaser.Scene {
 
   private generarTexturasBase(): void {
     // 1. Fallback Maestro (Spritesheet de 8 frames para animaciones rotas)
-    const canvaFallback = this.textures.createCanvas('__FALLBACK_MASTER__', 64 * 8, 64);
+    const canvaFallback = this.textures.createCanvas(
+      "__FALLBACK_MASTER__",
+      64 * 8,
+      64,
+    );
     if (canvaFallback) {
       const ctx = canvaFallback.getContext();
       for (let i = 0; i < 8; i++) {
-        ctx.fillStyle = i % 2 === 0 ? '#ff00ff' : '#000000'; // Magenta/Negro (Clásico missing)
+        ctx.fillStyle = i % 2 === 0 ? "#ff00ff" : "#000000"; // Magenta/Negro (Clásico missing)
         ctx.fillRect(i * 64, 0, 64, 64);
-        ctx.strokeStyle = '#ffffff';
+        ctx.strokeStyle = "#ffffff";
         ctx.strokeRect(i * 64, 0, 64, 64);
         // Añadir el frame manualmente a la textura de Phaser
         canvaFallback.add(i, 0, i * 64, 0, 64, 64);
@@ -120,7 +140,11 @@ export class EscenaCarga extends Phaser.Scene {
 
     // Bandera
     const gBandera = this.make.graphics({ x: 0, y: 0 });
-    gBandera.fillStyle(0xffffff).fillRect(14, 0, 4, 64).fillStyle(0xff0000).fillRect(14, 0, 18, 20);
+    gBandera
+      .fillStyle(0xffffff)
+      .fillRect(14, 0, 4, 64)
+      .fillStyle(0xff0000)
+      .fillRect(14, 0, 18, 20);
     gBandera.generateTexture(ASSETS.BANDERA_SPRITE, 32, 64);
     gBandera.destroy();
   }

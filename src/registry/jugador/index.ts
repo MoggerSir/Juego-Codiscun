@@ -1,10 +1,6 @@
 import { RegistryModule } from "../types";
 import { ASSETS } from "../../constantes/constantes-assets";
 
-/**
- * Módulo de Registro para el Jugador (Mario).
- * Centraliza la configuración de assets, animaciones y audio del personaje.
- */
 export const JugadorRegistry: RegistryModule = {
   assets: {
     [ASSETS.JUGADOR_SPRITE]: {
@@ -12,11 +8,12 @@ export const JugadorRegistry: RegistryModule = {
       url: "assets/sprites/jugador/correr.png",
       type: "spritesheet",
       frameConfig: {
-        frameWidth: 115,
-        frameHeight: 130,
-        spacing: 20,
+        frameWidth: 125,
+        frameHeight: 144,
+        spacing: 0,
+        margin: 0,
       },
-    }
+    },
   },
   anims: {
     "jugador-idle": {
@@ -24,7 +21,7 @@ export const JugadorRegistry: RegistryModule = {
       assetKey: ASSETS.JUGADOR_SPRITE,
       start: 0,
       end: 0,
-      frameRate: 10,
+      frameRate: 1, // ← bajar de 10 a 1 para animaciones de 1 solo frame
       repeat: -1,
     },
     "jugador-correr": {
@@ -38,10 +35,10 @@ export const JugadorRegistry: RegistryModule = {
     "jugador-saltar": {
       key: "jugador-saltar",
       assetKey: ASSETS.JUGADOR_SPRITE,
-      start: 4,
-      end: 4,
-      frameRate: 10,
+      start: 3,
+      end: 3,
+      frameRate: 1, // ← igual aquí
       repeat: 0,
-    }
-  }
+    },
+  },
 };

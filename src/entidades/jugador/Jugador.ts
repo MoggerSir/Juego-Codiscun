@@ -100,8 +100,8 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
     this.y -= 10;
 
     // Escalar sprite (Phaser auto-ajusta el tamaño del Arcade Body proporcionalmente)
-    // Ajuste de escala relativo para el nuevo asset HD (0.4 base * 1.5 = 0.6)
-    this.setScale(0.4, 0.6);
+    // Ajuste de escala: X crece a 0.5 (robustez) y Y a 0.6 (altura)
+    this.setScale(0.55, 0.6);
   }
 
   public encoger(): void {
@@ -189,8 +189,8 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
 
     // Ajuste de colisión (Hitbox) para el frame de 104x128
     // Estos valores son en píxeles originales del asset
-    body.setSize(60, 110);
-    body.setOffset(22, 18);
+    body.setSize(50, 100);
+    body.setOffset(37, 44);
 
     body.setMaxVelocityX(150);
     body.setGravityY(0);

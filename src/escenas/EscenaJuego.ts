@@ -51,6 +51,10 @@ export class EscenaJuego extends Phaser.Scene {
   }
 
   create(): void {
+    ["jugador-idle", "jugador-correr", "jugador-saltar"].forEach((key) => {
+      if (this.anims.exists(key)) this.anims.remove(key);
+    });
+
     AnimacionesJugador.crear(this);
 
     const mapa = this.crearMapa();
@@ -76,9 +80,9 @@ export class EscenaJuego extends Phaser.Scene {
     }
 
     // Sistema de Adaptación Dinámica (Senior Resize Pattern)
-    this.scale.on('resize', this.manejarResize, this);
-    this.events.once('shutdown', () => {
-        this.scale.off('resize', this.manejarResize, this);
+    this.scale.on("resize", this.manejarResize, this);
+    this.events.once("shutdown", () => {
+      this.scale.off("resize", this.manejarResize, this);
     });
 
     // Inyección de lógica de flujo aislada (Anti-God Scene)
@@ -149,9 +153,18 @@ export class EscenaJuego extends Phaser.Scene {
           const bloque = new BloqueMonedas(this, x, y);
           this.grupoBloques.add(bloque);
         } else if (obj.type === "popup") {
-          const mensajeId = obj.properties?.find((p: any) => p.name === "mensajeId")?.value;
+          const mensajeId = obj.properties?.find(
+            (p: any) => p.name === "mensajeId",
+          )?.value;
           if (mensajeId) {
-            const popup = new PopupInfo(this, x, y, obj.width || 32, obj.height || 32, mensajeId);
+            const popup = new PopupInfo(
+              this,
+              x,
+              y,
+              obj.width || 32,
+              obj.height || 32,
+              mensajeId,
+            );
             this.grupoPopups.add(popup);
           }
         }
@@ -183,7 +196,14 @@ export class EscenaJuego extends Phaser.Scene {
     // Fallback Senior: Solo cargar terrenos si la textura existe
     let tilesetTerrenos = tilesetPrincipal;
     if (this.textures.exists(ASSETS.TILESET_TERRENOS)) {
-      const res = mapa.addTilesetImage("terrenos", ASSETS.TILESET_TERRENOS, 35, 35, 1, 0);
+      const res = mapa.addTilesetImage(
+        "terrenos",
+        ASSETS.TILESET_TERRENOS,
+        35,
+        35,
+        1,
+        0,
+      );
       if (res) tilesetTerrenos = res;
     }
 
@@ -275,10 +295,15 @@ export class EscenaJuego extends Phaser.Scene {
     });
 
     // Lógica avanzada para ocultar al alejarse
-    this.events.on('update', () => {
+    this.events.on("update", () => {
       this.grupoPopups.getChildren().forEach((p: any) => {
         const popup = p as PopupInfo;
-        const distancia = Phaser.Math.Distance.Between(this.jugador.x, this.jugador.y, popup.x, popup.y);
+        const distancia = Phaser.Math.Distance.Between(
+          this.jugador.x,
+          this.jugador.y,
+          popup.x,
+          popup.y,
+        );
         // Aumentamos a 250 para cubrir zonas de colisión grandes
         if (distancia > 250 && popup.estaActivo) {
           popup.ocultar(true);
@@ -336,15 +361,22 @@ export class EscenaJuego extends Phaser.Scene {
 
   private manejarResize(gameSize: Phaser.Structs.Size): void {
     const { width, height } = gameSize;
-    
+
     // 1. Reajustar Cámara al Viewport real del navegador
     this.cameras.main.setSize(width, height);
-    
+
     // 2. Mantener límites si el mapa ya existe
     if (this.capaPlataformas?.tilemap) {
-        this.cameras.main.setBounds(0, 0, this.capaPlataformas.tilemap.widthInPixels, this.capaPlataformas.tilemap.heightInPixels);
+      this.cameras.main.setBounds(
+        0,
+        0,
+        this.capaPlataformas.tilemap.widthInPixels,
+        this.capaPlataformas.tilemap.heightInPixels,
+      );
     }
 
-    console.log(`[EscenaJuego] Cámara adaptada a Resolución Nativa: ${width}x${height}`);
+    console.log(
+      `[EscenaJuego] Cámara adaptada a Resolución Nativa: ${width}x${height}`,
+    );
   }
 }
