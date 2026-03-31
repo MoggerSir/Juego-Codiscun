@@ -21,12 +21,14 @@ export class EstadoSession {
   private monedas: number;
   private idNivelActual: string = "nivel-1";
   private estado: EstadoJuego = EstadoJuego.JUGANDO;
+  private nivelSecretoDesbloqueado: boolean = false;
 
   private constructor() {
     this.vidas = VIDAS_INICIALES;
     this.score = 0;
     this.monedas = 0;
     this.estado = EstadoJuego.JUGANDO;
+    this.nivelSecretoDesbloqueado = false;
   }
 
   public static obtener(): EstadoSession {
@@ -34,6 +36,17 @@ export class EstadoSession {
       EstadoSession.instancia = new EstadoSession();
     }
     return EstadoSession.instancia;
+  }
+
+  public getNivelSecretoDesbloqueado(): boolean {
+    return this.nivelSecretoDesbloqueado;
+  }
+
+  public setNivelSecretoDesbloqueado(valor: boolean): void {
+    this.nivelSecretoDesbloqueado = valor;
+    if (valor) {
+      console.log("[Session] ¡Nivel Secreto DESBLOQUEADO!");
+    }
   }
 
   public getVidas(): number {
@@ -110,5 +123,6 @@ export class EstadoSession {
     this.score = 0;
     this.monedas = 0;
     this.estado = EstadoJuego.JUGANDO;
+    this.nivelSecretoDesbloqueado = false;
   }
 }

@@ -63,7 +63,14 @@ export class PopupInfo extends Phaser.GameObjects.Zone {
     console.log(`[PopupInfo] Mostrando mensaje: ${this.idReferencia}`);
 
     // Pausar Juego (Reutilizando lógica de Estado Global)
-    EstadoSession.obtener().setEstado(EstadoJuego.MOSTRANDO_INFO);
+    const session = EstadoSession.obtener();
+    session.setEstado(EstadoJuego.MOSTRANDO_INFO);
+
+    // Lógica de Desbloqueo de Nivel Secreto (Requisito de usuario)
+    if (this.idReferencia === "secreto") {
+      session.setNivelSecretoDesbloqueado(true);
+    }
+
     this.scene.physics.world.pause();
 
     const el = this.domElement.node.querySelector(".popup-container");

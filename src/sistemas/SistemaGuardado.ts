@@ -57,6 +57,7 @@ export class SistemaGuardado {
     try {
       const serializado = JSON.stringify(datos);
       localStorage.setItem(this.CLAVE_STORAGE, serializado);
+      console.log("[SistemaGuardado] Datos guardados en LocalStorage.");
     } catch (e) {
       // Manejo Silencioso (Fail-Safe): 
       // Si el storage está lleno (QuotaExceeded) o bloqueado, logueamos pero no crasheamos.

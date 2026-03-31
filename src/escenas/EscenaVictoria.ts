@@ -36,7 +36,7 @@ export class EscenaVictoria extends Phaser.Scene {
 
   private createDOMUI(): void {
     const configNivel = GestorNiveles.obtenerConfig(this.datosFinNivel.idNivel);
-    const siguienteId = configNivel.siguienteId;
+    const siguienteId = GestorNiveles.obtenerSiguienteIdDinamico(this.datosFinNivel.idNivel);
 
     // Cálculos Senior de Tiempo y Bonificación
     const tiempoTotal = configNivel.tiempoLimite;

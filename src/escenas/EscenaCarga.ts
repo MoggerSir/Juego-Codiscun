@@ -118,32 +118,6 @@ export class EscenaCarga extends Phaser.Scene {
     gTileset.generateTexture(ASSETS.TILESET_PRINCIPAL, 32, 32);
     gTileset.destroy();
 
-    // 2. Jugador (Rojo)
-    const canvaJugador = this.textures.createCanvas(ASSETS.JUGADOR_SPRITE, 64 * 8, 64);
-    if (canvaJugador) {
-      const ctx = canvaJugador.getContext();
-      for (let i = 0; i < 8; i++) {
-        ctx.fillStyle = i % 2 === 0 ? '#ff0000' : '#cc0000';
-        ctx.fillRect(i * 64, 0, 64, 64);
-        canvaJugador.add(i, 0, i * 64, 0, 64, 64);
-      }
-      canvaJugador.refresh();
-    }
-
-    // Moneda
-    const canvaMoneda = this.textures.createCanvas(ASSETS.MONEDA_SPRITE, 32 * 4, 32);
-    if (canvaMoneda) {
-       const ctx = canvaMoneda.getContext();
-       for (let i = 0; i < 4; i++) {
-         ctx.fillStyle = '#ffd700';
-         ctx.beginPath();
-         ctx.arc(i * 32 + 16, 16, 12, 0, Math.PI * 2);
-         ctx.fill();
-         canvaMoneda.add(i, 0, i * 32, 0, 32, 32);
-       }
-       canvaMoneda.refresh();
-    }
-
     // Bandera
     const gBandera = this.make.graphics({ x: 0, y: 0 });
     gBandera.fillStyle(0xffffff).fillRect(14, 0, 4, 64).fillStyle(0xff0000).fillRect(14, 0, 18, 20);

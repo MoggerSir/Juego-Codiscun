@@ -45,7 +45,9 @@ export class EscenaJuego extends Phaser.Scene {
     this.configNivel = GestorNiveles.obtenerConfig(this.idNivel);
 
     // Sincronización con el Estado Global para la UI
-    EstadoSession.obtener().setIdNivelActual(this.idNivel);
+    const session = EstadoSession.obtener();
+    session.setIdNivelActual(this.idNivel);
+    session.setNivelSecretoDesbloqueado(false); // Reiniciar estado de secreto por intento
   }
 
   create(): void {

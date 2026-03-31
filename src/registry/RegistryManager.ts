@@ -4,6 +4,7 @@ import { JugadorRegistry } from './jugador';
 import { EnemigosRegistry } from './enemigos';
 import { ObjetosRegistry } from './objetos';
 import { UIRegistry } from './ui';
+import { AudioRegistry } from './audio';
 
 /**
  * Orquestador Senior de Activos y Animaciones.
@@ -14,7 +15,8 @@ export class RegistryManager {
     JugadorRegistry,
     EnemigosRegistry,
     ObjetosRegistry,
-    UIRegistry
+    UIRegistry,
+    AudioRegistry
   ];
 
   /**
@@ -50,19 +52,27 @@ export class RegistryManager {
       Object.values(modulo.anims).forEach(anim => {
         // Redirección Inteligente (Senior Robustness Pattern)
         let finalAssetKey = anim.assetKey;
+        let isFallback = false;
+
         if (!scene.textures.exists(finalAssetKey)) {
           console.warn(`[RegistryManager] Redireccionando animación '${anim.key}' al Fallback Maestro.`);
           finalAssetKey = '__FALLBACK_MASTER__';
+          isFallback = true;
         }
 
         // Evitar duplicados (Phaser arroja advertencia si ya existe)
         if (scene.anims.exists(anim.key)) return;
 
+        // Si es fallback, limitamos a los 8 frames del maestro. 
+        // Si es asset real, usamos el rango definido en el registro sin recortes.
+        const startFrame = isFallback ? Math.min(anim.start, 7) : anim.start;
+        const endFrame = isFallback ? Math.min(anim.end, 7) : anim.end;
+
         scene.anims.create({
           key: anim.key,
           frames: scene.anims.generateFrameNumbers(finalAssetKey, {
-            start: Math.min(anim.start, 7), // El fallback tiene 8 frames
-            end: Math.min(anim.end, 7),
+            start: startFrame,
+            end: endFrame,
           }),
           frameRate: anim.frameRate,
           repeat: anim.repeat,
