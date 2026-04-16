@@ -61,6 +61,13 @@ export class EscenaNiveles extends Phaser.Scene {
     // 4. Construir el HTML In-Memory (Template Literals)
     const htmlContent = `
       <div class="selector-container" id="selector-niveles">
+        
+        ${this.sound.locked ? `
+        <div id="start-overlay" style="position: absolute; top:0; left:0; width:100%; height:100%; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.5); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); z-index: 20000; cursor: pointer; text-align: center;">
+          <h1 style="color: #FFD700; font-size: clamp(1.5rem, 6vw, 3rem); text-shadow: 4px 4px 0px #000, 0 0 20px #FFD700; animation: pulseClick 2s ease-in-out infinite; font-family: 'Press Start 2P', monospace;">¡HAZ CLICK PARA COMENZAR!</h1>
+        </div>
+        ` : ''}
+
         <h1 class="selector-titulo">Mundos de Aventura</h1>
 
         <!-- HUD DE AJUSTES SENIOR -->
@@ -199,6 +206,20 @@ export class EscenaNiveles extends Phaser.Scene {
     const confirmModule = container.querySelector("#confirm-module") as HTMLElement;
     const btnConfirm = container.querySelector("#btn-confirm") as HTMLElement;
     const btnCancel = container.querySelector("#btn-cancel") as HTMLElement;
+    const startOverlay = container.querySelector("#start-overlay") as HTMLElement;
+
+    // Lógica para Autoplay Policy (Click to Start)
+    if (startOverlay) {
+      this.registrarListener(startOverlay, "click", () => {
+        startOverlay.remove();
+        if (this.cache.audio.exists(ASSETS.MUSICA_MENU)) {
+          const musicaMenu = this.sound.get(ASSETS.MUSICA_MENU) || this.sound.add(ASSETS.MUSICA_MENU, { loop: true, volume: 0.5 });
+          if (!musicaMenu.isPlaying) {
+            musicaMenu.play();
+          }
+        }
+      });
+    }
 
     // Abrir/Cerrar Menú
     const toggleMenu = (e?: Event) => {

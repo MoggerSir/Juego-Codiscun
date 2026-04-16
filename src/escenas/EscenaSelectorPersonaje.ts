@@ -21,7 +21,7 @@ export class EscenaSelectorPersonaje extends Phaser.Scene {
     const html = `
       <div id="personaje-screen" class="ui-screen" style="z-index: 10000; position: absolute; top:0; left:0; width:100%; height:100%;">
         
-        ${!this.modoEdicion ? `
+        ${this.sound.locked ? `
         <div id="start-overlay" style="position: absolute; top:0; left:0; width:100%; height:100%; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.5); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); z-index: 20000; cursor: pointer; text-align: center;">
           <h1 style="color: #FFD700; font-size: clamp(1.5rem, 6vw, 3rem); text-shadow: 4px 4px 0px #000, 0 0 20px #FFD700; animation: pulseClick 2s ease-in-out infinite;">¡HAZ CLICK PARA COMENZAR!</h1>
         </div>
