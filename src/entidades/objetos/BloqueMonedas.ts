@@ -19,6 +19,11 @@ export class BloqueMonedas extends Phaser.Physics.Arcade.Image {
     if (!this.activo) return;
     this.activo = false;
 
+    // Feedback sonoro inmediato (Play Safe)
+    if (this.scene.cache.audio.exists(ASSETS.SFX_MONEDA)) {
+      this.scene.sound.play(ASSETS.SFX_MONEDA, { volume: 0.6 });
+    }
+
     // Spawneamos visualmente las monedas
     this.soltarMonedasVisuales();
 

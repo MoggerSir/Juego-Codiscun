@@ -85,7 +85,7 @@ export class EscenaNiveles extends Phaser.Scene {
             <div class="nivel-card ${n.desbloqueado ? "" : "bloqueado"}" 
                  data-id="${n.id}" 
                  style="animation-delay: ${index * 0.1}s">
-              <div class="nivel-numero">${index + 1}</div>
+              <div class="nivel-numero">${n.id === "backroom" ? "???" : niveles.filter((lvl, i) => lvl.id !== "backroom" && i <= index).length}</div>
               <div class="nivel-nombre">${n.nombreDisplay}</div>
               <div class="nivel-record">Récord: ${n.mejorPuntaje}</div>
               <div class="nivel-icono">
@@ -106,7 +106,7 @@ export class EscenaNiveles extends Phaser.Scene {
     `;
 
     // 4. Inyección Nativa en Body (Full Screen Illusion)
-    const tempDiv = document.createElement('div');
+    const tempDiv = document.createElement("div");
     tempDiv.innerHTML = htmlContent.trim();
     this.uiElement = tempDiv.firstChild as HTMLElement;
     document.body.appendChild(this.uiElement);

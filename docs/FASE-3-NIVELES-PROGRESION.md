@@ -990,14 +990,14 @@ export interface ConfigNivel {
 - [x] Menú → Selector → Nivel 2 (si está desbloqueado) → funciona
 - [x] Morir en Nivel 2 → GameOver → Reintentar → vuelve al inicio del Nivel 2 (no al 1)
 - [x] El temporizador se detiene al morir y al completar el nivel
-- [ ] Al agotar el tiempo el jugador pierde una vida y el temporizador se reinicia
-- [ ] Los puntos se resetean a 0 al iniciar cada nivel
+- [x] Al agotar el tiempo el jugador pierde una vida y el temporizador se reinicia
+- [x] Los puntos se resetean a 0 al iniciar cada nivel
 - [x] El bonus de tiempo se calcula y suma correctamente en EscenaVictoria
 
 ### Memory leaks
 - [x] Jugar Nivel 1 → morir 3 veces → reintentar → los eventos no se disparan múltiples veces
-- [ ] `npm run build` pasa sin errores
-- [ ] `npm run preview` funciona igual que `npm run dev`
+- [x] `npm run build` pasa sin errores
+- [x] `npm run preview` funciona igual que `npm run dev`
 
 ---
 
