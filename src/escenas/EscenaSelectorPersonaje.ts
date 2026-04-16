@@ -3,6 +3,7 @@ import { ESCENAS } from "@constantes/constantes-escenas";
 import { EstadoSession } from "@sistemas/EstadoSession";
 import { SistemaGuardado } from "@sistemas/SistemaGuardado";
 import "../ui/selector-personajes.css";
+import "../ui/selector-personajes-responsive.css";
 import { ASSETS } from "@constantes/constantes-assets";
 
 export class EscenaSelectorPersonaje extends Phaser.Scene {

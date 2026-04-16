@@ -24,8 +24,10 @@ export const configuracionJuego: Phaser.Types.Core.GameConfig = {
     },
   },
   scale: {
-    mode: Phaser.Scale.RESIZE, 
+    mode: Phaser.Scale.FIT, 
     autoCenter: Phaser.Scale.CENTER_BOTH,
+    width: 1200,
+    height: 600,
   },
   input: {
     activePointers: 3,

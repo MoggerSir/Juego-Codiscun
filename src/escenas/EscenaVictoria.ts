@@ -53,8 +53,8 @@ export class EscenaVictoria extends Phaser.Scene {
 
     const html = `
       <div id="victory-screen" class="ui-screen">
-        <div class="glass-panel" id="panel-victoria" style="width: 90%; max-width: 550px; text-align: center; padding: clamp(0.5rem, 3vw, 2rem); margin: 0 auto;">
-          <h2 style="color: var(--neon-gold); font-size: clamp(0.9rem, 4vw, 1.3rem); margin-bottom: 0.3rem; text-shadow: 4px 4px 0px #000;">¡MISIÓN ÉXITO!</h2>
+        <div class="glass-panel" id="panel-victoria" style="width: min(95%, 500px); text-align: center; padding: clamp(0.5rem, 3vw, 2rem); margin: 0 auto;">
+          <h2 style="color: var(--neon-gold); font-size: clamp(0.9rem, 6vw, 1.3rem); margin-bottom: 0.3rem; text-shadow: 4px 4px 0px #000;">¡MISIÓN ÉXITO!</h2>
           <p style="font-size: 0.5rem; color: #888; margin-bottom: clamp(0.5rem, 2vh, 1.5rem); letter-spacing: 2px;">${configNivel.nombreDisplay}</p>
           
           <div style="display: flex; flex-direction: column; gap: clamp(0.3rem, 1.5vh, 1rem); margin-bottom: clamp(0.5rem, 2vh, 1.5rem); text-align: left;">

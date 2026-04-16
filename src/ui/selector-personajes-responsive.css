@@ -1,0 +1,99 @@
+/* selector-personajes-responsive.css */
+
+/* --- MOBILE PORTRAIT (Pantalla Vertical) --- */
+@media (max-width: 768px) {
+  #personaje-screen {
+    --avatar-size: 140px;
+    padding: 10px;
+    justify-content: flex-start;
+    overflow-y: auto;
+  }
+
+  .personaje-titulo {
+    font-size: 1.2rem;
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .personaje-container {
+    flex-direction: column; /* APILAR VERTICALMENTE */
+    gap: 1.5rem;
+    padding-bottom: 2rem;
+  }
+
+  .personaje-card {
+    width: 90%;
+    max-width: 320px;
+    min-width: unset; /* Liberar restricción de ancho */
+    padding: 15px;
+  }
+
+  .personaje-img-container {
+    width: 100px;
+    height: 100px;
+  }
+
+  .personaje-nombre {
+    font-size: 1rem;
+  }
+
+  .personaje-desc {
+    font-size: 0.7rem;
+  }
+}
+
+/* --- MOBILE LANDSCAPE (Pantalla Horizontal / Poca Altura) --- */
+@media (max-height: 500px) {
+  #personaje-screen {
+    --avatar-size: 80px;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .personaje-titulo {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .personaje-container {
+    flex-direction: row; /* Mantener horizontal si hay poco alto */
+    flex-wrap: nowrap;
+    gap: 1rem;
+  }
+
+  .personaje-card {
+    flex-direction: row; /* Layout horizontal dentro de la card */
+    width: auto;
+    max-width: 350px;
+    padding: 10px;
+    align-items: center;
+  }
+
+  .personaje-img-container {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 0;
+    margin-right: 15px;
+  }
+
+  .personaje-desc {
+    display: none; /* Ocultar descripción para ahorrar espacio vertical */
+  }
+
+  .personaje-nombre {
+    font-size: 0.8rem;
+  }
+}
+
+/* --- AJUSTES PARA PANTALLAS MUY PEQUEÑAS (iPhone SE, etc) --- */
+@media (max-width: 380px) {
+  #personaje-screen {
+    --avatar-size: 110px;
+  }
+  .personaje-titulo {
+    font-size: 1rem;
+  }
+  .personaje-card {
+    padding: 10px;
+  }
+}

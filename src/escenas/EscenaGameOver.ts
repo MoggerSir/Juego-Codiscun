@@ -40,8 +40,8 @@ export class EscenaGameOver extends Phaser.Scene {
   private createDOMUI(): void {
     const html = `
       <div id="gameover-screen" class="ui-screen" style="background: rgba(26, 0, 0, 0.9);">
-        <div class="glass-panel" id="panel-gameover" style="width: 90%; max-width: 500px; text-align: center; border-color: var(--neon-red); background: rgba(0,0,0,0.8);">
-          <h1 style="color: var(--neon-red); font-size: clamp(1.2rem, 6vw, 1.8rem); text-shadow: 4px 4px 0px #000; margin-bottom: clamp(1rem, 4vh, 2rem); animation: textFlicker 0.2s infinite alternate;">GAME OVER</h1>
+        <div class="glass-panel" id="panel-gameover" style="width: min(90%, 450px); text-align: center; border-color: var(--neon-red); background: rgba(0,0,0,0.8);">
+          <h1 style="color: var(--neon-red); font-size: clamp(1rem, 8vw, 2.5rem); text-shadow: 4px 4px 0px #000; margin-bottom: clamp(1rem, 4vh, 2rem); animation: textFlicker 0.2s infinite alternate;">GAME OVER</h1>
           
           <div style="margin: clamp(0.5rem, 3vh, 2rem) 0; color: #fff;">
             <p style="font-size: 0.6rem; color: #888; margin-bottom: 0.2rem;">PLAYER 1 SCORE</p>
