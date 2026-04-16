@@ -30,7 +30,10 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
   public esGrande: boolean = false;
 
   constructor(escena: Phaser.Scene, x: number, y: number) {
-    super(escena, x, y, ASSETS.JUGADOR_SPRITE);
+    const personajeId = EstadoSession.obtener().getIdPersonajeActual();
+    const spriteKey = personajeId === "harry" ? ASSETS.JUGADOR_HARRY_SPRITE : ASSETS.JUGADOR_FERNANDA_SPRITE;
+    
+    super(escena, x, y, spriteKey);
 
     escena.add.existing(this);
     escena.physics.add.existing(this);

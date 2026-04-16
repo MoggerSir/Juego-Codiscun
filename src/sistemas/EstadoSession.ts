@@ -22,6 +22,7 @@ export class EstadoSession {
   private idNivelActual: string = "nivel-1";
   private estado: EstadoJuego = EstadoJuego.JUGANDO;
   private nivelSecretoDesbloqueado: boolean = false;
+  private idPersonajeActual: string = "fernanda";
 
   private constructor() {
     this.vidas = VIDAS_INICIALES;
@@ -59,6 +60,14 @@ export class EstadoSession {
 
   public getMonedas(): number {
     return this.monedas;
+  }
+
+  public getIdPersonajeActual(): string {
+    return this.idPersonajeActual;
+  }
+
+  public setIdPersonajeActual(id: string): void {
+    this.idPersonajeActual = id;
   }
 
   public getIdNivelActual(): string {

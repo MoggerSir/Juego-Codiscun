@@ -51,6 +51,11 @@ export class EscenaJuego extends Phaser.Scene {
   }
 
   create(): void {
+    // Detener la música de los menús
+    if (this.sound.get(ASSETS.MUSICA_MENU)) {
+      this.sound.stopByKey(ASSETS.MUSICA_MENU);
+    }
+
     ["jugador-idle", "jugador-correr", "jugador-saltar"].forEach((key) => {
       if (this.anims.exists(key)) this.anims.remove(key);
     });

@@ -3,6 +3,7 @@
 
 export const ESCENAS = {
   CARGA: "EscenaCarga",
+  SELECTOR_PERSONAJE: "EscenaSelectorPersonaje",
   MENU: "EscenaMenu",
   JUEGO: "EscenaJuego",
   UI: "EscenaUI",

@@ -1,0 +1,183 @@
+/* selector-personajes.css */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+#personaje-screen {
+  /* Válvula de control para ajustar el tamaño de los avatares rápidamente */
+  --avatar-size: 180px;
+
+  background: radial-gradient(circle at center, #1a0033 0%, #000000 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-family: 'Press Start 2P', monospace;
+  padding: 20px;
+}
+
+.personaje-titulo {
+  color: var(--neon-cyan);
+  text-shadow: 4px 4px 0px #000, 0 0 15px var(--neon-cyan);
+  font-size: clamp(1rem, 4vw, 2rem);
+  margin-bottom: 2rem;
+  animation: floatTitle 3s ease-in-out infinite;
+  text-align: center;
+}
+
+.personaje-container {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  justify-content: center;
+  align-items: stretch;
+  width: 100%;
+  max-width: 900px;
+}
+
+.personaje-card {
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid #555;
+  border-radius: 12px;
+  padding: 20px;
+  /* Reemplazado width fijo por width: auto, abrazará el contenido */
+  width: auto;
+  min-width: 220px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+  position: relative;
+  /* Quitado el overflow: hidden de la tarjeta entera para evitar recortes severos si la imagen es alta */
+}
+
+.personaje-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0) 100%);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.personaje-card:hover {
+  transform: translateY(-10px);
+  border-color: var(--neon-cyan);
+  box-shadow: 0 15px 30px rgba(0, 255, 255, 0.3);
+}
+
+.personaje-card.fernanda:hover {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+}
+
+.personaje-card.harry:hover {
+  border-color: var(--neon-red);
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+}
+
+.personaje-img-container {
+  /* El contenedor abraza la imagen dinámicamente */
+  width: auto;
+  height: auto;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+  border: 2px dashed #444;
+  border-radius: 8px; /* Pequeño suavizado en las esquinas */
+}
+
+.personaje-card:hover .personaje-img-container {
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.personaje-sprite {
+  /* Controlado por la variable global para fácil ajuste */
+  width: var(--avatar-size);
+  height: auto; /* Mantiene la proporción original de la imagen sin estirarse */
+  object-fit: contain; /* Asegura visualización del 100% de la imagen */
+  image-rendering: pixelated;
+  /* Se eliminó transform: scale(1.5) para usar medidas reales y predecibles */
+}
+
+.personaje-nombre {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.fernanda .personaje-nombre { color: var(--neon-cyan); }
+.harry .personaje-nombre { color: var(--neon-red); }
+
+.personaje-desc {
+  font-family: Arial, sans-serif;
+  font-size: 0.8rem;
+  color: #aaa;
+  text-align: center;
+  line-height: 1.4;
+}
+
+@keyframes floatTitle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulseClick {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@media (max-width: 600px) {
+  .personaje-container {
+    gap: 1rem;
+  }
+  .personaje-card {
+    width: 140px;
+    padding: 10px;
+  }
+  .personaje-img-container {
+    width: 80px;
+    height: 80px;
+  }
+  .personaje-nombre {
+    font-size: 0.8rem;
+  }
+  .personaje-desc {
+    font-size: 0.6rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+@media (max-height: 450px) {
+  .personaje-titulo {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .personaje-container {
+    flex-wrap: nowrap;
+  }
+  .personaje-card {
+    flex-direction: row;
+    width: auto;
+    max-width: 250px;
+    height: auto;
+    align-items: center;
+  }
+  .personaje-img-container {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 0;
+    margin-right: 10px;
+  }
+  .personaje-desc { display: none; }
+}

@@ -5,6 +5,7 @@ import { EscenaUI } from "@escenas/EscenaUI";
 import { EscenaGameOver } from "@escenas/EscenaGameOver";
 import { EscenaVictoria } from "@escenas/EscenaVictoria";
 import { EscenaNiveles } from "@escenas/EscenaNiveles";
+import { EscenaSelectorPersonaje } from "@escenas/EscenaSelectorPersonaje";
 
 export const configuracionJuego: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -31,11 +32,12 @@ export const configuracionJuego: Phaser.Types.Core.GameConfig = {
   },
   scene: [
     EscenaCarga,
+    EscenaSelectorPersonaje,
+    EscenaNiveles,
     EscenaJuego,
     EscenaUI,
     EscenaGameOver,
     EscenaVictoria,
-    EscenaNiveles,
   ],
   render: {
     pixelArt: true,

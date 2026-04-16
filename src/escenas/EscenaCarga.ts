@@ -3,6 +3,8 @@ import { ASSETS } from "@constantes/constantes-assets";
 import { ESCENAS } from "@constantes/constantes-escenas";
 import { GestorNiveles } from "@niveles/GestorNiveles";
 import { RegistryManager } from "../registry/RegistryManager";
+import { SistemaGuardado } from "@sistemas/SistemaGuardado";
+import { EstadoSession } from "@sistemas/EstadoSession";
 import "../ui/game-ui.css"; // Estilos globales
 
 export class EscenaCarga extends Phaser.Scene {
@@ -69,7 +71,17 @@ export class EscenaCarga extends Phaser.Scene {
     // Pequeño delay para dejar que la animación de carga se complete visualmente
     this.time.delayedCall(500, () => {
       this.limpiarUI();
-      this.scene.start(ESCENAS.NIVELES);
+      
+      // Enrutamiento Inteligente
+      const progreso = SistemaGuardado.cargar();
+      if (!progreso.personajeSeleccionado) {
+        // Primera vez -> Va al Selector
+        this.scene.start(ESCENAS.SELECTOR_PERSONAJE);
+      } else {
+        // Ya lo eligió en el pasado -> Restaura en la Sesión y va a Niveles
+        EstadoSession.obtener().setIdPersonajeActual(progreso.personajeSeleccionado);
+        this.scene.start(ESCENAS.NIVELES);
+      }
     });
 
     // Cleanup del DOM al salir

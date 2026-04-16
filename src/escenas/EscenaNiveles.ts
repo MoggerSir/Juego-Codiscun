@@ -41,6 +41,14 @@ export class EscenaNiveles extends Phaser.Scene {
   create(): void {
     this.transicionando = false;
 
+    // Manejar música del menú
+    if (this.cache.audio.exists(ASSETS.MUSICA_MENU)) {
+      const musicaMenu = this.sound.get(ASSETS.MUSICA_MENU) || this.sound.add(ASSETS.MUSICA_MENU, { loop: true, volume: 0.5 });
+      if (!musicaMenu.isPlaying) {
+        musicaMenu.play();
+      }
+    }
+
     // 1. Bloqueo de entrada de Phaser para que la UI Domine el Input
     this.input.enabled = true;
 
@@ -63,6 +71,7 @@ export class EscenaNiveles extends Phaser.Scene {
 
           <div class="settings-panel" id="settings-panel">
             <h2 class="settings-titulo">Ajustes</h2>
+            <button class="reset-btn" id="btn-cambiar-heroe" style="margin-bottom: 10px; border-color: var(--neon-cyan); color: var(--neon-cyan);">CAMBIAR HÉROE</button>
             <button class="reset-btn" id="reset-btn">REINICIAR PROGRESO</button>
             
             <div class="confirm-module" id="confirm-module">
@@ -186,9 +195,8 @@ export class EscenaNiveles extends Phaser.Scene {
     const panel = container.querySelector("#settings-panel") as HTMLElement;
     const overlay = container.querySelector("#settings-overlay") as HTMLElement;
     const resetBtn = container.querySelector("#reset-btn") as HTMLElement;
-    const confirmModule = container.querySelector(
-      "#confirm-module",
-    ) as HTMLElement;
+    const btnCambiarHeroe = container.querySelector("#btn-cambiar-heroe") as HTMLElement;
+    const confirmModule = container.querySelector("#confirm-module") as HTMLElement;
     const btnConfirm = container.querySelector("#btn-confirm") as HTMLElement;
     const btnCancel = container.querySelector("#btn-cancel") as HTMLElement;
 
@@ -214,11 +222,19 @@ export class EscenaNiveles extends Phaser.Scene {
     this.registrarListener(overlay, "click", toggleMenu);
 
     // Lógica de Reset
-    this.registrarListener(resetBtn, "click", (e: Event) => {
-      e.stopPropagation();
-      confirmModule.classList.add("active");
-      this.estadoMenu = "CONFIRMANDO";
-    });
+    if (resetBtn) {
+      resetBtn.addEventListener('click', (e: Event) => {
+        e.stopPropagation();
+        confirmModule.classList.add("active");
+        this.estadoMenu = "CONFIRMANDO";
+      });
+    }
+
+    if (btnCambiarHeroe) {
+      btnCambiarHeroe.addEventListener('click', () => {
+        this.scene.start(ESCENAS.SELECTOR_PERSONAJE, { modoEdicion: true });
+      });
+    }
 
     this.registrarListener(btnCancel, "click", (e: Event) => {
       e.stopPropagation();

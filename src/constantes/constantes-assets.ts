@@ -1,7 +1,8 @@
 export const ASSETS = {
   MAPA_NIVEL_01: 'mapa-nivel-01',
   TILESET_PRINCIPAL: 'tileset-principal',
-  JUGADOR_SPRITE: 'jugador-sprite',
+  JUGADOR_FERNANDA_SPRITE: 'jugador-fernanda-sprite',
+  JUGADOR_HARRY_SPRITE: 'jugador-harry-sprite',
   // Enemigos
   GOOMBA_SPRITE: 'goomba-sprite',
   KOOPA_SPRITE: 'koopa-sprite',
@@ -21,6 +22,7 @@ export const ASSETS = {
   MAPA_BACKROOM: 'mapa-backroom',
   MUSICA_NIVEL_01: 'musica-nivel-01',
   MUSICA_BACKROOM: 'musica-backroom',
+  MUSICA_MENU: 'menu-music',
   MUSICA_NIVEL_02: 'musica-nivel-02',
   MUSICA_NIVEL_03: 'musica-nivel-03',
   MUSICA_NIVEL_04: 'musica-nivel-04',

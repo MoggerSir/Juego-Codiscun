@@ -4,6 +4,7 @@
  */
 export interface ProgresoJugador {
   version: number;
+  personajeSeleccionado: string | null;
   nivelesDesbloqueados: string[];
   mejoresPuntajes: Record<string, number>;
 }

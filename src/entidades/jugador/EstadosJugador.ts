@@ -2,6 +2,7 @@ import { FISICA } from "@constantes/constantes-fisica";
 import { ASSETS } from "@constantes/constantes-assets";
 import type { Jugador } from "./Jugador";
 import type { InputJugador } from "@tipos/tipos-jugador";
+import { EstadoSession } from "@sistemas/EstadoSession";
 import Phaser from "phaser";
 
 export class EstadosJugador {
@@ -87,18 +88,19 @@ export class EstadosJugador {
     if (!this.jugador.active) return;
 
     const currentAnim = this.jugador.anims.currentAnim?.key;
-    let nextAnim = "jugador-idle";
+    const personajeId = EstadoSession.obtener().getIdPersonajeActual();
+    let nextAnim = `${personajeId}-idle`;
 
     switch (this.jugador.estado) {
       case "idle":
-        nextAnim = "jugador-idle";
+        nextAnim = `${personajeId}-idle`;
         break;
       case "corriendo":
-        nextAnim = "jugador-correr";
+        nextAnim = `${personajeId}-correr`;
         break;
       case "saltando":
       case "cayendo":
-        nextAnim = "jugador-saltar";
+        nextAnim = `${personajeId}-saltar`;
         break;
     }
 

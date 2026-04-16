@@ -7,6 +7,13 @@ import { ASSETS } from "../../constantes/constantes-assets";
  */
 export const AudioRegistry: RegistryModule = {
   assets: {
+    // Música General (Menús)
+    [ASSETS.MUSICA_MENU]: {
+      key: ASSETS.MUSICA_MENU,
+      url: "assets/audio/musica/menu-music.mp3",
+      type: "audio",
+    },
+
     // Música por Niveles
     [ASSETS.MUSICA_NIVEL_01]: {
       key: ASSETS.MUSICA_NIVEL_01,

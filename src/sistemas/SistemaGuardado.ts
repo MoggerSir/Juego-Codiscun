@@ -11,6 +11,7 @@ export class SistemaGuardado {
 
   private static readonly ESTADO_INICIAL: ProgresoJugador = {
     version: SistemaGuardado.VERSION_ACTUAL,
+    personajeSeleccionado: null,
     nivelesDesbloqueados: ["nivel-1"],
     mejoresPuntajes: {},
   };
