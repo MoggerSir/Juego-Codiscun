@@ -158,7 +158,6 @@ export class VisualTouchHUD {
     public reposicionar(width: number, height: number): void {
         const paddingBottom = height * 0.25;
         const iconY = height - paddingBottom;
-        const iconSize = height * 0.15;
 
         // 1. Reajustar Zonas de Interacción
         this.zonaMov.setSize(width / 2, height);
