@@ -49,7 +49,7 @@ export class EscenaCarga extends Phaser.Scene {
     // Registro de Spritesheets desde Texturas generadas (Placeholders)
     this.registrarSpritesheets();
 
-    ["jugador-idle", "jugador-correr", "jugador-saltar"].forEach((key) => {
+    ["jugador-idle", "jugador-correr", "jugador-saltar", "goomba-caminar", "goomba-muerte"].forEach((key) => {
       if (this.anims.exists(key)) this.anims.remove(key);
     });
 

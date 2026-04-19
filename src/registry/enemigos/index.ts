@@ -33,17 +33,17 @@ export const EnemigosRegistry: RegistryModule = {
     "goomba-caminar": {
       key: "goomba-caminar",
       assetKey: ASSETS.GOOMBA_SPRITE,
-      start: 10,
-      end: 13,
+      start: 0,
+      end: 3,
       frameRate: 10,
       repeat: -1,
     },
     "goomba-muerte": {
       key: "goomba-muerte",
       assetKey: ASSETS.GOOMBA_SPRITE,
-      start: 2,
-      end: 2,
-      frameRate: 1,
+      start: 8,
+      end: 9,
+      frameRate: 4,
       repeat: 0,
     },
     // "koopa-caminar": {

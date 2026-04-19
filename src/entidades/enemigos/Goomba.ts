@@ -19,10 +19,10 @@ export class Goomba extends EnemigoBase {
     // Usamos el asset definido en las constantes
     super(escena, x, y, ASSETS.GOOMBA_SPRITE, capaPlataformas);
 
-    // Ajuste de hitbox para el Goomba (sprite 44x44, hitbox reducido en altura para tocar el piso)
+    // Hitbox ajustado: el goomba ocupa ~Y=4 a Y=26 dentro del frame 44×44
     const body = this.body as Phaser.Physics.Arcade.Body;
-    body.setSize(35, 20);
-    body.setOffset(4, 20);
+    body.setSize(28, 22);
+    body.setOffset(8, 4);
   }
 
   /**

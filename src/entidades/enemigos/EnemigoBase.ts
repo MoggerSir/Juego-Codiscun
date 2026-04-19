@@ -59,8 +59,9 @@ export abstract class EnemigoBase extends Phaser.Physics.Arcade.Sprite {
     this.setVelocityX(this.velocidad * this.direccion);
     
     // Reproducir animación base si existe
-    if (this.anims.exists(`${this.claveAnimacion}-caminar`)) {
-      this.anims.play(`${this.claveAnimacion}-caminar`, true);
+    const animKey = `${this.claveAnimacion}-caminar`;
+    if (this.scene.anims.exists(animKey)) {
+      this.anims.play(animKey, true);
     }
 
     // Voltear el sprite según la dirección
@@ -126,7 +127,7 @@ export abstract class EnemigoBase extends Phaser.Physics.Arcade.Sprite {
 
     // Intentar reproducir animación de muerte (ej: Goomba aplastado)
     const animMuerte = `${this.claveAnimacion}-muerte`;
-    if (this.anims.exists(animMuerte)) {
+    if (this.scene.anims.exists(animMuerte)) {
       this.anims.play(animMuerte, true);
       this.once("animationcomplete", () => this.destroy());
     } else {
