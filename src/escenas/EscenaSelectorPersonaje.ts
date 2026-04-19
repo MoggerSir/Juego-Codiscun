@@ -114,7 +114,11 @@ export class EscenaSelectorPersonaje extends Phaser.Scene {
     }
 
     // 4. Transición natural a la siguiente pantalla
-    this.scene.start(ESCENAS.NIVELES);
+    if (this.modoEdicion) {
+      this.scene.start(ESCENAS.NIVELES);
+    } else {
+      this.scene.start(ESCENAS.CINEMATICA, { idCinematica: "intro" });
+    }
   }
 
   private volverSinCambios(): void {

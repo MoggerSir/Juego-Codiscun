@@ -14,6 +14,7 @@ export default defineConfig({
       "@tipos": resolve(__dirname, "src/tipos"),
       "@utilidades": resolve(__dirname, "src/utilidades"),
       "@componentes": resolve(__dirname, "src/componentes"),
+      "@cinematicas": resolve(__dirname, "src/cinematicas"),
       "@assets": resolve(__dirname, "public/assets"),
     },
   },

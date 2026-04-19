@@ -32,6 +32,7 @@
       "@tipos/*": ["src/tipos/*"],
       "@utilidades/*": ["src/utilidades/*"],
       "@componentes/*": ["src/componentes/*"],
+      "@cinematicas/*": ["src/cinematicas/*"],
       "@assets/*": ["assets/*"]
     }
   },

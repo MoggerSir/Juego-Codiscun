@@ -6,6 +6,7 @@ import { EscenaGameOver } from "@escenas/EscenaGameOver";
 import { EscenaVictoria } from "@escenas/EscenaVictoria";
 import { EscenaNiveles } from "@escenas/EscenaNiveles";
 import { EscenaSelectorPersonaje } from "@escenas/EscenaSelectorPersonaje";
+import { EscenaCinematica } from "@escenas/EscenaCinematica";
 
 export const configuracionJuego: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -24,7 +25,7 @@ export const configuracionJuego: Phaser.Types.Core.GameConfig = {
     },
   },
   scale: {
-    mode: Phaser.Scale.FIT, 
+    mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
     width: 1200,
     height: 600,
@@ -40,6 +41,7 @@ export const configuracionJuego: Phaser.Types.Core.GameConfig = {
     EscenaUI,
     EscenaGameOver,
     EscenaVictoria,
+    EscenaCinematica,
   ],
   render: {
     pixelArt: true,

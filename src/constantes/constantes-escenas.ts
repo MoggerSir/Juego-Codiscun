@@ -11,6 +11,7 @@ export const ESCENAS = {
   VICTORIA: "EscenaVictoria",
   PAUSA: "EscenaPausa",
   NIVELES: "EscenaNiveles",
+  CINEMATICA: "EscenaCinematica",
 } as const;
 
 export type ClaveEscena = (typeof ESCENAS)[keyof typeof ESCENAS];
