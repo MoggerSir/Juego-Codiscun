@@ -14,15 +14,15 @@ export class Goomba extends EnemigoBase {
     escena: Phaser.Scene,
     x: number,
     y: number,
-    capaPlataformas: Phaser.Tilemaps.TilemapLayer
+    capaPlataformas: Phaser.Tilemaps.TilemapLayer,
   ) {
     // Usamos el asset definido en las constantes
     super(escena, x, y, ASSETS.GOOMBA_SPRITE, capaPlataformas);
-    
-    // Ajuste opcional de hitbox para el Goomba (el sprite suele ser de 32x32, pero el colisionador algo menor)
+
+    // Ajuste de hitbox para el Goomba (sprite 44x44, hitbox reducido en altura para tocar el piso)
     const body = this.body as Phaser.Physics.Arcade.Body;
-    body.setSize(24, 24);
-    body.setOffset(4, 8);
+    body.setSize(35, 20);
+    body.setOffset(4, 20);
   }
 
   /**
@@ -37,10 +37,14 @@ export class Goomba extends EnemigoBase {
     this.setVelocity(0, 0);
 
     // Sumar puntos a través del sistema global de eventos
-    import("@sistemas/SistemaEventos").then(mod => {
+    import("@sistemas/SistemaEventos").then((mod) => {
       const bus = mod.SistemaEventos.obtener();
       bus.emit(mod.EVENTOS.PUNTUACION_SUMAR, { puntos: JUEGO.PUNTOS_GOOMBA });
-      bus.emit(mod.EVENTOS.PUNTOS_FLOTANTES, { x: this.x, y: this.y, puntos: JUEGO.PUNTOS_GOOMBA });
+      bus.emit(mod.EVENTOS.PUNTOS_FLOTANTES, {
+        x: this.x,
+        y: this.y,
+        puntos: JUEGO.PUNTOS_GOOMBA,
+      });
     });
 
     // Ejecutar la secuencia de muerte (animación y destrucción)
