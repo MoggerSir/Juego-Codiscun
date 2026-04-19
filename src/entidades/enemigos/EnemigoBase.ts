@@ -64,8 +64,8 @@ export abstract class EnemigoBase extends Phaser.Physics.Arcade.Sprite {
       this.anims.play(animKey, true);
     }
 
-    // Voltear el sprite según la dirección
-    this.setFlipX(this.direccion === 1);
+    // Voltear el sprite según la dirección (el sprite base mira a la derecha)
+    this.setFlipX(this.direccion === -1);
   }
 
   /**
