@@ -192,27 +192,30 @@ export class EscenaJuego extends Phaser.Scene {
   private crearMapa(): Phaser.Tilemaps.Tilemap {
     const mapa = this.make.tilemap({ key: this.configNivel.nombreMapa });
 
-    // Cargamos todos los tilesets necesarios
-    const tilesetPrincipal = mapa.addTilesetImage(
-      "tileset-principal",
-      ASSETS.TILESET_PRINCIPAL,
-    )!;
+    const listaTilesets: Phaser.Tilemaps.Tileset[] = [];
 
-    // Fallback Senior: Solo cargar terrenos si la textura existe
-    let tilesetTerrenos = tilesetPrincipal;
-    if (this.textures.exists(ASSETS.TILESET_TERRENOS)) {
-      const res = mapa.addTilesetImage(
-        "terrenos",
-        ASSETS.TILESET_TERRENOS,
-        35,
-        35,
-        1,
-        0,
-      );
-      if (res) tilesetTerrenos = res;
-    }
+    // Carga robusta y escalable de TODOS los tilesets declarados en el JSON (Previene crash de Phaser)
+    mapa.tilesets.forEach((tConfig) => {
+      const nombreTileset = tConfig.name;
+      
+      // Asumimos que la Key en Phaser es igual al nombre en Tiled al registrar.
+      let keyTextura = nombreTileset;
+      if (nombreTileset === "tileset-principal") keyTextura = ASSETS.TILESET_PRINCIPAL;
+      if (nombreTileset === "terrenos") keyTextura = ASSETS.TILESET_TERRENOS;
 
-    const listaTilesets = [tilesetPrincipal, tilesetTerrenos];
+      // Si la textura NO se registró en Phaser aún, prevenimos la rotura aplicando el salva-vidas
+      if (!this.textures.exists(keyTextura)) {
+        console.warn(`[Motor Flexible] Textura del tileset '${nombreTileset}' no encontrada. Evitando Crash con imagen fallback.`);
+        // Usamos una estándar si la master llegara a fallar ocasionalmente
+        keyTextura = this.textures.exists('__FALLBACK_MASTER__') ? '__FALLBACK_MASTER__' : ASSETS.TILESET_PRINCIPAL;
+      }
+
+      // El motor vinculará el GID evitando la muerte de la escena
+      const ts = mapa.addTilesetImage(nombreTileset, keyTextura);
+      if (ts) {
+        listaTilesets.push(ts);
+      }
+    });
 
     mapa.createLayer("fondo", listaTilesets, 0, 0);
 
@@ -223,9 +226,8 @@ export class EscenaJuego extends Phaser.Scene {
       0,
     )!;
 
-    // Hacemos que CUALQUIER tile con GID del 1 al 5000 sea sólido.
-    // Esto es lo más agresivo y efectivo para asegurar que Mario choque con todo el terreno.
-    this.capaPlataformas.setCollisionBetween(1, 5000);
+    // Hacemos que CUALQUIER tile con GID altísimo sea sólido. Cobre futuros tilesets.
+    this.capaPlataformas.setCollisionBetween(1, 9000);
 
     return mapa;
   }

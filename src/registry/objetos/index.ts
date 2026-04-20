@@ -32,6 +32,12 @@ export const ObjetosRegistry: RegistryModule = {
       key: ASSETS.BLOQUE_LADRILLO,
       url: "assets/sprites/objetos/ladrillo.png",
       type: "image"
+    },
+    // Añadido dinámico desde Tiled
+    "coso": {
+      key: "coso",
+      url: "assets/sprites/objetos/tileset.png",
+      type: "image"
     }
   },
   anims: {
