@@ -2,7 +2,7 @@
 
 Este documento explica en detalle la arquitectura, funcionamiento y mantenimiento del **Motor de Cinemáticas Interactivas** que se integró en el juego.
 
-## 📌 Resumen de lo Añadido
+## Resumen de lo Añadido
 
 Para permitir secuencias de introducción (tipo novela visual/historieta) de gran flexibilidad, se añadieron los siguientes archivos:
 
@@ -10,7 +10,7 @@ Para permitir secuencias de introducción (tipo novela visual/historieta) de gra
 2. **`src/cinematicas/RegistroCinematicas.ts`**: Es el "cerebro de datos". Aquí se encuentran listadas todas tus imágenes, textos guionizados y rutas a seguir, desacoplando completamente el contenido de la lógica de programación.
 3. **`src/escenas/EscenaCinematica.ts`**: Es el Motor dentro de Phaser. Renderiza imágenes, aplica efectos de cámara y transiciones fade, maneja el cronómetro de cada diálogo, detecta si hay botones interactivos y coordina las ramificaciones.
 
-## 🚀 ¿Cómo funciona y cómo lo configuro?
+## ¿Cómo funciona y cómo lo configuro?
 
 Todo el control de contenido de las cinemáticas se maneja desde **`RegistroCinematicas.ts`**. No necesitas programar comportamiento Phaser para crear nuevas cinemáticas, simplemente editas el objeto de configuración.
 
@@ -63,7 +63,7 @@ opciones: [
 ]
 ```
 
-## 🛠️ Cómo Mantenerlo y Escalarlo a Futuro
+## Cómo Mantenerlo y Escalarlo a Futuro
 
 ### a) Crear Nuevas Cinemáticas Completas (Escalar)
 Imagina que terminas el Nivel 3 y quieres hacer un "Ending" para ese nivel:
