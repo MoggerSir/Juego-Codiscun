@@ -9,36 +9,36 @@ export const ObjetosRegistry: RegistryModule = {
     [ASSETS.TILESET_TERRENOS]: {
       key: ASSETS.TILESET_TERRENOS,
       url: "assets/sprites/objetos/terrenos.png",
-      type: "image"
+      type: "image",
     },
     [ASSETS.MONEDA_SPRITE]: {
       key: ASSETS.MONEDA_SPRITE,
       url: "assets/sprites/objetos/moneda.png",
       type: "spritesheet",
-      frameConfig: { frameWidth: 32, frameHeight: 32 }
+      frameConfig: { frameWidth: 32, frameHeight: 32 },
     },
     [ASSETS.BANDERA_SPRITE]: {
       key: ASSETS.BANDERA_SPRITE,
       url: "assets/sprites/objetos/bandera.png",
       type: "spritesheet",
-      frameConfig: { frameWidth: 32, frameHeight: 64 }
+      frameConfig: { frameWidth: 32, frameHeight: 64 },
     },
     [ASSETS.HONGO_SPRITE]: {
       key: ASSETS.HONGO_SPRITE,
       url: "assets/sprites/objetos/hongo.png",
-      type: "image"
+      type: "image",
     },
     [ASSETS.BLOQUE_LADRILLO]: {
       key: ASSETS.BLOQUE_LADRILLO,
       url: "assets/sprites/objetos/ladrillo.png",
-      type: "image"
+      type: "image",
     },
     // Añadido dinámico desde Tiled
-    "coso": {
+    coso: {
       key: "coso",
-      url: "assets/sprites/objetos/tileset.png",
-      type: "image"
-    }
+      url: "assets/sprites/objetos/tileset_64x64(new).png",
+      type: "image",
+    },
   },
   anims: {
     [`${ASSETS.MONEDA_SPRITE}-anim`]: {
@@ -47,7 +47,7 @@ export const ObjetosRegistry: RegistryModule = {
       start: 0,
       end: 3,
       frameRate: 8,
-      repeat: -1
-    }
-  }
+      repeat: -1,
+    },
+  },
 };
