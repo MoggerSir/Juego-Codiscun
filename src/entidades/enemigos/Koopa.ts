@@ -10,6 +10,7 @@ import type { EstadoKoopa } from "@tipos/tipos-enemigo";
 export class Koopa extends EnemigoBase {
   protected velocidad = FISICA.VELOCIDAD_ENEMIGO;
   protected claveAnimacion = "koopa";
+  protected sfxMuerte = ASSETS.SFX_MUERTE_KOOPA;
   private estadoKoopa: EstadoKoopa = "caminando";
 
   constructor(

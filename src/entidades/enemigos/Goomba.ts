@@ -9,6 +9,7 @@ import { JUEGO } from "@constantes/constantes-juego";
 export class Goomba extends EnemigoBase {
   protected velocidad = FISICA.VELOCIDAD_ENEMIGO;
   protected claveAnimacion = "goomba";
+  protected sfxMuerte = ASSETS.SFX_MUERTE_GOOMBA;
 
   constructor(
     escena: Phaser.Scene,

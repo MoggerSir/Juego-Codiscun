@@ -8,6 +8,7 @@ import { ASSETS } from "@constantes/constantes-assets";
 export class EnemigoTanque extends EnemigoBase {
   protected velocidad = FISICA.VELOCIDAD_ENEMIGO * 0.8; // Más lento
   protected claveAnimacion = "goomba"; // Placeholder
+  protected sfxMuerte = ASSETS.SFX_MUERTE_TANQUE;
   private vidasRestantes = 2; // Soporta 2 golpes
 
   constructor(

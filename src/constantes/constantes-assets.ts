@@ -35,7 +35,13 @@ export const ASSETS = {
   SFX_SALTO: 'sfx-salto',
   SFX_MONEDA: 'sfx-moneda',
   SFX_ROMPER_BLOQUE: 'sfx-romper-bloque',
-  SFX_MUERTE: 'sfx-muerte',
+  SFX_MUERTE: 'sfx-muerte', // Muerte del jugador
+  SFX_MUERTE_GOOMBA: 'sfx-muerte-goomba',
+  SFX_MUERTE_KOOPA: 'sfx-muerte-koopa',
+  SFX_MUERTE_VOLADOR: 'sfx-muerte-volador',
+  SFX_MUERTE_TANQUE: 'sfx-muerte-tanque',
+  SFX_VICTORIA: 'sfx-victoria',
+  SFX_TIEMPO_ALERTA: 'sfx-tiempo-alerta',
   SFX_POWER_UP: 'sfx-power-up',
 
   // Iconos UI

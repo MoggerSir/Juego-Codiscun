@@ -12,6 +12,7 @@ export abstract class EnemigoBase extends Phaser.Physics.Arcade.Sprite {
   // Estas propiedades abstractas deben ser definidas por cada enemigo concreto (Goomba, Koopa, etc.)
   protected abstract velocidad: number;
   protected abstract claveAnimacion: string;
+  protected abstract sfxMuerte: string;
 
   constructor(
     escena: Phaser.Scene,
@@ -123,6 +124,11 @@ export abstract class EnemigoBase extends Phaser.Physics.Arcade.Sprite {
     const body = this.body as Phaser.Physics.Arcade.Body;
     if (body) {
       body.enable = false; // Deshabilitar colisiones inmediatamente
+    }
+
+    // Reproducir sonido de muerte
+    if (this.scene.cache.audio.exists(this.sfxMuerte)) {
+      this.scene.sound.play(this.sfxMuerte);
     }
 
     // Intentar reproducir animación de muerte (ej: Goomba aplastado)

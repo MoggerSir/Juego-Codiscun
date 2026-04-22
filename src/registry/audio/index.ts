@@ -62,6 +62,36 @@ export const AudioRegistry: RegistryModule = {
       url: "assets/audio/efectos/muerte.mp3",
       type: "audio",
     },
+    [ASSETS.SFX_MUERTE_GOOMBA]: {
+      key: ASSETS.SFX_MUERTE_GOOMBA,
+      url: "assets/audio/efectos/goomba-death.mp3",
+      type: "audio",
+    },
+    [ASSETS.SFX_MUERTE_KOOPA]: {
+      key: ASSETS.SFX_MUERTE_KOOPA,
+      url: "assets/audio/efectos/koopa-death.mp3",
+      type: "audio",
+    },
+    [ASSETS.SFX_MUERTE_VOLADOR]: {
+      key: ASSETS.SFX_MUERTE_VOLADOR,
+      url: "assets/audio/efectos/volador-death.mp3",
+      type: "audio",
+    },
+    [ASSETS.SFX_MUERTE_TANQUE]: {
+      key: ASSETS.SFX_MUERTE_TANQUE,
+      url: "assets/audio/efectos/tanque-death.mp3",
+      type: "audio",
+    },
+    [ASSETS.SFX_VICTORIA]: {
+      key: ASSETS.SFX_VICTORIA,
+      url: "assets/audio/efectos/victory.mp3",
+      type: "audio",
+    },
+    [ASSETS.SFX_TIEMPO_ALERTA]: {
+      key: ASSETS.SFX_TIEMPO_ALERTA,
+      url: "assets/audio/efectos/hurry-up.mp3",
+      type: "audio",
+    },
     [ASSETS.SFX_POWER_UP]: {
       key: ASSETS.SFX_POWER_UP,
       url: "assets/audio/efectos/power-up.mp3",

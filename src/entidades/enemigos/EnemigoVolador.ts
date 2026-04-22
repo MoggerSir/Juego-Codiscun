@@ -8,6 +8,7 @@ import { ASSETS } from "@constantes/constantes-assets";
 export class EnemigoVolador extends EnemigoBase {
   protected velocidad = FISICA.VELOCIDAD_ENEMIGO * 1.5; // Un poco más rápido
   protected claveAnimacion = "koopa"; // Usamos koopa temporalmente como asset volador
+  protected sfxMuerte = ASSETS.SFX_MUERTE_VOLADOR;
 
   constructor(
     escena: Phaser.Scene,

@@ -41,6 +41,9 @@ export class Bandera extends Phaser.Physics.Arcade.Sprite {
     this.activada = true;
     this.body!.enable = false; // Desactivar collider preventivamente
     
+    // Reproducir sonido de victoria
+    this.scene.sound.play(ASSETS.SFX_VICTORIA);
+    
     SistemaEventos.obtener().emit(EVENTOS.META_ALCANZADA, { x: this.x, y: this.y, bandera: this });
     return true;
   }
