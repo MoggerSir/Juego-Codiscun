@@ -33,9 +33,31 @@ export const ObjetosRegistry: RegistryModule = {
       url: "assets/sprites/objetos/ladrillo.png",
       type: "image",
     },
-    // Añadido dinámico desde Tiled
+    // Para el mapa "backroom.json" e históricos
+    fondo: {
+      key: "fondo",
+      url: "assets/sprites/objetos/background.png",
+      type: "image",
+    },
+    
+    // Añadidos dinámicos desde la nueva actualización de Tiled (nivel-01.json)
     coso: {
       key: "coso",
+      url: "assets/sprites/objetos/tileset_64x64(new).png",
+      type: "image",
+    },
+    background: {
+      key: "background",
+      url: "assets/sprites/objetos/background.png",
+      type: "image",
+    },
+    "tileset_64x64(new)": {
+      key: "tileset_64x64(new)",
+      url: "assets/sprites/objetos/tileset_64x64(new).png",
+      type: "image",
+    },
+    tileset_64x64: {
+      key: "tileset_64x64",
       url: "assets/sprites/objetos/tileset_64x64(new).png",
       type: "image",
     },
