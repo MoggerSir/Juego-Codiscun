@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { EstadoSession, EstadoJuego } from "../../sistemas/EstadoSession";
+import { CONFIG_AUDIO } from "@constantes/config-audio";
 
 /**
  * Clase base para todos los enemigos del juego.
@@ -128,15 +129,35 @@ export abstract class EnemigoBase extends Phaser.Physics.Arcade.Sprite {
 
     // Reproducir sonido de muerte
     if (this.scene.cache.audio.exists(this.sfxMuerte)) {
-      this.scene.sound.play(this.sfxMuerte);
+      console.log(`[AudioEnemigo] Reproduciendo SFX: ${this.sfxMuerte}`);
+      this.scene.sound.play(this.sfxMuerte, { 
+        volume: CONFIG_AUDIO.obtenerVolumen(this.sfxMuerte) 
+      });
+    } else {
+      console.warn(`[AudioEnemigo] ⚠️ No se encontró el asset de audio: ${this.sfxMuerte} en el cache.`);
     }
 
     // Intentar reproducir animación de muerte (ej: Goomba aplastado)
     const animMuerte = `${this.claveAnimacion}-muerte`;
+    console.log(`[Enemigo] Muriendo. Buscando animación: ${animMuerte}. Existe: ${this.scene.anims.exists(animMuerte)}`);
+    
     if (this.scene.anims.exists(animMuerte)) {
       this.anims.play(animMuerte, true);
-      this.once("animationcomplete", () => this.destroy());
+      
+      // Seguridad: Destruir después de 1 segundo si falla el evento (Timeout guard)
+      this.scene.time.delayedCall(1000, () => {
+        if (this.active) {
+            console.log(`[Enemigo] Destrucción por timeout de seguridad.`);
+            this.destroy();
+        }
+      });
+
+      this.once("animationcomplete", () => {
+          console.log(`[Enemigo] Animación completada, destruyendo.`);
+          this.destroy();
+      });
     } else {
+        console.warn(`[Enemigo] No se encontró animación de muerte: ${animMuerte}`);
       // Si no hay animación, simplemente destruir en el siguiente frame
       this.destroy();
     }

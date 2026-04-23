@@ -200,6 +200,42 @@
                  "width":120.652508464143,
                  "x":44.3213296398892,
                  "y":502.308402585411
+                }, 
+                {
+                 "height":31.7775571002979,
+                 "id":11,
+                 "name":"blq-normal",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"bloque-ladrillo",
+                 "visible":true,
+                 "width":35.3083967781088,
+                 "x":181.83824340726,
+                 "y":473.132516826658
+                }, 
+                {
+                 "height":31.7775571002979,
+                 "id":14,
+                 "name":"iterrogacion",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"bloque-interrogacion",
+                 "visible":true,
+                 "width":30.0121372613925,
+                 "x":227.739159218802,
+                 "y":473.132516826658
+                }, 
+                {
+                 "height":31.7775571002979,
+                 "id":15,
+                 "name":"monedas bloq",
+                 "opacity":1,
+                 "rotation":0,
+                 "type":"bloque-monedas",
+                 "visible":true,
+                 "width":30.0121372613925,
+                 "x":271.874655191438,
+                 "y":473.132516826658
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -242,7 +278,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":11,
+ "nextobjectid":17,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.12.1",

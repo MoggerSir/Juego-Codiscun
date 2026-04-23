@@ -11,6 +11,7 @@ import { SistemaPuntuacion } from "@sistemas/SistemaPuntuacion";
 import { EVENTOS, SistemaEventos } from "@sistemas/SistemaEventos";
 import { Moneda } from "@entidades/objetos/Moneda";
 import { EstadoSession, EstadoJuego } from "@sistemas/EstadoSession";
+import { CONFIG_AUDIO } from "@constantes/config-audio";
 import { BloqueLadrillo } from "@entidades/objetos/BloqueLadrillo";
 import { BloqueInterrogacion } from "@entidades/objetos/BloqueInterrogacion";
 import { BloqueMonedas } from "@entidades/objetos/BloqueMonedas";
@@ -78,7 +79,7 @@ export class EscenaJuego extends Phaser.Scene {
     if (keyMusica && this.cache.audio.exists(keyMusica)) {
       this.sound.play(keyMusica, {
         loop: true,
-        volume: 0.5,
+        volume: CONFIG_AUDIO.obtenerVolumen(keyMusica),
       });
     } else if (keyMusica) {
       console.warn(`[EscenaJuego] Música no encontrada en cache: ${keyMusica}`);
@@ -145,19 +146,21 @@ export class EscenaJuego extends Phaser.Scene {
         // Centrado robusto: Detecta si es un Tile (GID) o un Rectángulo
         const y = obj.gid ? obj.y! - obj.height! / 2 : obj.y! + obj.height! / 2;
 
-        if (obj.type === "moneda") {
+        const tipo = obj.type?.toLowerCase() || "";
+
+        if (tipo === "moneda" || tipo === "monedas") {
           const moneda = new Moneda(this, x, y);
           this.grupoMonedas.add(moneda);
-        } else if (obj.type === "bloque-ladrillo") {
+        } else if (tipo === "bloque-ladrillo" || tipo === "ladrillo") {
           const bloque = new BloqueLadrillo(this, x, y);
           this.grupoBloques.add(bloque);
-        } else if (obj.type === "bloque-interrogacion") {
+        } else if (tipo === "bloque-interrogacion" || tipo === "interrogacion") {
           const bloque = new BloqueInterrogacion(this, x, y);
           this.grupoBloques.add(bloque);
-        } else if (obj.type === "bloque-monedas") {
+        } else if (tipo === "bloque-monedas" || tipo === "moneda-bloque") {
           const bloque = new BloqueMonedas(this, x, y);
           this.grupoBloques.add(bloque);
-        } else if (obj.type === "popup") {
+        } else if (tipo === "popup") {
           const mensajeId = obj.properties?.find(
             (p: any) => p.name === "mensajeId",
           )?.value;
@@ -246,7 +249,7 @@ export class EscenaJuego extends Phaser.Scene {
 
     // 2. Detección de la Meta (Búsqueda cruzada en ambas capas)
     const buscador = (o: any) =>
-      o.name === "zona-meta" || o.name === "meta" || o.type === "meta";
+      o.name === "zona-meta" || o.name === "meta" || o.type === "meta" || o.type === "bandera";
     const zonaMeta =
       capaSpawns?.objects.find(buscador) ||
       capaMetaDedicada?.objects.find(buscador);

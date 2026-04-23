@@ -14,6 +14,7 @@ export class SistemaGuardado {
     personajeSeleccionado: null,
     nivelesDesbloqueados: ["nivel-1"],
     mejoresPuntajes: {},
+    volumen: 0.5,
   };
 
   /**

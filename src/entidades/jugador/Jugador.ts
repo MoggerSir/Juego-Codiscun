@@ -1,4 +1,5 @@
 import { ASSETS } from "@constantes/constantes-assets";
+import { CONFIG_AUDIO } from "@constantes/config-audio";
 import { EstadoSession, EstadoJuego } from "@sistemas/EstadoSession";
 import { ControlJugador } from "./ControlJugador";
 import { EstadosJugador } from "./EstadosJugador";
@@ -150,7 +151,9 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
     // 2. Transición Sonora y Física (Play Safe)
     this.scene.sound.stopAll();
     if (this.scene.cache.audio.exists(ASSETS.SFX_MUERTE)) {
-      this.scene.sound.play(ASSETS.SFX_MUERTE, { volume: 0.8 });
+      this.scene.sound.play(ASSETS.SFX_MUERTE, { 
+        volume: CONFIG_AUDIO.obtenerVolumen(ASSETS.SFX_MUERTE) 
+      });
     }
 
     const body = this.body as Phaser.Physics.Arcade.Body;

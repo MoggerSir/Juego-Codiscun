@@ -3,6 +3,7 @@ import { ESCENAS } from "@constantes/constantes-escenas";
 import { ASSETS } from "@constantes/constantes-assets";
 import { GestorNiveles } from "@niveles/GestorNiveles";
 import { SistemaGuardado } from "@sistemas/SistemaGuardado";
+import { CONFIG_AUDIO } from "@constantes/config-audio";
 import { RegistryManager } from "../registry/RegistryManager";
 import "../ui/game-ui.css";
 import "../ui/selector-niveles.css";
@@ -78,7 +79,14 @@ export class EscenaNiveles extends Phaser.Scene {
 
           <div class="settings-panel" id="settings-panel">
             <h2 class="settings-titulo">Ajustes</h2>
-            <button class="reset-btn" id="btn-cambiar-heroe" style="margin-bottom: 10px; border-color: var(--neon-cyan); color: var(--neon-cyan);">CAMBIAR HÉROE</button>
+            <button class="reset-btn" id="btn-cambiar-heroe" style="margin-bottom: 20px; border-color: var(--neon-cyan); color: var(--neon-cyan);">CAMBIAR HÉROE</button>
+            
+            <div class="volume-control" style="margin-bottom: 20px;">
+              <p class="settings-label" style="font-size: 0.5rem; color: #888; margin-bottom: 8px; text-transform: uppercase;">Volumen Maestro</p>
+              <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="${CONFIG_AUDIO.volumen}" 
+                     style="width: 100%; height: 6px; cursor: pointer; accent-color: var(--neon-cyan);">
+            </div>
+
             <button class="reset-btn" id="reset-btn">REINICIAR PROGRESO</button>
             
             <div class="confirm-module" id="confirm-module">
@@ -254,6 +262,20 @@ export class EscenaNiveles extends Phaser.Scene {
     if (btnCambiarHeroe) {
       btnCambiarHeroe.addEventListener('click', () => {
         this.scene.start(ESCENAS.SELECTOR_PERSONAJE, { modoEdicion: true });
+      });
+    }
+
+    // Lógica de Volumen
+    const volumeSlider = container.querySelector("#volume-slider") as HTMLInputElement;
+    if (volumeSlider) {
+      this.registrarListener(volumeSlider, "input", (e: any) => {
+        const val = parseFloat(e.target.value);
+        CONFIG_AUDIO.aplicarVolumen(this, val);
+        
+        // Persistir volumen inmediatamente
+        const progreso = SistemaGuardado.cargar();
+        progreso.volumen = val;
+        SistemaGuardado.guardar(progreso);
       });
     }
 

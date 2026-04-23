@@ -1,6 +1,7 @@
-import Phaser from 'phaser';
-import { EVENTOS, SistemaEventos } from '@sistemas/SistemaEventos';
-import { ASSETS } from '@constantes/constantes-assets';
+import Phaser from "phaser";
+import { EVENTOS, SistemaEventos } from "@sistemas/SistemaEventos";
+import { ASSETS } from "@constantes/constantes-assets";
+import { CONFIG_AUDIO } from "@constantes/config-audio";
 
 /**
  * Entidad física Bandera.
@@ -18,7 +19,7 @@ export class Bandera extends Phaser.Physics.Arcade.Sprite {
   }
 
   /**
-   * Disparado visual por la Escena o el Manager cuando validan 
+   * Disparado visual por la Escena o el Manager cuando validan
    * que el jugador activó la bandera y el estado es seguro.
    */
   public animarBajada(onComplete: () => void): void {
@@ -26,8 +27,8 @@ export class Bandera extends Phaser.Physics.Arcade.Sprite {
       targets: this,
       y: this.y + 150, // Arbitrario: bajar 150px
       duration: 1200,
-      ease: 'Power1',
-      onComplete: onComplete
+      ease: "Power1",
+      onComplete: onComplete,
     });
   }
 
@@ -37,14 +38,25 @@ export class Bandera extends Phaser.Physics.Arcade.Sprite {
    */
   public tocar(): boolean {
     if (this.activada) return false;
-    
+
     this.activada = true;
     this.body!.enable = false; // Desactivar collider preventivamente
-    
-    // Reproducir sonido de victoria
-    this.scene.sound.play(ASSETS.SFX_VICTORIA);
-    
-    SistemaEventos.obtener().emit(EVENTOS.META_ALCANZADA, { x: this.x, y: this.y, bandera: this });
+
+    // Reproducir sonido de victoria (Safe play)
+    if (this.scene.cache.audio.exists(ASSETS.SFX_VICTORIA)) {
+      console.log(`[AudioVictoria] Reproduciendo SFX: ${ASSETS.SFX_VICTORIA}`);
+      this.scene.sound.play(ASSETS.SFX_VICTORIA, { 
+        volume: CONFIG_AUDIO.obtenerVolumen(ASSETS.SFX_VICTORIA) 
+      });
+    } else {
+      console.warn(`[AudioVictoria] ⚠️ No se encontró el asset de audio: ${ASSETS.SFX_VICTORIA} en el cache.`);
+    }
+
+    SistemaEventos.obtener().emit(EVENTOS.META_ALCANZADA, {
+      x: this.x,
+      y: this.y,
+      bandera: this,
+    });
     return true;
   }
 }

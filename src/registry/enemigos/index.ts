@@ -41,9 +41,9 @@ export const EnemigosRegistry: RegistryModule = {
     "goomba-muerte": {
       key: "goomba-muerte",
       assetKey: ASSETS.GOOMBA_SPRITE,
-      start: 8,
-      end: 9,
-      frameRate: 4,
+      start: 10,
+      end: 13,
+      frameRate: 12,
       repeat: 0,
     },
     // "koopa-caminar": {

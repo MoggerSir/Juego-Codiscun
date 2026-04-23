@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { EVENTOS, SistemaEventos } from '@sistemas/SistemaEventos';
 import { EstadoSession, EstadoJuego } from '@sistemas/EstadoSession';
 import { ASSETS } from '@constantes/constantes-assets';
+import { CONFIG_AUDIO } from '@constantes/config-audio';
 
 export enum EstadoTimer {
     ACTIVO,
@@ -68,7 +69,9 @@ export class TemporizadorNivel {
                 if (segundoActual === 60 && !this.alertaEmitida) {
                     this.alertaEmitida = true;
                     if (this.escena.cache.audio.exists(ASSETS.SFX_TIEMPO_ALERTA)) {
-                        this.escena.sound.play(ASSETS.SFX_TIEMPO_ALERTA, { volume: 0.6 });
+                        this.escena.sound.play(ASSETS.SFX_TIEMPO_ALERTA, { 
+                            volume: CONFIG_AUDIO.obtenerVolumen(ASSETS.SFX_TIEMPO_ALERTA) 
+                        });
                     }
                 }
             }

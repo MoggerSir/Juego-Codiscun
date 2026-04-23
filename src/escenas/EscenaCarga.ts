@@ -5,6 +5,7 @@ import { GestorNiveles } from "@niveles/GestorNiveles";
 import { RegistryManager } from "../registry/RegistryManager";
 import { SistemaGuardado } from "@sistemas/SistemaGuardado";
 import { EstadoSession } from "@sistemas/EstadoSession";
+import { CONFIG_AUDIO } from "@constantes/config-audio";
 import "../ui/game-ui.css"; // Estilos globales
 
 export class EscenaCarga extends Phaser.Scene {
@@ -74,6 +75,11 @@ export class EscenaCarga extends Phaser.Scene {
       
       // Enrutamiento Inteligente
       const progreso = SistemaGuardado.cargar();
+
+      // 4. Inicializar Audio Maestro (Centralizado)
+      const vol = progreso.volumen !== undefined ? progreso.volumen : 0.5;
+      CONFIG_AUDIO.aplicarVolumen(this, vol);
+
       if (!progreso.personajeSeleccionado) {
         // Primera vez -> Va al Selector
         this.scene.start(ESCENAS.SELECTOR_PERSONAJE);

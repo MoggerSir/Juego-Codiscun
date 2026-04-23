@@ -1,5 +1,6 @@
 import { FISICA } from "@constantes/constantes-fisica";
 import { ASSETS } from "@constantes/constantes-assets";
+import { CONFIG_AUDIO } from "@constantes/config-audio";
 import type { Jugador } from "./Jugador";
 import type { InputJugador } from "@tipos/tipos-jugador";
 import { EstadoSession } from "@sistemas/EstadoSession";
@@ -68,7 +69,9 @@ export class EstadosJugador {
       this.jugador.consumirSalto();
 
       if (this.jugador.scene.cache.audio.exists(ASSETS.SFX_SALTO)) {
-        this.jugador.scene.sound.play(ASSETS.SFX_SALTO, { volume: 0.6 });
+        this.jugador.scene.sound.play(ASSETS.SFX_SALTO, { 
+          volume: CONFIG_AUDIO.obtenerVolumen(ASSETS.SFX_SALTO) 
+        });
       }
     }
 
