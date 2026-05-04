@@ -28,11 +28,7 @@ export const ObjetosRegistry: RegistryModule = {
       url: "assets/sprites/objetos/hongo.png",
       type: "image",
     },
-    [ASSETS.BLOQUE_LADRILLO]: {
-      key: ASSETS.BLOQUE_LADRILLO,
-      url: "assets/sprites/objetos/ladrillo.png",
-      type: "image",
-    },
+    // BLOQUE_LADRILLO, BLOQUE_PREGUNTA y BLOQUE_VACIO se generan en EscenaCarga (no hay PNG en repo).
     // Para el mapa "backroom.json" e históricos
     fondo: {
       key: "fondo",

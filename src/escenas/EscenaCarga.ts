@@ -185,11 +185,52 @@ export class EscenaCarga extends Phaser.Scene {
     gMoneda.generateTexture(ASSETS.MONEDA_SPRITE, 32, 32);
     gMoneda.destroy();
 
-    // Ladrillo (Capa de seguridad)
+    // Ladrillo sólido provisional (marrón)
     const gLadrillo = this.make.graphics({ x: 0, y: 0 });
-    gLadrillo.fillStyle(0x8b4513).fillRect(2, 2, 28, 28).lineStyle(2, 0x000000).strokeRect(2, 2, 28, 28);
+    const mBase = 0x8b5a3c;
+    const mOscuro = 0x5c3824;
+    const mClaro = 0xa87852;
+    gLadrillo.fillStyle(mBase).fillRect(0, 0, 32, 32);
+    gLadrillo.fillStyle(mOscuro).fillRect(0, 14, 32, 3).fillRect(14, 0, 3, 32);
+    gLadrillo.lineStyle(2, mOscuro, 1).strokeRect(2, 2, 28, 28);
+    gLadrillo.lineStyle(1, mClaro, 0.55).strokeRect(4, 4, 24, 24);
     gLadrillo.generateTexture(ASSETS.BLOQUE_LADRILLO, 32, 32);
     gLadrillo.destroy();
+
+    // Bloque ? (monedas / interrogación / hongo)
+    const fondoPregunta = this.make.graphics({ x: 0, y: 0 });
+    fondoPregunta.fillStyle(0xffc832).fillRoundedRect(1, 1, 30, 30, 5);
+    fondoPregunta.lineStyle(2, 0xc98810).strokeRoundedRect(1, 1, 30, 30, 5);
+    fondoPregunta.fillStyle(0xffe890).fillRoundedRect(4, 4, 24, 9, 3);
+
+    const textoPregunta = this.make.text({
+      x: 16,
+      y: 17,
+      text: "?",
+      style: {
+        fontFamily: "Arial Black, Arial, sans-serif",
+        fontSize: "22px",
+        color: "#4a2808",
+      },
+      origin: { x: 0.5, y: 0.5 },
+      add: false,
+    });
+
+    const rtPregunta = this.make.renderTexture({ width: 32, height: 32, add: false });
+    rtPregunta.draw(fondoPregunta, 0, 0);
+    rtPregunta.draw(textoPregunta, textoPregunta.x, textoPregunta.y);
+    fondoPregunta.destroy();
+    textoPregunta.destroy();
+    rtPregunta.saveTexture(ASSETS.BLOQUE_PREGUNTA);
+    rtPregunta.destroy();
+
+    // Bloque vacío (tras golpear ?)
+    const gVacio = this.make.graphics({ x: 0, y: 0 });
+    gVacio.fillStyle(0x6e4a38).fillRoundedRect(2, 2, 28, 28, 4);
+    gVacio.lineStyle(2, 0x4a3024).strokeRoundedRect(2, 2, 28, 28, 4);
+    gVacio.lineStyle(1, 0x3d2818).strokeRect(8, 11, 16, 10);
+    gVacio.generateTexture(ASSETS.BLOQUE_VACIO, 32, 32);
+    gVacio.destroy();
 
     // Hongo (Capa de seguridad)
     const gHongo = this.make.graphics({ x: 0, y: 0 });

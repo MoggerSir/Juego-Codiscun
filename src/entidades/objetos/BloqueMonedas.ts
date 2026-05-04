@@ -8,8 +8,8 @@ export class BloqueMonedas extends Phaser.Physics.Arcade.Image {
   private activo: boolean = true;
 
   constructor(escena: Phaser.Scene, x: number, y: number) {
-    // Para que parezca un ladrillo normal
-    super(escena, x, y, ASSETS.BLOQUE_LADRILLO);
+    // Para que parezca bloque ? (mismo provisional que el que suelta hongo)
+    super(escena, x, y, ASSETS.BLOQUE_PREGUNTA);
     
     escena.add.existing(this);
     escena.physics.add.existing(this, true);
