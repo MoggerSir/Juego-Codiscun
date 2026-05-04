@@ -6,6 +6,9 @@ export const ASSETS = {
   // Enemigos
   GOOMBA_SPRITE: 'goomba-sprite',
   KOOPA_SPRITE: 'koopa-sprite',
+  KOOPA_CONCHA_SPRITE: 'koopa-concha-sprite',
+  TANQUE_SPRITE: 'tanque-sprite',
+  VOLADOR_SPRITE: 'volador-sprite',
   // Objetos
   MONEDA_SPRITE: 'moneda-sprite',
   BLOQUE_LADRILLO: 'bloque-ladrillo',

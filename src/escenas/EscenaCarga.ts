@@ -50,7 +50,20 @@ export class EscenaCarga extends Phaser.Scene {
     // Registro de Spritesheets desde Texturas generadas (Placeholders)
     this.registrarSpritesheets();
 
-    ["jugador-idle", "jugador-correr", "jugador-saltar", "goomba-caminar", "goomba-muerte"].forEach((key) => {
+    [
+      "jugador-idle",
+      "jugador-correr",
+      "jugador-saltar",
+      "goomba-caminar",
+      "goomba-muerte",
+      "tanque-caminar",
+      "tanque-muerte",
+      "volador-caminar",
+      "volador-muerte",
+      "koopa-caminar",
+      "koopa-concha",
+      "koopa-concha-giro",
+    ].forEach((key) => {
       if (this.anims.exists(key)) this.anims.remove(key);
     });
 
@@ -165,6 +178,24 @@ export class EscenaCarga extends Phaser.Scene {
       .fillRect(14, 0, 18, 20);
     gBandera.generateTexture(ASSETS.BANDERA_SPRITE, 32, 64);
     gBandera.destroy();
+
+    // Moneda (Capa de seguridad)
+    const gMoneda = this.make.graphics({ x: 0, y: 0 });
+    gMoneda.fillStyle(0xffff00).fillCircle(16, 16, 12).lineStyle(2, 0xffa500).strokeCircle(16, 16, 12);
+    gMoneda.generateTexture(ASSETS.MONEDA_SPRITE, 32, 32);
+    gMoneda.destroy();
+
+    // Ladrillo (Capa de seguridad)
+    const gLadrillo = this.make.graphics({ x: 0, y: 0 });
+    gLadrillo.fillStyle(0x8b4513).fillRect(2, 2, 28, 28).lineStyle(2, 0x000000).strokeRect(2, 2, 28, 28);
+    gLadrillo.generateTexture(ASSETS.BLOQUE_LADRILLO, 32, 32);
+    gLadrillo.destroy();
+
+    // Hongo (Capa de seguridad)
+    const gHongo = this.make.graphics({ x: 0, y: 0 });
+    gHongo.fillStyle(0xff0000).fillCircle(16, 12, 12).fillStyle(0xffffff).fillRect(10, 15, 12, 15);
+    gHongo.generateTexture(ASSETS.HONGO_SPRITE, 32, 32);
+    gHongo.destroy();
   }
 
   private registrarSpritesheets(): void {

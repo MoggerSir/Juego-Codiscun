@@ -7,7 +7,7 @@ import { ASSETS } from "@constantes/constantes-assets";
  */
 export class EnemigoVolador extends EnemigoBase {
   protected velocidad = FISICA.VELOCIDAD_ENEMIGO * 1.5; // Un poco más rápido
-  protected claveAnimacion = "koopa"; // Usamos koopa temporalmente como asset volador
+  protected claveAnimacion = "volador";
   protected sfxMuerte = ASSETS.SFX_MUERTE_VOLADOR;
 
   constructor(
@@ -16,17 +16,17 @@ export class EnemigoVolador extends EnemigoBase {
     y: number,
     capaPlataformas: Phaser.Tilemaps.TilemapLayer
   ) {
-    super(escena, x, y, ASSETS.KOOPA_SPRITE, capaPlataformas);
-    
+    super(escena, x, y, ASSETS.VOLADOR_SPRITE, capaPlataformas);
+
+    // Frame 128×128; caja centrada en el celda (el arte del drone suele ir al medio)
     const body = this.body as Phaser.Physics.Arcade.Body;
-    body.setSize(24, 24);
-    body.setOffset(4, 8);
-    
+    const bw = 72;
+    const bh = 56;
+    body.setSize(bw, bh);
+    body.setOffset((128 - bw) / 2, (128 - bh) / 2);
+
     // Lo más importante: Ignorar la gravedad para que se mantenga en el aire
     body.setAllowGravity(false);
-    
-    // Le damos un tinte azulado para distinguirlo visualmente 
-    this.setTint(0x88ccff);
   }
 
   /**

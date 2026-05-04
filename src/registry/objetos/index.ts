@@ -41,6 +41,8 @@ export const ObjetosRegistry: RegistryModule = {
     },
     
     // Añadidos dinámicos desde la nueva actualización de Tiled (nivel-01.json)
+    //esto falto w, tipo debes colocar las direcciones de los tilesets que se usan en el mapa
+    // para que el juego sepa que tileset usar si no no funciona el mapa xd
     coso: {
       key: "coso",
       url: "assets/sprites/objetos/tileset_64x64(new).png",

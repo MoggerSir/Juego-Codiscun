@@ -23,11 +23,11 @@ export const CONFIG_AUDIO = {
     // Música (Multiplicadores para música de fondo)
     "menu-music": 0.6,
     "musica-nivel-01": 1.0,
-    "musica-nivel-02": 0.5,
-    "musica-nivel-03": 0.5,
-    "musica-nivel-04": 0.5,
-    "musica-nivel-05": 0.5,
-    "musica-backroom": 0.4,
+    "musica-nivel-02": 1.0,
+    "musica-nivel-03": 1.0,
+    "musica-nivel-04": 1.0,
+    "musica-nivel-05": 1.0,
+    "musica-backroom": 1.0,
   } as Record<string, number>,
 
   /**

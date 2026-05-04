@@ -4,6 +4,12 @@ import { ASSETS } from "@constantes/constantes-assets";
 import { JUEGO } from "@constantes/constantes-juego";
 import type { EstadoKoopa } from "@tipos/tipos-enemigo";
 
+const ANIM_KOOPA_CONCHA = "koopa-concha";
+const ANIM_KOOPA_CONCHA_GIRO = "koopa-concha-giro";
+
+/** Assets base 16×16; escala moderada para evitar jitter con la detección de bordes. */
+const ESCALA_KOOPA = 2;
+
 /**
  * Enemigo tipo Koopa con estados de concha y proyectil.
  */
@@ -21,9 +27,12 @@ export class Koopa extends EnemigoBase {
   ) {
     super(escena, x, y, ASSETS.KOOPA_SPRITE, capaPlataformas);
 
+    this.setScale(ESCALA_KOOPA);
+
+    // Sprite caminar: celdas 16×16 (hitbox en espacio del frame; Phaser escala el body con el sprite)
     const body = this.body as Phaser.Physics.Arcade.Body;
-    body.setSize(24, 32);
-    body.setOffset(4, 0);
+    body.setSize(12, 14);
+    body.setOffset(2, 2);
   }
 
   update(): void {
@@ -34,6 +43,43 @@ export class Koopa extends EnemigoBase {
     } else if (this.estadoKoopa === "concha-movimiento") {
       this.revisarRebote();
     }
+  }
+
+  /**
+   * Con escala > 1, medir con el body evita desync entre hitbox y `sprite.width` / `detectarPared`.
+   * El empuje de 2 px de la base es insuficiente y provoca flip-flop cada frame.
+   */
+  protected override detectarPared(): boolean {
+    const body = this.body as Phaser.Physics.Arcade.Body;
+    const margin = 2;
+    const xRevision =
+      (this.direccion === 1 ? body.right : body.left) +
+      this.direccion * margin;
+    const tileAlFrente = this.capaPlataformas.getTileAtWorldXY(
+      xRevision,
+      body.center.y,
+    );
+    return tileAlFrente !== null && tileAlFrente.collides;
+  }
+
+  protected override detectarBorde(): boolean {
+    const body = this.body as Phaser.Physics.Arcade.Body;
+    const xRevision =
+      (this.direccion === 1 ? body.right : body.left) +
+      this.direccion * 3;
+    const yRevision = body.bottom + 4;
+    const tileAlFrente = this.capaPlataformas.getTileAtWorldXY(
+      xRevision,
+      yRevision,
+    );
+    return tileAlFrente === null || !tileAlFrente.collides;
+  }
+
+  public override cambiarDireccion(): void {
+    this.direccion = (this.direccion === -1 ? 1 : -1) as 1 | -1;
+    const body = this.body as Phaser.Physics.Arcade.Body;
+    const paso = Math.max(6, Math.ceil(body.width * 0.2));
+    this.x += this.direccion * paso;
   }
 
   /**
@@ -63,23 +109,31 @@ export class Koopa extends EnemigoBase {
   private entrarEnConcha(): void {
     this.estadoKoopa = "concha";
     this.setVelocityX(0);
-    this.anims.play(`${this.claveAnimacion}-concha`, true);
+    this.setTexture(ASSETS.KOOPA_CONCHA_SPRITE);
+    if (this.scene.anims.exists(ANIM_KOOPA_CONCHA)) {
+      this.anims.play(ANIM_KOOPA_CONCHA, true);
+    }
 
-    // Ajustar hitbox para la concha (más baja)
     const body = this.body as Phaser.Physics.Arcade.Body;
-    body.setSize(24, 20);
-    body.setOffset(4, 12);
+    body.setSize(12, 12);
+    body.setOffset(2, 2);
   }
 
   private patearConcha(direccion: number): void {
     this.estadoKoopa = "concha-movimiento";
     this.direccion = direccion as 1 | -1;
     this.setVelocityX(FISICA.VELOCIDAD_CONCHA * this.direccion);
+    if (this.scene.anims.exists(ANIM_KOOPA_CONCHA_GIRO)) {
+      this.anims.play(ANIM_KOOPA_CONCHA_GIRO, true);
+    }
   }
 
   private detenerConcha(): void {
     this.estadoKoopa = "concha";
     this.setVelocityX(0);
+    if (this.scene.anims.exists(ANIM_KOOPA_CONCHA)) {
+      this.anims.play(ANIM_KOOPA_CONCHA, true);
+    }
   }
 
   private revisarRebote(): void {

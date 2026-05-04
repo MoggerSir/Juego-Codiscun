@@ -153,7 +153,7 @@ export const CINEMATICA_INTRO: ConfiguracionCinematica = {
         {
           texto: "pedirle usar condon",
           accion: "cambiar_escena",
-          destino: ESCENAS.MENU,
+          destino: ESCENAS.NIVELES,
         },
         {
           texto: "no pedirle usar condon",

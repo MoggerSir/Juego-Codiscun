@@ -7,7 +7,7 @@ import { ASSETS } from "@constantes/constantes-assets";
  */
 export class EnemigoTanque extends EnemigoBase {
   protected velocidad = FISICA.VELOCIDAD_ENEMIGO * 0.8; // Más lento
-  protected claveAnimacion = "goomba"; // Placeholder
+  protected claveAnimacion = "tanque";
   protected sfxMuerte = ASSETS.SFX_MUERTE_TANQUE;
   private vidasRestantes = 2; // Soporta 2 golpes
 
@@ -17,14 +17,21 @@ export class EnemigoTanque extends EnemigoBase {
     y: number,
     capaPlataformas: Phaser.Tilemaps.TilemapLayer,
   ) {
-    super(escena, x, y, ASSETS.GOOMBA_SPRITE, capaPlataformas);
+    super(escena, x, y, ASSETS.TANQUE_SPRITE, capaPlataformas);
 
+    // Frame 72×72; el arte del tanque ocupa la parte baja del celda — la hitbox debe ir abajo
+    // (antes offsetY=7 dejaba el cuerpo arriba y los pies del sprite pasaban del suelo).
     const body = this.body as Phaser.Physics.Arcade.Body;
-    body.setSize(24, 24);
-    body.setOffset(4, 8);
+    body.setSize(46, 36);
+    body.setOffset(13, 36);
+  }
 
-    // Tinte gris/oscuro para dar impresión de armadura
-    this.setTint(0x666666);
+  /**
+   * El spritesheet del tanque viene mirando a la izquierda (al revés que goomba).
+   */
+  protected override patrullar(): void {
+    super.patrullar();
+    this.setFlipX(this.direccion === 1);
   }
 
   public alSerPisado(): void {
